@@ -1,30 +1,38 @@
 package no.kristiania.http;
 
-import java.io.File;
-import java.io.IOException;
+import org.postgresql.ds.PGSimpleDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.Map;
+import java.util.Properties;
 
 public class HttpServer {
 
+    private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+
     private final ServerSocket serverSocket;
     private ServerThread serverThread;
-    private File documentRoot = new File("src/main/resources");
-    private ArrayList<User> users = new ArrayList<>();
+    private ProjectMemberDao projectMemberDao;
+
+
+    public HttpServer(int port, DataSource dataSource) throws IOException {
+        this.serverSocket = new ServerSocket(port);
+        this.projectMemberDao = new ProjectMemberDao(dataSource);
+        serverThread = new ServerThread();
+    }
 
     public HttpServer(int port) throws IOException {
         this.serverSocket = new ServerSocket(port);
         serverThread = new ServerThread();
     }
 
-    public void setDocumentRoot(File documentRoot) {
-        this.documentRoot = documentRoot;
-    }
 
     private class ServerThread extends Thread {
         @Override
@@ -33,7 +41,7 @@ public class HttpServer {
                 try {
                     Socket socket = serverSocket.accept();
                     handleRequest(socket);
-                } catch (IOException e) {
+                } catch (IOException | SQLException e) {
                     //e.printStackTrace();
                 }
             }
@@ -52,81 +60,50 @@ public class HttpServer {
     }
 
 
-    private void handleRequest(Socket socket) throws IOException {
+    private void handleRequest(Socket socket) throws IOException, SQLException {
         HttpMessage response = new HttpMessage();
         HttpMessage request = new HttpMessage();
 
         String requestLine = HttpMessage.readLine(socket);
-        System.out.println(requestLine);
 
         String[] requestLineParts = requestLine.split(" ");
 
-        String requestType = requestLineParts[0];
-
+        String requestMethod = requestLineParts[0];
         String requestTarget = requestLineParts[1];
 
-
-        if(requestType.equals("POST")) {
-            request.readAndSetHeaders(socket);
-            int contentLength = Integer.parseInt(request.getHeader("Content-Length"));
-            String body = request.readBody(socket, contentLength);
-            request.setBody(body);
-
-            Map<String, String> userMap = new HashMap<>();
-            String[] queryParameters = body.split("&");
-            for (String parameter : queryParameters) {
-                String[] parameterPair = parameter.split("=");
-                userMap.put(parameterPair[0], parameterPair[1]);
-            }
-
-            users.add(new User(userMap.get("guestName"), userMap.get("email")));
-            for(User user : users) {
-                System.out.println("\r\rName: " + user.getName());
-                System.out.println("Email: " + user.getEmail());
-
-            }
-
-            response.setCode("200");
-            response.setStartLine("HTTP/1.1 " + response.getCode() + " OK");
-            response.write(socket);
+        if(!requestTarget.equals("/favicon.ico")){
+            logger.info("REQUEST LINE: {}", requestLine);
         }
 
-        int questionPos = requestTarget.indexOf('?');
+        int questionPosition = requestTarget.indexOf('?');
+        String requestPath = questionPosition != -1 ? requestTarget.substring(0, questionPosition) : requestTarget;
 
-        if(requestTarget.equals("") || requestTarget.equals("/")) {
+        if(requestPath.equals("/favicon.ico")) {
+            handleFileRequest(socket, response, requestPath);
+        }
+
+        if(requestPath.equals("/api/member")) {
+            handleGetMembers(socket);
+        }
+
+        if(requestMethod.equals("POST") || requestTarget.equals("/submit")) {
+            handlePostRequest(socket, response, request);
+            return;
+        }
+
+        if (requestTarget.equals("") || requestTarget.equals("/")) {
             response.setBody("Hello world");
-        } else if (questionPos != -1) {
-            String queryString = requestTarget.substring(questionPos + 1);
-
-            String[] queryParameters = queryString.split("&");
-            for (String parameter : queryParameters) {
-                String[] parameterPair = parameter.split("=");
-                request.setHeader(parameterPair[0], parameterPair[1]);
-
-            }
-        } else if (!requestTarget.contains("echo")) {
-            File targetFile = new File(documentRoot, requestTarget);
-            if(!targetFile.exists()) {
-                response.setCode("404");
-                response.setStartLine("HTTP/1.1 " + response.getCode() + " NOT FOUND");
-                response.writeLine(socket, response.getStartLine());
-                response.writeLine(socket, "");
-                return;
-            }
-
-            String contentType = "text/html";
-            if(targetFile.getName().endsWith(".txt")){
-                contentType = "text/plain";
-            } else if(targetFile.getName().endsWith(".css")) {
-                contentType = "text/css";
-            }
-
             response.setCode("200");
-            response.setStartLine("HTTP/1.1 " + response.getCode() + " OK");
-            response.setHeader("Content-Type", contentType);
+            writeResponse(socket, response);
+            return;
+        }
 
-            response.setHeader("Content-Length", ""+targetFile.length());
-            response.writeWithFile(socket, targetFile);
+        if (questionPosition != -1) {
+            String queryStringLine = requestTarget.substring(questionPosition + 1);
+            QueryString.putQueryParametersIntoHttpMessageHeaders(request, queryStringLine);
+
+        } else if (!requestTarget.contains("echo")) {
+            handleFileRequest(socket, response, requestTarget);
             return;
         }
 
@@ -147,15 +124,137 @@ public class HttpServer {
             response.setCode("200");
         }
 
-        response.setStartLine("HTTP/1.1 " + response.getCode() + " OK");
-        response.setHeader("Content-Length", Integer.toString(response.getBody().length()));
+        writeResponse(socket, response);
+    }
+
+    private void writeResponse(Socket socket, HttpMessage response) throws IOException {
+        String responseCode = response.getCode();
+
+        if(responseCode.charAt(0) == '4') {
+            response.setStartLine("HTTP/1.1 " + responseCode + " Not Found");
+            response.writeLine(socket, response.getStartLine());
+            response.writeLine(socket, "");
+            return;
+        }
+
+        response.setStartLine("HTTP/1.1 " + responseCode + " OK");
+        if(response.getBody()!= null) {
+            response.setHeader("Content-Length", Integer.toString(response.getBody().length()));
+        }
         response.setHeader("Content-Type", "text/plain");
+        response.setHeader("Connection", "close");
         response.write(socket);
     }
 
+    private void handleFileRequest(Socket socket, HttpMessage response, String requestPath) throws IOException {
+
+        try (InputStream inputStream = getClass().getResourceAsStream(requestPath)) {
+            if (inputStream == null) {
+                response.setCode("404");
+                writeResponse(socket, response);
+                return;
+            }
+
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            inputStream.transferTo(buffer);
+
+
+            String fileExtension = requestPath.split("\\.(?=[^\\.]+$)")[1];
+
+            String contentType;
+            switch (fileExtension) {
+                case "txt":
+                    contentType = "text/plain";
+                    break;
+                case "css":
+                    contentType = "text/css";
+                    break;
+                default:
+                    contentType = "text/html";
+                    break;
+            }
+
+            response.setCode("200");
+            response.setStartLine("HTTP/1.1 " + response.getCode() + " OK");
+            response.setHeader("Content-Length", String.valueOf(buffer.toByteArray().length));
+            response.setHeader("Connection", "close");
+            response.setHeader("Content-Type", contentType);
+            response.write(socket);
+
+            socket.getOutputStream().write(buffer.toByteArray());
+
+        }
+
+
+    }
+
+    private void handleGetMembers(Socket socket) throws SQLException, IOException {
+        StringBuilder body = new StringBuilder();
+        body.append("<ul>");
+        for (Member member : projectMemberDao.list()) {
+
+            body.append("<li><strong>Name:</strong> " + member.getFirstName() + " " + member.getLastName() + " - <strong>Email:</strong> " + member.getEmail() + "</li>");
+        }
+        body.append("</ul>");
+
+        HttpMessage response = new HttpMessage();
+        response.setBody(body.toString());
+        response.setCode("200");
+        writeResponse(socket, response);
+    }
+
+    private void handlePostRequest(Socket socket, HttpMessage response, HttpMessage request) throws IOException, SQLException {
+
+        request.readAndSetHeaders(socket);
+        int contentLength = Integer.parseInt(request.getHeader("Content-Length"));
+        String body = request.readBody(socket, contentLength);
+        request.setBody(body);
+
+
+        Map<String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
+        String memberFirstName = java.net.URLDecoder.decode(memberQueryMap.get("firstName"), StandardCharsets.ISO_8859_1.name());
+        String memberLastName = java.net.URLDecoder.decode(memberQueryMap.get("lastName"), StandardCharsets.ISO_8859_1.name());
+        String memberEmail = java.net.URLDecoder.decode(memberQueryMap.get("email"), StandardCharsets.ISO_8859_1.name());
+
+        Member member = new Member(memberFirstName, memberLastName, memberEmail);
+
+        projectMemberDao.insert(member);
+
+        body = "";
+        String responseS = "HTTP/1.1 204 No Content\r\n" +
+                "Connection: close\r\n" +
+                "Content-Length: " + body.length() + "\r\n" +
+                "\r\n" +
+                body;
+
+        socket.getOutputStream().write(responseS.getBytes());
+
+/*
+        response.setCode("200");
+        response.setStartLine("HTTP/1.1 " + response.getCode() + " Found");
+        response.setBody("Okay");
+        response.setHeader("Connection", "close");
+        response.setHeader("Content-Length", Integer.toString(response.getBody().length()));
+        response.write(socket);*/
+    }
+
     public static void main(String[] args) throws IOException {
-        HttpServer server = new HttpServer(8080);
+        Properties properties = new Properties();
+        try (FileReader fileReader = new FileReader("pgr203.properties")) {
+            properties.load(fileReader);
+        }
+
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+
+        dataSource.setUrl(properties.getProperty("dataSource.url"));
+        dataSource.setUser(properties.getProperty("dataSource.username"));
+        dataSource.setPassword(properties.getProperty("dataSource.password"));
+
+        HttpServer server = new HttpServer(8080, dataSource);
         server.start();
+        logger.info("Started on http://localhost:{}/index.html", 8080);
+        logger.info("Go to http://localhost:{}/addProjectMember.html to add project members", 8080);
+        
     }
 
 }

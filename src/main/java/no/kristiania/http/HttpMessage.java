@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class HttpMessage {
 
+
+
     private Map<String, String> headers = new HashMap<>();
     private String startLine;
     private String code;
@@ -25,6 +27,8 @@ public class HttpMessage {
     public void setHeader(String headerName, String headerValue) { headers.put(headerName, headerValue); }
 
     public String getHeader(String key) { return headers.get(key); }
+
+    public Map<String, String> getHeaderMap() { return headers; }
 
     public void setStartLine(String startLine) {
         this.startLine = startLine;

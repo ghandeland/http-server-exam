@@ -1,14 +1,18 @@
 package no.kristiania.http;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.flywaydb.core.Flyway;
+import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HttpServerTest {
@@ -86,8 +90,7 @@ public class HttpServerTest {
         HttpServer server = new HttpServer(10013);
         server.start();
 
-        File documentRoot = new File("target");
-        server.setDocumentRoot(documentRoot);
+        File documentRoot = new File("target/test-classes");
         String fileContent = "Test " + new Date();
         Files.writeString(new File(documentRoot, "test.txt").toPath(), fileContent);
 
@@ -106,7 +109,6 @@ public class HttpServerTest {
         HttpServer server = new HttpServer(10014);
         server.start();
 
-        server.setDocumentRoot(new File("target"));
         HttpClient client = new HttpClient("localhost", 10014, "/nonexistingFile.txt");
 
         HttpMessage response = client.executeRequest();
@@ -123,10 +125,10 @@ public class HttpServerTest {
         HttpServer server = new HttpServer(10015);
         server.start();
 
-        File documentRoot = new File("target");
-        server.setDocumentRoot(documentRoot);
+        File documentRoot = new File("target/test-classes");
 
-        Files.writeString(new File(documentRoot, "index.html").toPath(), "<html>Hello world</html>");
+
+        Files.writeString(new File(documentRoot, "addProjectMember.html").toPath(), "<html>Hello world</html>");
         Files.writeString(new File(documentRoot, "test.txt").toPath(), "Hello world");
 
         HttpClient client1 = new HttpClient("localhost", 10015, "/test.txt");
@@ -135,7 +137,7 @@ public class HttpServerTest {
 
         assertEquals("text/plain", response1.getHeader("Content-Type"));
 
-        HttpClient client2 = new HttpClient("localhost", 10015, "/index.html");
+        HttpClient client2 = new HttpClient("localhost", 10015, "/addProjectMember.html");
         HttpMessage response2 = client2.executeRequest();
         client2.closeSocket();
 
@@ -145,15 +147,28 @@ public class HttpServerTest {
     }
 
     @Test
-    void shouldPostHttpContent() throws IOException {
-        HttpServer server = new HttpServer(10016);
-        server.start();
-        HttpClient postRequest = new HttpClient("localhost", 10016, "/submit", "guestName=Someone&email=someone@example.com");
-        HttpMessage response = postRequest.executeRequest();
-        assertEquals("200", response.getCode());
+    void shouldPostHttpContent() throws IOException, SQLException {
+        JdbcDataSource dataSource = new JdbcDataSource();
 
-        //HttpClient client = new HttpClient("localhost", 10016, "/lastSubmission");
-        //assertEquals("Someone <someone@example.com>", client.getResponseBody());
+        dataSource.setUrl("jdbc:h2:mem:testdatabase;DB_CLOSE_DELAY=-1");
+        Flyway.configure().dataSource(dataSource).load().migrate();
+
+        HttpServer server = new HttpServer(10016, dataSource);
+        server.start();
+
+        HttpClient postRequest = new HttpClient("localhost", 10016, "/submit", "firstName=Someone&lastName=Somelastname&email=someone@example.com");
+
+        HttpMessage response = postRequest.executeRequest();
+        assertEquals("204", response.getCode());
+
+        ProjectMemberDao projectMemberDao = new ProjectMemberDao(dataSource);
+
+        List<String> listName = new ArrayList<>();
+        for(Member member : projectMemberDao.list()) {
+            listName.add(member.getFirstName()+member.getLastName());
+        }
+
+        assertThat(listName).contains("SomeoneSomelastname");
 
         postRequest.closeSocket();
         server.stop();
