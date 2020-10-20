@@ -8,4 +8,4 @@
 </ul>
 
 **Member table:**
-[memberuml.png](https://postimg.cc/V0QVqFTP)
+[![memberuml.png](https://i.postimg.cc/wM7YdfQM/memberuml.png)](https://postimg.cc/V0QVqFTP)
