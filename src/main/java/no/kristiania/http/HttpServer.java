@@ -1,5 +1,6 @@
 package no.kristiania.http;
 
+import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +124,6 @@ public class HttpServer {
         } else {
             response.setCode("200");
         }
-
         writeResponse(socket, response);
     }
 
@@ -158,7 +158,6 @@ public class HttpServer {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             inputStream.transferTo(buffer);
 
-
             String fileExtension = requestPath.split("\\.(?=[^\\.]+$)")[1];
 
             String contentType;
@@ -192,7 +191,6 @@ public class HttpServer {
         StringBuilder body = new StringBuilder();
         body.append("<ul>");
         for (Member member : projectMemberDao.list()) {
-
             body.append("<li><strong>Name:</strong> " + member.getFirstName() + " " + member.getLastName() + " - <strong>Email:</strong> " + member.getEmail() + "</li>");
         }
         body.append("</ul>");
@@ -229,13 +227,6 @@ public class HttpServer {
 
         socket.getOutputStream().write(responseS.getBytes());
 
-/*
-        response.setCode("200");
-        response.setStartLine("HTTP/1.1 " + response.getCode() + " Found");
-        response.setBody("Okay");
-        response.setHeader("Connection", "close");
-        response.setHeader("Content-Length", Integer.toString(response.getBody().length()));
-        response.write(socket);*/
     }
 
     public static void main(String[] args) throws IOException {
@@ -249,12 +240,11 @@ public class HttpServer {
         dataSource.setUrl(properties.getProperty("dataSource.url"));
         dataSource.setUser(properties.getProperty("dataSource.username"));
         dataSource.setPassword(properties.getProperty("dataSource.password"));
+        Flyway.configure().dataSource(dataSource).load().migrate();
 
         HttpServer server = new HttpServer(8080, dataSource);
         server.start();
         logger.info("Started on http://localhost:{}/index.html", 8080);
         logger.info("Go to http://localhost:{}/addProjectMember.html to add project members", 8080);
-        
     }
-
 }
