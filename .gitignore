@@ -3,3 +3,4 @@
 .idea/
 *.iml
 /*.properties
+/dependency-reduced-pom.xml
