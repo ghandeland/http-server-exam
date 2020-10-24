@@ -1,5 +1,6 @@
 package no.kristiania.http;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,7 +8,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HttpMessage {
+public class  HttpMessage {
 
 
 
@@ -22,7 +23,30 @@ public class HttpMessage {
 
     public String getCode() { return code; }
 
-    public void setCode(String code) { this.code = code; }
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setCodeAndStartLine(String code) {
+        this.code = code;
+        String startLine = "";
+        switch (code) {
+            case "200":
+                startLine = "HTTP/1.1 200 OK";
+                break;
+            case "404":
+                startLine = "HTTP/1.1 400 Not Found";
+                break;
+            case "204":
+                startLine = "HTTP/1.1 204 No Content";
+                break;
+            case "302":
+                startLine = "HTTP/1.1 302 Found";
+                break;
+        }
+
+        setStartLine(startLine);
+    }
 
     public void setHeader(String headerName, String headerValue) { headers.put(headerName, headerValue); }
 
@@ -52,6 +76,17 @@ public class HttpMessage {
         if(body != null) {
             socket.getOutputStream().write(getBody().getBytes());
         }
+    }
+
+    public void write(Socket socket, ByteArrayOutputStream buffer) throws IOException {
+        writeLine(socket, startLine);
+
+        for(Map.Entry<String, String> header : headers.entrySet()) {
+            writeLine(socket, header.getKey() + ": " + header.getValue());
+        }
+        writeLine(socket, "");
+
+        socket.getOutputStream().write(buffer.toByteArray());
     }
 
     public void writeWithFile(Socket socket, File targetFile) throws IOException {

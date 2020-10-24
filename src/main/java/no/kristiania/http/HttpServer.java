@@ -70,7 +70,8 @@ public class HttpServer {
         String[] requestLineParts = requestLine.split(" ");
 
         String requestMethod = requestLineParts[0];
-        String requestTarget = requestLineParts[1];
+
+        String requestTarget = requestLineParts.length > 1 ? requestLineParts[1] : "";;
 
         if(!requestTarget.equals("/favicon.ico")){
             logger.info("REQUEST LINE: {}", requestLine);
@@ -79,12 +80,25 @@ public class HttpServer {
         int questionPosition = requestTarget.indexOf('?');
         String requestPath = questionPosition != -1 ? requestTarget.substring(0, questionPosition) : requestTarget;
 
+        if (requestTarget.equals("") || requestTarget.equals("/")) {
+
+            response.setCodeAndStartLine("200");
+            response.setBody("Hello world");
+            response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
+            response.setHeader("Content-Type", "text/plain");
+            response.setHeader("Connection", "close");
+            response.write(socket);
+            return;
+        }
+
         if(requestPath.equals("/favicon.ico")) {
             handleFileRequest(socket, response, requestPath);
+            return;
         }
 
         if(requestPath.equals("/api/member")) {
             handleGetMembers(socket);
+            return;
         }
 
         if(requestMethod.equals("POST") || requestTarget.equals("/submit")) {
@@ -92,12 +106,7 @@ public class HttpServer {
             return;
         }
 
-        if (requestTarget.equals("") || requestTarget.equals("/")) {
-            response.setBody("Hello world");
-            response.setCode("200");
-            writeResponse(socket, response);
-            return;
-        }
+
 
         if (questionPosition != -1) {
             String queryStringLine = requestTarget.substring(questionPosition + 1);
@@ -124,25 +133,8 @@ public class HttpServer {
         } else {
             response.setCode("200");
         }
-        writeResponse(socket, response);
-    }
 
-    private void writeResponse(Socket socket, HttpMessage response) throws IOException {
-        String responseCode = response.getCode();
-
-        if(responseCode.charAt(0) == '4') {
-            response.setStartLine("HTTP/1.1 " + responseCode + " Not Found");
-            response.writeLine(socket, response.getStartLine());
-            response.writeLine(socket, "");
-            return;
-        }
-
-        response.setStartLine("HTTP/1.1 " + responseCode + " OK");
-        if(response.getBody()!= null) {
-            response.setHeader("Content-Length", Integer.toString(response.getBody().length()));
-        }
-        response.setHeader("Content-Type", "text/plain");
-        response.setHeader("Connection", "close");
+        System.out.println("Bottom of handleRequest()");
         response.write(socket);
     }
 
@@ -150,8 +142,14 @@ public class HttpServer {
 
         try (InputStream inputStream = getClass().getResourceAsStream(requestPath)) {
             if (inputStream == null) {
-                response.setCode("404");
-                writeResponse(socket, response);
+                String body = requestPath + " does not exist";
+
+                response.setCodeAndStartLine("404");
+                response.setBody(body);
+                response.setHeader("Content-Length", Integer.toString(body.length()));
+                response.setHeader("Content-Type", "text/plain");
+                response.setHeader("Connection", "close");
+                response.write(socket);
                 return;
             }
 
@@ -173,32 +171,32 @@ public class HttpServer {
                     break;
             }
 
-            response.setCode("200");
-            response.setStartLine("HTTP/1.1 " + response.getCode() + " OK");
+            response.setCodeAndStartLine("200");
             response.setHeader("Content-Length", String.valueOf(buffer.toByteArray().length));
             response.setHeader("Connection", "close");
             response.setHeader("Content-Type", contentType);
-            response.write(socket);
-
-            socket.getOutputStream().write(buffer.toByteArray());
-
+            response.write(socket, buffer);
         }
-
-
     }
 
     private void handleGetMembers(Socket socket) throws SQLException, IOException {
+
         StringBuilder body = new StringBuilder();
         body.append("<ul>");
+
         for (Member member : memberDao.list()) {
             body.append("<li><strong>Name:</strong> " + member.getFirstName() + " " + member.getLastName() + " - <strong>Email:</strong> " + member.getEmail() + "</li>");
         }
+
         body.append("</ul>");
 
         HttpMessage response = new HttpMessage();
         response.setBody(body.toString());
-        response.setCode("200");
-        writeResponse(socket, response);
+        response.setCodeAndStartLine("200");
+        response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
+        response.setHeader("Content-Type", "text/plain");
+        response.setHeader("Connection", "close");
+        response.write(socket);
     }
 
     private void handlePostRequest(Socket socket, HttpMessage response, HttpMessage request) throws IOException, SQLException {
@@ -218,15 +216,10 @@ public class HttpServer {
 
         memberDao.insert(member);
 
-        body = "";
-        String responseS = "HTTP/1.1 204 No Content\r\n" +
-                "Connection: close\r\n" +
-                "Content-Length: " + body.length() + "\r\n" +
-                "\r\n" +
-                body;
-
-        socket.getOutputStream().write(responseS.getBytes());
-
+        response.setCodeAndStartLine("204");
+        response.setHeader("Connection", "close");
+        response.setHeader("Content-length", "0");
+        response.write(socket);
     }
 
     public static void main(String[] args) throws IOException {
