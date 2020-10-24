@@ -74,11 +74,8 @@ public class HttpClient {
 
         response.setCode(responseLineParts[1]);
 
-        if(response.getCode().equals("404")) {
-            return response;
-        }
-
         response.readAndSetHeaders(socket);
+
         if(response.getHeader("Content-Length") != null) {
             int contentLength = Integer.parseInt(response.getHeader("Content-Length"));
             response.setBody(response.readBody(socket, contentLength));

@@ -35,13 +35,16 @@ public class  HttpMessage {
                 startLine = "HTTP/1.1 200 OK";
                 break;
             case "404":
-                startLine = "HTTP/1.1 400 Not Found";
+                startLine = "HTTP/1.1 404 Not Found";
                 break;
             case "204":
                 startLine = "HTTP/1.1 204 No Content";
                 break;
             case "302":
                 startLine = "HTTP/1.1 302 Found";
+                break;
+            case "401":
+                startLine = "HTTP/1.1 401 Unauthorized";
                 break;
         }
 
@@ -59,13 +62,6 @@ public class  HttpMessage {
     }
 
     public String getStartLine() { return startLine; }
-
-    public void printAllHeadersAndBody() {
-        for(Map.Entry<String, String> header : headers.entrySet()) {
-            System.out.println("Key: " + header.getKey() + " Value: " + header.getValue());
-        }
-        System.out.println("Body:\r" + getBody());
-    }
 
     public void write(Socket socket) throws IOException {
         writeLine(socket, startLine);

@@ -1,5 +1,7 @@
 package no.kristiania.http;
 
+import no.kristiania.db.Member;
+import no.kristiania.db.MemberDao;
 import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
@@ -106,16 +108,19 @@ public class HttpServer {
             return;
         }
 
-
-
         if (questionPosition != -1) {
             String queryStringLine = requestTarget.substring(questionPosition + 1);
             QueryString.putQueryParametersIntoHttpMessageHeaders(request, queryStringLine);
 
-        } else if (!requestTarget.contains("echo")) {
-            handleFileRequest(socket, response, requestTarget);
+            handleQueryRequest(socket, response, request);
             return;
+
         }
+
+        handleFileRequest(socket, response, requestTarget);
+    }
+
+    private void handleQueryRequest(Socket socket, HttpMessage response, HttpMessage request) throws IOException {
 
         if (request.getHeader("body") != null) {
             String requestBody = request.getHeader("body");
@@ -129,13 +134,19 @@ public class HttpServer {
         }
 
         if (request.getHeader("status") != null) {
-            response.setCode(request.getHeader("status"));
+            response.setCodeAndStartLine(request.getHeader("status"));
         } else {
-            response.setCode("200");
+            response.setCodeAndStartLine("200");
         }
 
-        System.out.println("Bottom of handleRequest()");
+        response.setHeader("Connection", "close");
+        response.setHeader("Content-type", "text/plain");
+        if(response.getBody() != null) {
+            response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
+        }
         response.write(socket);
+
+
     }
 
     private void handleFileRequest(Socket socket, HttpMessage response, String requestPath) throws IOException {
@@ -205,7 +216,6 @@ public class HttpServer {
         int contentLength = Integer.parseInt(request.getHeader("Content-Length"));
         String body = request.readBody(socket, contentLength);
         request.setBody(body);
-
 
         Map<String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
         String memberFirstName = java.net.URLDecoder.decode(memberQueryMap.get("firstName"), StandardCharsets.ISO_8859_1.name());
