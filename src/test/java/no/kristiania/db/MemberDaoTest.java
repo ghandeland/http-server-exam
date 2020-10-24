@@ -1,5 +1,7 @@
-package no.kristiania.http;
+package no.kristiania.db;
 
+import no.kristiania.db.Member;
+import no.kristiania.db.MemberDao;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberDaoTest {
 
     @Test
-    void shouldListSavedProducts() throws SQLException {
+    void shouldListSavedMember() throws SQLException {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setUrl("jdbc:h2:mem:testdatabase;DB_CLOSE_DELAY=-1");
         Flyway.configure().dataSource(dataSource).load().migrate();

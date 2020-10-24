@@ -1,5 +1,7 @@
 package no.kristiania.http;
 
+import no.kristiania.db.Member;
+import no.kristiania.db.MemberDao;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
@@ -31,9 +33,9 @@ public class HttpServerTest {
     void shouldReturnSuccessfulErrorCode() throws IOException {
         HttpServer server = new HttpServer(10001);
         server.start();
-        HttpClient client = new HttpClient("localhost", 10001, "/echo");
+        HttpClient client = new HttpClient("localhost", 10001, "/doesnotexist");
         HttpMessage response = client.executeRequest();
-        assertEquals("200", response.getCode());
+        assertEquals("404", response.getCode());
         client.closeSocket();
         server.stop();
     }

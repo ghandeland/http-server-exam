@@ -1,4 +1,4 @@
-package no.kristiania.http;
+package no.kristiania.db;
 
 import javax.sql.DataSource;
 import java.sql.*;

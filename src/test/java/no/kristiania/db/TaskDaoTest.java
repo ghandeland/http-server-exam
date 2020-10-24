@@ -1,7 +1,7 @@
-package no.kristiania.http;
+package no.kristiania.db;
 
-import no.kristiania.http.Task;
-import no.kristiania.http.TaskDao;
+import no.kristiania.db.Task;
+import no.kristiania.db.TaskDao;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;

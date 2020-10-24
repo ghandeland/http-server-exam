@@ -1,4 +1,4 @@
-package no.kristiania.http;
+package no.kristiania.db;
 
 public class Member {
     private int id;
@@ -53,13 +53,4 @@ public class Member {
     }
 
     private String email;
-
-    public void printAllInfo(){
-        String firstName = this.getFirstName();
-        String lastName = this.getLastName();
-        String email = this.getEmail();
-
-        System.out.println(firstName + lastName + email);
-    }
-
 }

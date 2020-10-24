@@ -1,4 +1,4 @@
-package no.kristiania.http;
+package no.kristiania.db;
 
 public class Task {
     int id;
