@@ -161,10 +161,10 @@ public class HttpServerTest {
         HttpMessage response = postRequest.executeRequest();
         assertEquals("204", response.getCode());
 
-        ProjectMemberDao projectMemberDao = new ProjectMemberDao(dataSource);
+        MemberDao memberDao = new MemberDao(dataSource);
 
         List<String> listName = new ArrayList<>();
-        for(Member member : projectMemberDao.list()) {
+        for(Member member : memberDao.list()) {
             listName.add(member.getFirstName()+member.getLastName());
         }
 

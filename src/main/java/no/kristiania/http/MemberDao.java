@@ -5,12 +5,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectMemberDao {
+public class MemberDao {
 
     private DataSource dataSource;
     private List<Member> members = new ArrayList<>();
 
-    public ProjectMemberDao(DataSource dataSource) {
+    public MemberDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

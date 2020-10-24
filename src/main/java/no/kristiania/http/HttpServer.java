@@ -20,12 +20,12 @@ public class HttpServer {
 
     private final ServerSocket serverSocket;
     private ServerThread serverThread;
-    private ProjectMemberDao projectMemberDao;
+    private MemberDao memberDao;
 
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
-        this.projectMemberDao = new ProjectMemberDao(dataSource);
+        this.memberDao = new MemberDao(dataSource);
         serverThread = new ServerThread();
     }
 
@@ -190,7 +190,7 @@ public class HttpServer {
     private void handleGetMembers(Socket socket) throws SQLException, IOException {
         StringBuilder body = new StringBuilder();
         body.append("<ul>");
-        for (Member member : projectMemberDao.list()) {
+        for (Member member : memberDao.list()) {
             body.append("<li><strong>Name:</strong> " + member.getFirstName() + " " + member.getLastName() + " - <strong>Email:</strong> " + member.getEmail() + "</li>");
         }
         body.append("</ul>");
@@ -216,7 +216,7 @@ public class HttpServer {
 
         Member member = new Member(memberFirstName, memberLastName, memberEmail);
 
-        projectMemberDao.insert(member);
+        memberDao.insert(member);
 
         body = "";
         String responseS = "HTTP/1.1 204 No Content\r\n" +
@@ -240,6 +240,7 @@ public class HttpServer {
         dataSource.setUrl(properties.getProperty("dataSource.url"));
         dataSource.setUser(properties.getProperty("dataSource.username"));
         dataSource.setPassword(properties.getProperty("dataSource.password"));
+
         Flyway.configure().dataSource(dataSource).load().migrate();
 
         HttpServer server = new HttpServer(8080, dataSource);
