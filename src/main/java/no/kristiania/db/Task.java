@@ -1,9 +1,12 @@
 package no.kristiania.db;
 
 public class Task {
-    int id;
+    long id;
     String name;
     String description;
+
+    public Task() {
+    }
 
     public Task(int id, String name, String description) {
         this.id = id;
@@ -11,18 +14,16 @@ public class Task {
         this.description = description;
     }
 
-    enum status {OPEN, IN_PROGRESS, FINISHED, CANCELED}
-
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -41,4 +42,6 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    enum status {OPEN, IN_PROGRESS, FINISHED, CANCELED}
 }

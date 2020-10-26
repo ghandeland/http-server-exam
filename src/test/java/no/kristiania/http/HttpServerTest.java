@@ -24,7 +24,7 @@ public class HttpServerTest {
         HttpServer server = new HttpServer(10000);
         server.start();
         int port = server.getActualPort();
-        HttpClient client = new HttpClient("localhost", 10000, "");
+        HttpClient client = new HttpClient("localhost", 10000, "/");
         HttpMessage response = client.executeRequest();
         assertEquals("200", response.getCode());
     }
@@ -165,9 +165,9 @@ public class HttpServerTest {
 
         MemberDao memberDao = new MemberDao(dataSource);
 
-        List<String> listName = new ArrayList<>();
-        for(Member member : memberDao.list()) {
-            listName.add(member.getFirstName()+member.getLastName());
+        List <String> listName = new ArrayList <>();
+        for(Member member : memberDao.list()){
+            listName.add(member.getFirstName() + member.getLastName());
         }
 
         assertThat(listName).contains("SomeoneSomelastname");

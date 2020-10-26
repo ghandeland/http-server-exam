@@ -2,76 +2,55 @@ package no.kristiania.db;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
-public class TaskDao {
-    private DataSource dataSource;
-    private List<Task> projects = new ArrayList<>();
+public class TaskDao extends AbstractDao <Task> {
+
     public TaskDao(DataSource dataSource) {
-        this.dataSource = dataSource;
+        super(dataSource);
     }
 
     public void insert(Task task) throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("insert into task (name, description) values(?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "insert into task (name, description) values(?, ?)",
+                    Statement.RETURN_GENERATED_KEYS)){
 
                 statement.setString(1, task.getName());
                 statement.setString(2, task.getDescription());
 
                 statement.execute();
 
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if(generatedKeys.next()) {
-                        task.setId(generatedKeys.getInt(1));
+                try(ResultSet generatedKeys = statement.getGeneratedKeys()){
+                    if(generatedKeys.next()){
+                        task.setId(generatedKeys.getLong(1));
                     }
                 }
             }
         }
     }
 
-    public List<Task> list() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("select * from task")) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while(resultSet.next()) {
-
-
-                        List<Task> projects = new ArrayList<>();
-
-                        while(resultSet.next()) {
-
-                            String name = resultSet.getString("name");
-                            String description = resultSet.getString("description");
-
-                            projects.add(new Task(name, description));
-                        }
-
-                        return projects;
-                    }
-                }
-            }
-        }
-        return null;
+    public List <Task> list() throws SQLException {
+        return list("select * from task");
     }
 
-    public Task retrieve(int id) throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("select * from task where id = ?")) {
-
-                statement.setInt(1, id);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if(resultSet.next()) {
-
-                        String name = resultSet.getString("name");
-                        String department = resultSet.getString("description");
-
-                        return new Task(id, name, department);
-                    }
-                }
-            }
+    public Task retrieve(long id) throws SQLException {
+        Task task = retrieve(id, "select * from task where id = ?");
+        if(task == null){
+            System.out.println("Task not found");
+            return null;
         }
-        System.out.println("Task not found");
-        return null;
+        return task;
+    }
+
+    @Override
+    protected Task mapRow(ResultSet rs) throws SQLException {
+        Task task = new Task();
+
+        task.setId(rs.getLong("id"));
+        task.setName(rs.getString("name"));
+        task.setDescription(rs.getString("description"));
+
+        return task;
     }
 }

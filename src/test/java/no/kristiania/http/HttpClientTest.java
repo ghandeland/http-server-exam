@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HttpClientTest {
     @Test
@@ -19,7 +19,7 @@ class HttpClientTest {
     void shouldReturnUnsuccessfulStatusCode() throws IOException {
         HttpClient client = makeEchoRequest("/echo?status=404");
 
-        assertEquals("404",  client.executeRequest().getCode());
+        assertEquals("404", client.executeRequest().getCode());
     }
 
     @Test

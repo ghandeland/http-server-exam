@@ -2,8 +2,6 @@ package no.kristiania.http;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HttpClient {
     private Socket socket;
@@ -27,27 +25,27 @@ public class HttpClient {
         this.requestBody = requestBody;
     }
 
-    public void closeSocket() throws IOException { socket.close(); }
+    public void closeSocket() throws IOException {
+        socket.close();
+    }
 
 
     public HttpMessage executeRequest() throws IOException {
         HttpMessage request = new HttpMessage();
 
-        if(requestBody != null) {
+        if(requestBody != null){
             request.setStartLine("POST " + requestTarget + " HTTP/1.1");
             request.setBody(requestBody);
             request.setHeader("Host", host);
             request.setHeader("Content-Length", "" + requestBody.length());
             request.write(socket);
-            HttpMessage response = handleResponse();
-            return response;
+            return handleResponse();
         }
 
         request.setStartLine("GET " + requestTarget + " HTTP/1.1");
         request.setHeader("Host", host);
         request.write(socket);
-        HttpMessage response = handleResponse();
-        return response;
+        return handleResponse();
     }
 
     public HttpMessage executePostRequest() throws IOException {
@@ -60,8 +58,7 @@ public class HttpClient {
 
         request.write(socket);
 
-        HttpMessage response = handleResponse();
-        return response;
+        return handleResponse();
     }
 
     public HttpMessage handleResponse() throws IOException {
@@ -76,7 +73,7 @@ public class HttpClient {
 
         response.readAndSetHeaders(socket);
 
-        if(response.getHeader("Content-Length") != null) {
+        if(response.getHeader("Content-Length") != null){
             int contentLength = Integer.parseInt(response.getHeader("Content-Length"));
             response.setBody(response.readBody(socket, contentLength));
         }

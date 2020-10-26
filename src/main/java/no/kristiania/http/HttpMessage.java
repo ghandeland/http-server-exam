@@ -5,23 +5,43 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class  HttpMessage {
+public class HttpMessage {
 
 
-
-    private Map<String, String> headers = new HashMap<>();
+    private final Map <String, String> headers = new HashMap <>();
     private String startLine;
     private String code;
     private String body;
 
-    public String getBody() { return body; }
+    public static String readLine(Socket socket) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int c;
 
-    public void setBody(String body) { this.body = body; }
+        while((c = socket.getInputStream().read()) != -1){
+            if(c == '\r'){
+                socket.getInputStream().read();
+                break;
+            }
+            sb.append((char) c);
+        }
+        return URLDecoder.decode((sb.toString()), "UTF8");
+    }
 
-    public String getCode() { return code; }
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getCode() {
+        return code;
+    }
 
     public void setCode(String code) {
         this.code = code;
@@ -30,7 +50,7 @@ public class  HttpMessage {
     public void setCodeAndStartLine(String code) {
         this.code = code;
         String startLine = "";
-        switch (code) {
+        switch(code){
             case "200":
                 startLine = "HTTP/1.1 200 OK";
                 break;
@@ -51,25 +71,33 @@ public class  HttpMessage {
         setStartLine(startLine);
     }
 
-    public void setHeader(String headerName, String headerValue) { headers.put(headerName, headerValue); }
+    public void setHeader(String headerName, String headerValue) {
+        headers.put(headerName, headerValue);
+    }
 
-    public String getHeader(String key) { return headers.get(key); }
+    public String getHeader(String key) {
+        return headers.get(key);
+    }
 
-    public Map<String, String> getHeaderMap() { return headers; }
+    public Map <String, String> getHeaderMap() {
+        return headers;
+    }
+
+    public String getStartLine() {
+        return startLine;
+    }
 
     public void setStartLine(String startLine) {
         this.startLine = startLine;
     }
 
-    public String getStartLine() { return startLine; }
-
     public void write(Socket socket) throws IOException {
         writeLine(socket, startLine);
-        for(Map.Entry<String, String> header : headers.entrySet()) {
+        for(Map.Entry <String, String> header : headers.entrySet()){
             writeLine(socket, header.getKey() + ": " + header.getValue());
         }
         writeLine(socket, "");
-        if(body != null) {
+        if(body != null){
             socket.getOutputStream().write(getBody().getBytes());
         }
     }
@@ -77,7 +105,7 @@ public class  HttpMessage {
     public void write(Socket socket, ByteArrayOutputStream buffer) throws IOException {
         writeLine(socket, startLine);
 
-        for(Map.Entry<String, String> header : headers.entrySet()) {
+        for(Map.Entry <String, String> header : headers.entrySet()){
             writeLine(socket, header.getKey() + ": " + header.getValue());
         }
         writeLine(socket, "");
@@ -87,12 +115,12 @@ public class  HttpMessage {
 
     public void writeWithFile(Socket socket, File targetFile) throws IOException {
         writeLine(socket, startLine);
-        for (Map.Entry<String, String> header : headers.entrySet()) {
+        for(Map.Entry <String, String> header : headers.entrySet()){
             writeLine(socket, header.getKey() + ": " + header.getValue());
         }
         writeLine(socket, "");
 
-        try (FileInputStream inputStream = new FileInputStream(targetFile)) {
+        try(FileInputStream inputStream = new FileInputStream(targetFile)){
             inputStream.transferTo(socket.getOutputStream());
         }
     }
@@ -103,20 +131,6 @@ public class  HttpMessage {
 
     public String getRequestTarget() {
         return startLine.split(" ")[1];
-    }
-
-    public static String readLine(Socket socket) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int c;
-
-        while((c = socket.getInputStream().read()) != -1) {
-            if(c == '\r') {
-                socket.getInputStream().read();
-                break;
-            }
-            sb.append((char) c);
-        }
-        return sb.toString();
     }
 
     public void readAndSetHeaders(Socket socket) throws IOException {
@@ -131,10 +145,10 @@ public class  HttpMessage {
 
     public String readBody(Socket socket, int contentLength) throws IOException {
         StringBuilder body = new StringBuilder();
-        for (int i = 0; i < contentLength; i++) {
+        for(int i = 0 ; i < contentLength ; i++){
             body.append((char) socket.getInputStream().read());
         }
 
-        return body.toString();
+        return URLDecoder.decode((body.toString()), "UTF8");
     }
 }

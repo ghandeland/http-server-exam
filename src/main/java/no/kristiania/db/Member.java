@@ -1,9 +1,10 @@
 package no.kristiania.db;
 
 public class Member {
-    private int id;
+    private long id;
     private String firstName;
     private String lastName;
+    private String email;
 
     public Member(String firstName, String lastName, String email) {
         this.firstName = firstName;
@@ -18,13 +19,14 @@ public class Member {
         this.email = email;
     }
 
-    public Member() { }
+    public Member() {
+    }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -51,6 +53,4 @@ public class Member {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    private String email;
 }

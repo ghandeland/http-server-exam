@@ -1,9 +1,8 @@
 package no.kristiania.db;
 
-import no.kristiania.db.Task;
-import no.kristiania.db.TaskDao;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -14,13 +13,19 @@ import java.util.Random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TaskDaoTest {
-    @Test
-    void shouldRetrieveSavedProject() throws SQLException {
+    private TaskDao taskDao;
+
+    @BeforeEach
+    void setup() {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setUrl("jdbc:h2:mem:testdatabase;DB_CLOSE_DELAY=-1");
         Flyway.configure().dataSource(dataSource).load().migrate();
+        taskDao = new TaskDao(dataSource);
+    }
 
-        TaskDao taskDao = new TaskDao(dataSource);
+
+    @Test
+    void shouldRetrieveSavedProject() throws SQLException {
 
         Task taskSample = sampleTask();
         taskDao.insert(taskSample);
@@ -34,31 +39,25 @@ public class TaskDaoTest {
 
     @Test
     void ShouldRetrieveSingleProject() throws SQLException {
-        JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setUrl("jdbc:h2:mem:testdatabase;DB_CLOSE_DELAY=-1");
-        Flyway.configure().dataSource(dataSource).load().migrate();
-
-        TaskDao taskDao = new TaskDao(dataSource);
 
         Task sampleTask1 = sampleTask();
         Task sampleTask2 = sampleTask();
         Task sampleTask3 = sampleTask();
 
-        List<Task> taskList = new ArrayList<>();
+        List <Task> taskList = new ArrayList <>();
         taskList.add(sampleTask1);
         taskList.add(sampleTask2);
         taskList.add(sampleTask3);
 
-        for(Task t : taskList) {
+        for(Task t : taskList){
             taskDao.insert(t);
         }
 
-        List<Task> retrievedTaskList = taskDao.list();
-
-        for (int i = 0; i < 3; i++) {
-            assertThat(taskList.get(i)).isNotEqualTo(retrievedTaskList.get(i));
-            assertThat(taskList.get(i).getName()).isEqualTo(retrievedTaskList.get(i).getName());
-            assertThat(taskList.get(i).getDescription()).isEqualTo(retrievedTaskList.get(i).getDescription());
+        for(int i = 0 ; i < 3 ; i++){
+            assertThat(taskList.get(i)).hasNoNullFieldsOrProperties();
+            assertThat(taskList.get(i))
+                    .usingRecursiveComparison()
+                    .isEqualTo(taskDao.retrieve(taskList.get(i).getId()));
         }
     }
 

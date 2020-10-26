@@ -1,7 +1,5 @@
 package no.kristiania.db;
 
-import no.kristiania.db.Member;
-import no.kristiania.db.MemberDao;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
@@ -26,8 +24,8 @@ public class MemberDaoTest {
         Member member = sampleMember();
         memberDao.insert(member);
 
-        List<String> nameList = new ArrayList();
-        for(Member m : memberDao.list()) {
+        List <String> nameList = new ArrayList();
+        for(Member m : memberDao.list()){
             nameList.add(m.getFirstName());
         }
 

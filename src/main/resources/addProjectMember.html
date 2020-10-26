@@ -1,15 +1,21 @@
-<html>
-<title>Add member</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add member</title>
+    <!--<link rel="stylesheet" href="style.css">-->
+</head>
 <body>
-<form method="post" action="/api/addNewMember">
+<form action="/api/addNewMember" method="post">
     <h1>Add project member:</h1>
-    <p>First Name: <input name="firstName"></p>
-    <p>Last Name: <input name="lastName"></p>
-    <p>Email: <input type="email" name="email"></p>
-    <p><button>Submit</button></p>
+    <p><label>First Name: <input name="firstName"/></label></p>
+    <p><label>Last Name: <input name="lastName"/></label></p>
+    <p><label>Email: <input name="email" type="email"/></label></p>
+    <p>
+        <button>Submit</button>
+    </p>
     <br>
     <a href="http://localhost:8080/index.html">See all members</a>
 </form>
-
 </body>
 </html>
