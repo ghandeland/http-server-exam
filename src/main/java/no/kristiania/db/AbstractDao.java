@@ -1,20 +1,30 @@
 package no.kristiania.db;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractDao<T> {
+public abstract class AbstractDao<T extends SetId> {
     protected final DataSource dataSource;
 
     public AbstractDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    protected void insert(T t, String sql) throws SQLException {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement(sql,
+                    Statement.RETURN_GENERATED_KEYS)){
+                setDataOnStatement(statement, t);
+                statement.executeUpdate();
+                try(ResultSet generatedKeys = statement.getGeneratedKeys()){
+                    generatedKeys.next();
+                    t.setId(generatedKeys.getLong("id"));
+                }
+            }
+        }
+    }
 
     public List <T> list(String sql) throws SQLException {
         try(Connection connection = dataSource.getConnection()){
@@ -30,7 +40,6 @@ public abstract class AbstractDao<T> {
         }
     }
 
-
     protected T retrieve(Long id, String sql) throws SQLException {
         try(Connection connection = dataSource.getConnection()){
             try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -45,6 +54,8 @@ public abstract class AbstractDao<T> {
             }
         }
     }
+
+    protected abstract void setDataOnStatement(PreparedStatement statement, T t) throws SQLException;
 
     protected abstract T mapRow(ResultSet rs) throws SQLException;
 }

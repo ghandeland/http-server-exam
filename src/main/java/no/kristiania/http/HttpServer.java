@@ -77,6 +77,7 @@ public class HttpServer {
         HttpMessage request = new HttpMessage();
 
         String requestLine = HttpMessage.readLine(socket);
+        if(requestLine == null)return;
 
         String[] requestLineParts = requestLine.split(" ");
 
@@ -91,13 +92,8 @@ public class HttpServer {
         int questionPosition = requestTarget.indexOf('?');
         String requestPath = questionPosition != -1 ? requestTarget.substring(0, questionPosition) : requestTarget;
 
-        if(requestTarget.equals("/")){
+        if(requestTarget.equals("/")||requestTarget.equals("")){
             requestTarget = "/index.html";
-        }
-
-        if(requestPath.equals("/favicon.ico")){
-            handleFileRequest(socket, response, requestPath);
-            return;
         }
 
         if(requestPath.equals("/api/member")){
@@ -116,7 +112,6 @@ public class HttpServer {
 
             handleQueryRequest(socket, response, request);
             return;
-
         }
 
         handleFileRequest(socket, response, requestTarget);
@@ -125,8 +120,7 @@ public class HttpServer {
     private void handleQueryRequest(Socket socket, HttpMessage response, HttpMessage request) throws IOException {
 
         if(request.getHeader("body") != null){
-            String requestBody = request.getHeader("body");
-            response.setBody(requestBody);
+            response.setBody(request.getHeader("body"));
         }else{
             response.setBody("Hello World");
         }

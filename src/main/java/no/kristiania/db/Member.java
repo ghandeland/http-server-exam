@@ -1,6 +1,6 @@
 package no.kristiania.db;
 
-public class Member {
+public class Member extends SetId {
     private long id;
     private String firstName;
     private String lastName;
@@ -26,6 +26,7 @@ public class Member {
         return id;
     }
 
+    @Override
     public void setId(long id) {
         this.id = id;
     }

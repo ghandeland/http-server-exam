@@ -1,6 +1,6 @@
 package no.kristiania.db;
 
-public class Task {
+public class Task extends SetId {
     long id;
     String name;
     String description;
@@ -23,6 +23,7 @@ public class Task {
         return id;
     }
 
+    @Override
     public void setId(long id) {
         this.id = id;
     }

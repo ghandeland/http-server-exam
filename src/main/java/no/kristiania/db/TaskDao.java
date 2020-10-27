@@ -1,7 +1,9 @@
 package no.kristiania.db;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class TaskDao extends AbstractDao <Task> {
@@ -11,23 +13,7 @@ public class TaskDao extends AbstractDao <Task> {
     }
 
     public void insert(Task task) throws SQLException {
-        try(Connection connection = dataSource.getConnection()){
-            try(PreparedStatement statement = connection.prepareStatement(
-                    "insert into task (name, description) values(?, ?)",
-                    Statement.RETURN_GENERATED_KEYS)){
-
-                statement.setString(1, task.getName());
-                statement.setString(2, task.getDescription());
-
-                statement.execute();
-
-                try(ResultSet generatedKeys = statement.getGeneratedKeys()){
-                    if(generatedKeys.next()){
-                        task.setId(generatedKeys.getLong(1));
-                    }
-                }
-            }
-        }
+        insert(task, "insert into task (name, description) values(?, ?)");
     }
 
     public List <Task> list() throws SQLException {
@@ -41,6 +27,12 @@ public class TaskDao extends AbstractDao <Task> {
             return null;
         }
         return task;
+    }
+
+    @Override
+    protected void setDataOnStatement(PreparedStatement statement, Task task) throws SQLException {
+        statement.setString(1, task.getName());
+        statement.setString(2, task.getDescription());
     }
 
     @Override
