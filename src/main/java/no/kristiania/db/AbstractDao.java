@@ -18,6 +18,7 @@ public abstract class AbstractDao<T extends SetId> {
                     Statement.RETURN_GENERATED_KEYS)){
                 setDataOnStatement(statement, t);
                 statement.executeUpdate();
+
                 try(ResultSet generatedKeys = statement.getGeneratedKeys()){
                     generatedKeys.next();
                     t.setId(generatedKeys.getLong("id"));

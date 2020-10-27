@@ -11,7 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import static no.kristiania.db.MemberDaoTest.sampleMember;
-import static no.kristiania.db.TaskDaoTest.sampleTask;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TaskMemberDaoTest {
@@ -35,7 +35,7 @@ public class TaskMemberDaoTest {
         MemberDao memberDao = new MemberDao(dataSource);
         TaskMemberDao taskMemberDao = new TaskMemberDao(dataSource);
 
-        Task task1 = sampleTask();
+        Task task1 = TaskDaoTest.sampleTask();
         taskDao.insert(task1);
 
 
@@ -61,8 +61,8 @@ public class TaskMemberDaoTest {
         MemberDao memberDao = new MemberDao(dataSource);
         TaskMemberDao taskMemberDao = new TaskMemberDao(dataSource);
 
-        Task task1 = sampleTask();
-        Task task2 = sampleTask();
+        Task task1 = TaskDaoTest.sampleTask();
+        Task task2 = TaskDaoTest.sampleTask();
 
         taskDao.insert(task1);
         taskDao.insert(task2);
