@@ -40,6 +40,7 @@ public class TaskDaoTest {
     @Test
     void ShouldRetrieveSingleProject() throws SQLException {
 
+
         Task sampleTask1 = sampleTask();
         Task sampleTask2 = sampleTask();
         Task sampleTask3 = sampleTask();
@@ -61,18 +62,20 @@ public class TaskDaoTest {
         }
     }
 
-    private Task sampleTask() {
+
+
+    public static Task sampleTask() {
         return new Task(sampleTaskName(), sampleTaskDescription());
 
     }
 
-    private String sampleTaskName() {
+    public static String sampleTaskName() {
         String[] options = {"Build final feature", "Clean up coode", "Market software", "Have meeting"};
         Random random = new Random();
         return options[random.nextInt(options.length)];
     }
 
-    private String sampleTaskDescription() {
+    public static String sampleTaskDescription() {
         String[] options = {"Needs to be done by monday", "Very important", "Takes place in the meeting room", "Rapport to the CTO by monday"};
         Random random = new Random();
         return options[random.nextInt(options.length)];

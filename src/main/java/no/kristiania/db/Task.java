@@ -1,12 +1,14 @@
 package no.kristiania.db;
 
 public class Task implements SetId {
+    public enum TaskStatus {OPEN, IN_PROGRESS, FINISHED, CANCELED};
+
     long id;
     String name;
     String description;
+    TaskStatus status;
 
-    public Task() {
-    }
+    public Task() {}
 
     public Task(int id, String name, String description) {
         this.id = id;
@@ -17,6 +19,22 @@ public class Task implements SetId {
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
+        this.status = TaskStatus.OPEN;
+    }
+
+    public Task(String taskName, String taskDescription, String taskStatus) {
+
+        this.name = taskName;
+        this.description = taskDescription;
+        this.status = status.valueOf(taskStatus);
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = TaskStatus.valueOf(status);
     }
 
     public long getId() {
@@ -43,6 +61,4 @@ public class Task implements SetId {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    enum status {OPEN, IN_PROGRESS, FINISHED, CANCELED}
 }

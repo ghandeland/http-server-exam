@@ -158,7 +158,7 @@ public class HttpServerTest {
         HttpServer server = new HttpServer(10016, dataSource);
         server.start();
 
-        HttpClient postRequest = new HttpClient("localhost", 10016, "/submit", "firstName=Someone&lastName=Somelastname&email=someone@example.com");
+        HttpClient postRequest = new HttpClient("localhost", 10016, "/api/addNewMember", "firstName=Someone&lastName=Somelastname&email=someone@example.com");
 
         HttpMessage response = postRequest.executeRequest();
         assertEquals("204", response.getCode());

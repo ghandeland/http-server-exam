@@ -13,7 +13,7 @@ public class TaskDao extends AbstractDao <Task> {
     }
 
     public void insert(Task task) throws SQLException {
-        insert(task, "insert into task (name, description) values(?, ?)");
+        insert(task, "insert into task (name, description, status) values(?, ?, ?)");
     }
 
     public List <Task> list() throws SQLException {
@@ -33,6 +33,7 @@ public class TaskDao extends AbstractDao <Task> {
     protected void setDataOnStatement(PreparedStatement statement, Task task) throws SQLException {
         statement.setString(1, task.getName());
         statement.setString(2, task.getDescription());
+        statement.setString(3, task.getStatus().toString());
     }
 
     @Override
@@ -42,6 +43,7 @@ public class TaskDao extends AbstractDao <Task> {
         task.setId(rs.getLong("id"));
         task.setName(rs.getString("name"));
         task.setDescription(rs.getString("description"));
+        task.setStatus(rs.getString("status"));
 
         return task;
     }

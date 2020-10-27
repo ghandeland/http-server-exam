@@ -15,7 +15,6 @@ public class HttpClient {
         this.host = hostName;
         this.requestTarget = requestTarget;
 
-        //executeRequest();
     }
 
     public HttpClient(String hostName, int port, String requestTarget, String requestBody) throws IOException {

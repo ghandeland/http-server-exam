@@ -51,23 +51,23 @@ public class MemberDaoTest {
     }
 
 
-    private Member sampleMember() {
+    public static Member sampleMember() {
         return new Member(sampleFirstName(), sampleLastName(), sampleEmail());
     }
 
-    private String sampleFirstName() {
+    public static String sampleFirstName() {
         String[] options = {"John", "Peter", "Will", "Johnny", "Karoline"};
         Random random = new Random();
         return options[random.nextInt(options.length)];
     }
 
-    private String sampleLastName() {
+    public static String sampleLastName() {
         String[] options = {"Peterson", "Johnson", "Hansen", "Mohammed"};
         Random random = new Random();
         return options[random.nextInt(options.length)];
     }
 
-    private String sampleEmail() {
+    public static String sampleEmail() {
         String[] options = {"g123@example.com", "9999@covid.com", "1337@pamail.com", "testmail@post.no"};
         Random random = new Random();
         return options[random.nextInt(options.length)];
