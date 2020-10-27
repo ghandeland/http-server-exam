@@ -1,6 +1,6 @@
 package no.kristiania.db;
 
-public class Task extends SetId {
+public class Task implements SetId {
     long id;
     String name;
     String description;

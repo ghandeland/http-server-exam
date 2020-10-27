@@ -1,5 +1,5 @@
 package no.kristiania.db;
 
-public abstract class SetId {
-    public abstract void setId(long id);
+public interface SetId {
+    void setId(long id);
 }

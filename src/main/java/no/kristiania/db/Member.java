@@ -1,6 +1,6 @@
 package no.kristiania.db;
 
-public class Member extends SetId {
+public class Member implements SetId {
     private long id;
     private String firstName;
     private String lastName;
