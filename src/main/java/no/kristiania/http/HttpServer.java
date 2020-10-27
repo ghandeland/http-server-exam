@@ -22,6 +22,7 @@ import java.util.Properties;
 
 public class HttpServer {
 
+    
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
     private final ServerSocket serverSocket;
@@ -83,7 +84,7 @@ public class HttpServer {
 
         String requestLine = HttpMessage.readLine(socket);
         if(requestLine == null)return;
-
+        
         String[] requestLineParts = requestLine.split(" ");
 
         String requestMethod = requestLineParts[0];
@@ -106,13 +107,13 @@ public class HttpServer {
             return;
         }
 
-        if (requestPath.equals("/api/member") || requestPath.equals("/api/task")) {
-            handleGetData(socket, requestPath);
+        if(requestMethod.equals("POST") || requestTarget.equals("/submit")){
+            handlePostRequest(socket, response, request, requestTarget);
             return;
         }
 
-        if(requestMethod.equals("POST") || requestTarget.equals("/submit")){
-            handlePostRequest(socket, response, request, requestTarget);
+        if (requestPath.startsWith("/api/")) {
+            handleGetData(socket, requestPath);
             return;
         }
 

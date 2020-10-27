@@ -1,34 +1,42 @@
 package no.kristiania.db;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashSet;
+import java.sql.*;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class TaskMemberDao extends AbstractDao<TaskMember> {
 
     public TaskMemberDao(DataSource dataSource) { super(dataSource); }
 
+    @Override
+    protected void setDataOnStatement(PreparedStatement statement, TaskMember taskMember) throws SQLException {
+        statement.setLong(1, taskMember.getTaskId());
+        statement.setLong(2, taskMember.getMemberId());
+    }
+
+
     public void insert(long taskId, long memberId) throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("insert into task_member (task_id, member_id) values (?, ?);")) {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement("insert into task_member (task_id, member_id) values (?, ?);")){
+
                 statement.setLong(1, taskId);
                 statement.setLong(2, memberId);
 
-                statement.execute();
+                statement.executeUpdate();
             }
         }
     }
+
+    public void insert(TaskMember taskMember) throws SQLException {
+        insert(taskMember.getTaskId(), taskMember.getMemberId());
+    }
+
 
     @Override
     protected TaskMember mapRow(ResultSet rs) throws SQLException {
         TaskMember taskMember = new TaskMember();
 
-        taskMember.setTaskId(rs.getLong("task_id"));
+        taskMember.setId(rs.getLong("task_id"));
         taskMember.setMemberId(rs.getLong("member_id"));
 
         return taskMember;
