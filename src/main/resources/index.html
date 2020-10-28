@@ -8,6 +8,8 @@
 <a href="http://localhost:8080/addProjectMember.html">Add new members</a>
 <br>
 <a href="http://localhost:8080/addProjectTask.html">Add new tasks</a>
+<br>
+<a href="http://localhost:8080/addMemberToTask.html">Add member to task</a>
 <br><br>
 
 <h1>Project members:</h1>
@@ -27,31 +29,6 @@
     fetch("/api/task").then(response => response.text()).then(html => {
         document.getElementById("tasks").innerHTML = html;
     });
-
-    function renderSelectMembers(taskId) {
-
-        fetch("/api/task").then(response => response.text()).then(html => {
-            document.getElementById("tasks").innerHTML = html;
-        });
-
-
-        fetch("/api/memberSelect").then(response => response.text()).then(html => {
-            document.getElementById("task-li-" + taskId).innerHTML += html;
-        });
-    }
-
-    function addMemberToTask() {
-        let memberId = document.getElementById("select-member").value;
-        let taskId = document.getElementById("select-member").parentNode.id;
-
-        console.log(selectValue);
-        console.log(taskId);
-
-        // Here we need to make a custom fetch "/api/memberToTask/taskID_memberID"
-        // then handle it in HttpServer and add database functionality.
-
-    }
-
 
 </script>
 </html>

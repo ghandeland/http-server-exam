@@ -1,5 +1,8 @@
 package no.kristiania.db;
 
+import no.kristiania.http.HttpMessage;
+import no.kristiania.http.HttpServer;
+
 import javax.sql.DataSource;
 import javax.xml.crypto.Data;
 import java.sql.Connection;
@@ -30,6 +33,8 @@ public class TaskMemberDao {
                 statement.setLong(2, memberId);
 
                 statement.execute();
+            } catch (SQLException e) {
+                HttpServer.getLogger().info("ENTRY ERROR: DUPLICATE PRIMARY KEY");
             }
         }
     }

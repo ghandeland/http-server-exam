@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
-import java.util.List;
 
 import static no.kristiania.db.MemberDaoTest.sampleMember;
-import static no.kristiania.db.TaskDaoTest.sampleTask;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TaskMemberDaoTest {
@@ -35,7 +33,7 @@ public class TaskMemberDaoTest {
         MemberDao memberDao = new MemberDao(dataSource);
         TaskMemberDao taskMemberDao = new TaskMemberDao(dataSource);
 
-        Task task1 = sampleTask();
+        Task task1 = TaskDaoTest.sampleTask();
         taskDao.insert(task1);
 
 
@@ -55,14 +53,15 @@ public class TaskMemberDaoTest {
     }
 
     @Test
-    void shouldInsertWithObject() throws SQLException {
+    void shouldAllTasksOnMember() throws SQLException {
 
         TaskDao taskDao = new TaskDao(dataSource);
         MemberDao memberDao = new MemberDao(dataSource);
         TaskMemberDao taskMemberDao = new TaskMemberDao(dataSource);
 
-        Task task1 = sampleTask();
-        Task task2 = sampleTask();
+        Task task1 = TaskDaoTest.sampleTask();
+        Task task2 = TaskDaoTest.sampleTask();
+
 
         taskDao.insert(task1);
         taskDao.insert(task2);
@@ -78,5 +77,7 @@ public class TaskMemberDaoTest {
         assertThat(taskIds).contains(task1.getId());
         assertThat(taskIds).contains(task2.getId());
     }
+
+
 
 }
