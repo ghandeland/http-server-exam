@@ -28,10 +28,28 @@
         document.getElementById("tasks").innerHTML = html;
     });
 
-    function addMemberToTask(taskId) {
+    function renderSelectMembers(taskId) {
+
+        fetch("/api/task").then(response => response.text()).then(html => {
+            document.getElementById("tasks").innerHTML = html;
+        });
+
+
         fetch("/api/memberSelect").then(response => response.text()).then(html => {
             document.getElementById("task-li-" + taskId).innerHTML += html;
         });
+    }
+
+    function addMemberToTask() {
+        let memberId = document.getElementById("select-member").value;
+        let taskId = document.getElementById("select-member").parentNode.id;
+
+        console.log(selectValue);
+        console.log(taskId);
+
+        // Here we need to make a custom fetch "/api/memberToTask/taskID_memberID"
+        // then handle it in HttpServer and add database functionality.
+
     }
 
 

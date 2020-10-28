@@ -213,10 +213,10 @@ public class HttpServer {
     private void handleGetMemberSelect(Socket socket) throws SQLException, IOException {
         StringBuilder body = new StringBuilder();
 
-        body.append("<select>");
+        body.append("<select id=\"select-member\">");
 
         for(Member member : memberDao.list()){
-            body.append("<option>")
+            body.append("<option value=\"member-select-" + member.getId() + "\">")
                     .append(member.getFirstName())
                     .append(" ")
                     .append(member.getLastName())
@@ -224,6 +224,7 @@ public class HttpServer {
         }
 
         body.append("</select>");
+        body.append("<button onclick=\"addMemberToTask()\">Add</button>");
 
         HttpMessage response = new HttpMessage();
         response.setBody(body.toString());
@@ -244,7 +245,7 @@ public class HttpServer {
             body.append("<li id =\"task-li-" + task.getId() + "\"><strong>Task: </strong> " + task.getName())
                     .append(" <strong>Description: </strong>" + task.getDescription())
                     .append("  <strong>Status: </strong>" + task.getStatus().toString())
-                    .append("<button onclick=\"addMemberToTask(" + task.getId() + ")\">+</button>")
+                    .append("<button onclick=\"renderSelectMembers(" + task.getId() + ")\">+</button>")
                     .append("</li>");
         }
 
