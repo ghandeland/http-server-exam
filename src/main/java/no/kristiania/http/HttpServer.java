@@ -106,13 +106,13 @@ public class HttpServer {
             return;
         }
 
-        if (requestPath.equals("/api/member") || requestPath.equals("/api/task")) {
-            handleGetData(socket, requestPath);
+        if(requestMethod.equals("POST") || requestTarget.equals("/submit")){
+            handlePostRequest(socket, response, request, requestTarget);
             return;
         }
 
-        if(requestMethod.equals("POST") || requestTarget.equals("/submit")){
-            handlePostRequest(socket, response, request, requestTarget);
+        if (requestPath.startsWith("/api/")) {
+            handleGetData(socket, requestPath);
             return;
         }
 
@@ -203,9 +203,35 @@ public class HttpServer {
             handleGetMember(socket);
         } else if(requestPath.equals("/api/task")) {
             handleGetTask(socket);
+        } else if(requestPath.equals("/api/memberSelect")) {
+            handleGetMemberSelect(socket);
         }
 
         return;
+    }
+
+    private void handleGetMemberSelect(Socket socket) throws SQLException, IOException {
+        StringBuilder body = new StringBuilder();
+
+        body.append("<select>");
+
+        for(Member member : memberDao.list()){
+            body.append("<option>")
+                    .append(member.getFirstName())
+                    .append(" ")
+                    .append(member.getLastName())
+                    .append("</option>");
+        }
+
+        body.append("</select>");
+
+        HttpMessage response = new HttpMessage();
+        response.setBody(body.toString());
+        response.setCodeAndStartLine("200");
+        response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
+        response.setHeader("Content-Type", "text/plain");
+        response.setHeader("Connection", "close");
+        response.write(socket);
     }
 
     private void handleGetTask(Socket socket) throws SQLException, IOException {
@@ -215,15 +241,14 @@ public class HttpServer {
         body.append("<ul>");
 
         for(Task task : taskDao.list()){
-            body.append("<li><strong>Task: </strong> " + task.getName())
+            body.append("<li id =\"task-li-" + task.getId() + "\"><strong>Task: </strong> " + task.getName())
                     .append(" <strong>Description: </strong>" + task.getDescription())
                     .append("  <strong>Status: </strong>" + task.getStatus().toString())
+                    .append("<button onclick=\"addMemberToTask(" + task.getId() + ")\">+</button>")
                     .append("</li>");
         }
 
         body.append("</ul>");
-
-        System.out.println(body.toString());
 
         HttpMessage response = new HttpMessage();
         response.setBody(body.toString());
@@ -242,7 +267,6 @@ public class HttpServer {
 
         for(Member member : memberDao.list()){
             body.append("<li><strong>Name:</strong> ").append(member.getFirstName()).append(" ").append(member.getLastName()).append(" - <strong>Email:</strong> ").append(member.getEmail()).append("</li>");
-            System.out.println(body.toString());
         }
 
         body.append("</ul>");
@@ -255,7 +279,6 @@ public class HttpServer {
         response.setHeader("Connection", "close");
         response.write(socket);
 
-        System.out.println("handleGetData");
     }
 
     private void handlePostRequest(Socket socket, HttpMessage response, HttpMessage request, String requestTarget) throws IOException, SQLException {

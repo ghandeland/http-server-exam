@@ -1,6 +1,7 @@
 package no.kristiania.db;
 
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,9 +10,18 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class TaskMemberDao extends AbstractDao<TaskMember> {
+// Still don't know if it needs to implement AbstractDao
+public class TaskMemberDao {
 
-    public TaskMemberDao(DataSource dataSource) { super(dataSource); }
+    DataSource dataSource;
+
+    public TaskMemberDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public void insert(TaskMember taskMember) throws SQLException {
+        insert(taskMember.getTaskId(), taskMember.getMemberId());
+    }
 
     public void insert(long taskId, long memberId) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
@@ -22,16 +32,6 @@ public class TaskMemberDao extends AbstractDao<TaskMember> {
                 statement.execute();
             }
         }
-    }
-
-    @Override
-    protected TaskMember mapRow(ResultSet rs) throws SQLException {
-        TaskMember taskMember = new TaskMember();
-
-        taskMember.setTaskId(rs.getLong("task_id"));
-        taskMember.setMemberId(rs.getLong("member_id"));
-
-        return taskMember;
     }
 
     public LinkedHashSet<Long> retrieveMembersByTaskId(long taskId) throws SQLException {
