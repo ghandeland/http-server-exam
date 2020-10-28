@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
 
@@ -259,10 +260,23 @@ public class HttpServer {
         body.append("<ul>");
 
         for(Task task : taskDao.list()){
+
             body.append("<li id =\"task-li-" + task.getId() + "\"><strong>Task: </strong> " + task.getName())
                     .append(" <strong>Description: </strong>" + task.getDescription())
                     .append("  <strong>Status: </strong>" + task.getStatus().toString())
                     .append("</li>");
+
+            LinkedHashSet<Long> memberIDsOnTask = taskMemberDao.retrieveMembersByTaskId(task.getId());
+
+            if(memberIDsOnTask.size() > 0) {
+                body.append("<ul>");
+
+                for(Long memberId : memberIDsOnTask) {
+                    Member member = memberDao.retrieve(memberId);
+                    body.append("<li>" + member.getFirstName() + " " + member.getLastName() + "</li>");
+                }
+                body.append("</ul>");
+            }
         }
 
         body.append("</ul>");
@@ -329,8 +343,6 @@ public class HttpServer {
         response.setHeader("Connection", "close");
         response.setHeader("Content-length", "0");
         response.write(socket);
-
-        System.out.println("reached here");
     }
 
     private void postNewTask(Socket socket, HttpMessage response, HttpMessage request) throws IOException, SQLException {
