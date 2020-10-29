@@ -1,6 +1,7 @@
 package no.kristiania.http;
 
 import no.kristiania.db.*;
+import no.kristiania.http.controller.*;
 import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
@@ -20,17 +21,22 @@ import java.util.Properties;
 
 public class HttpServer {
 
-    
-    private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
-
-    public static Logger getLogger() { return logger; }
-
     private final ServerSocket serverSocket;
     private TaskMemberDao taskMemberDao;
     private ServerThread serverThread;
     private MemberDao memberDao;
     private TaskDao taskDao;
 
+    private Map<String, HttpController> controllers;
+    private HttpController getController(String requestPath) { return controllers.get(requestPath); }
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+    public static Logger getLogger() { return logger; }
+
+    public HttpServer(int port) throws IOException {
+        this.serverSocket = new ServerSocket(port);
+        serverThread = new ServerThread();
+    }
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
@@ -38,48 +44,39 @@ public class HttpServer {
         this.taskDao = new TaskDao(dataSource);
         this.taskMemberDao = new TaskMemberDao(dataSource);
 
+        controllers = Map.of(
+                "/api/addNewMember", new MemberPostController(memberDao),
+                "/api/addNewTask", new TaskPostController(taskDao),
+                "/api/member", new MemberGetController(memberDao),
+                "/api/task", new TaskGetController(taskDao, memberDao, taskMemberDao),
+                "/api/memberSelect", new MemberSelectGetController(memberDao),
+                "/api/taskSelect", new TaskSelectGetController(taskDao),
+                "/api/addMemberToTask", new MemberTaskPostController(taskMemberDao)
+        );
+
         serverThread = new ServerThread();
     }
 
-    public HttpServer(int port) throws IOException {
-        this.serverSocket = new ServerSocket(port);
-        serverThread = new ServerThread();
-    }
-
-    public static void main(String[] args) throws IOException {
-        Properties properties = new Properties();
-        try(FileReader fileReader = new FileReader("pgr203.properties")){
-            properties.load(fileReader);
+    private class ServerThread extends Thread {
+        @Override
+        public void run() {
+            while(true){
+                try{
+                    Socket socket = serverSocket.accept();
+                    handleRequest(socket);
+                }catch(IOException | SQLException e){
+                    // e.printStackTrace();
+                }
+            }
         }
-
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-
-        dataSource.setUrl(properties.getProperty("dataSource.url"));
-        dataSource.setUser(properties.getProperty("dataSource.username"));
-        dataSource.setPassword(properties.getProperty("dataSource.password"));
-
-        Flyway.configure().dataSource(dataSource).load().migrate();
-
-        HttpServer server = new HttpServer(8080, dataSource);
-        server.start();
-        logger.info("Started on http://localhost:{}/", 8080);
-        logger.info("Go to http://localhost:{}/addProjectMember.html to add project members", 8080);
-        logger.info("Go to http://localhost:{}/addProjectTask.html to add tasks", 8080);
     }
 
-    public void start() {
-        serverThread.start();
-    }
+    public void start() { serverThread.start(); }
 
     public void stop() throws IOException {
         serverSocket.close();
         serverThread = null;
     }
-
-    public int getActualPort() {
-        return serverSocket.getLocalPort();
-    }
-
 
     private void handleRequest(Socket socket) throws IOException, SQLException {
         HttpMessage response = new HttpMessage();
@@ -111,12 +108,14 @@ public class HttpServer {
         }
 
         if(requestMethod.equals("POST") || requestTarget.equals("/submit")){
-            handlePostRequest(socket, response, request, requestTarget);
+            getController(requestPath).handle(request, socket);
+            // handlePostRequest(socket, response, request, requestTarget);
             return;
         }
 
         if (requestPath.startsWith("/api/")) {
-            handleGetData(socket, requestPath);
+            getController(requestPath).handle(request, socket);
+            // handleGetData(socket, requestPath);
             return;
         }
 
@@ -156,8 +155,6 @@ public class HttpServer {
             response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
         }
         response.write(socket);
-
-
     }
 
     private void handleFileRequest(Socket socket, HttpMessage response, String requestPath) throws IOException {
@@ -201,207 +198,25 @@ public class HttpServer {
         }
     }
 
-    private void handleGetData(Socket socket, String requestPath) throws SQLException, IOException {
-
-        if(requestPath.equals("/api/member")) {
-            handleGetMember(socket);
-        } else if(requestPath.equals("/api/task")) {
-            handleGetTask(socket);
-        } else if(requestPath.equals("/api/memberSelect")) {
-            handleGetMemberSelect(socket);
-        } else if(requestPath.equals("/api/taskSelect")) {
-            handleGetTaskSelect(socket);
+    public static void main(String[] args) throws IOException {
+        Properties properties = new Properties();
+        try(FileReader fileReader = new FileReader("pgr203.properties")){
+            properties.load(fileReader);
         }
 
-        return;
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+
+        dataSource.setUrl(properties.getProperty("dataSource.url"));
+        dataSource.setUser(properties.getProperty("dataSource.username"));
+        dataSource.setPassword(properties.getProperty("dataSource.password"));
+
+        Flyway.configure().dataSource(dataSource).load().migrate();
+
+        HttpServer server = new HttpServer(8080, dataSource);
+        server.start();
+        logger.info("Started on http://localhost:{}/", 8080);
+        logger.info("Go to http://localhost:{}/addProjectMember.html to add project members", 8080);
+        logger.info("Go to http://localhost:{}/addProjectTask.html to add tasks", 8080);
     }
 
-    private void handleGetTaskSelect(Socket socket) throws SQLException, IOException {
-        StringBuilder body = new StringBuilder();
-
-        for(Task task : taskDao.list()){
-            body.append("<option value=\"" + task.getId() + "\">")
-                    .append(task.getName())
-                    .append("</option>");
-        }
-
-        HttpMessage response = new HttpMessage();
-        response.setBody(body.toString());
-        response.setCodeAndStartLine("200");
-        response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
-        response.setHeader("Content-Type", "text/plain");
-        response.setHeader("Connection", "close");
-        response.write(socket);
-    }
-
-    private void handleGetMemberSelect(Socket socket) throws SQLException, IOException {
-        StringBuilder body = new StringBuilder();
-
-        for(Member member : memberDao.list()){
-            body.append("<option value=\"" + member.getId() + "\">")
-                    .append(member.getFirstName())
-                    .append(" ")
-                    .append(member.getLastName())
-                    .append("</option>");
-        }
-
-        HttpMessage response = new HttpMessage();
-        response.setBody(body.toString());
-        response.setCodeAndStartLine("200");
-        response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
-        response.setHeader("Content-Type", "text/plain");
-        response.setHeader("Connection", "close");
-        response.write(socket);
-    }
-
-    private void handleGetTask(Socket socket) throws SQLException, IOException {
-
-        StringBuilder body = new StringBuilder();
-
-        body.append("<ul>");
-
-        for(Task task : taskDao.list()){
-
-            body.append("<li id =\"task-li-" + task.getId() + "\"><strong>Task: </strong> " + task.getName())
-                    .append(" <strong>Description: </strong>" + task.getDescription())
-                    .append("  <strong>Status: </strong>" + task.getStatus().toString())
-                    .append("</li>");
-
-            LinkedHashSet<Long> memberIDsOnTask = taskMemberDao.retrieveMembersByTaskId(task.getId());
-
-            if(memberIDsOnTask.size() > 0) {
-                body.append("<ul>");
-
-                for(Long memberId : memberIDsOnTask) {
-                    Member member = memberDao.retrieve(memberId);
-                    body.append("<li>" + member.getFirstName() + " " + member.getLastName() + "</li>");
-                }
-                body.append("</ul>");
-            }
-        }
-
-        body.append("</ul>");
-
-        HttpMessage response = new HttpMessage();
-        response.setBody(body.toString());
-        response.setCodeAndStartLine("200");
-        response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
-        response.setHeader("Content-Type", "text/plain");
-        response.setHeader("Connection", "close");
-        response.write(socket);
-    }
-
-    private void handleGetMember(Socket socket) throws SQLException, IOException {
-
-        StringBuilder body = new StringBuilder();
-
-        body.append("<ul>");
-
-        for(Member member : memberDao.list()){
-            body.append("<li><strong>Name:</strong> ").append(member.getFirstName()).append(" ").append(member.getLastName()).append(" - <strong>Email:</strong> ").append(member.getEmail()).append("</li>");
-        }
-
-        body.append("</ul>");
-
-        HttpMessage response = new HttpMessage();
-        response.setBody(body.toString());
-        response.setCodeAndStartLine("200");
-        response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
-        response.setHeader("Content-Type", "text/plain");
-        response.setHeader("Connection", "close");
-        response.write(socket);
-
-    }
-
-    private void handlePostRequest(Socket socket, HttpMessage response, HttpMessage request, String requestTarget) throws IOException, SQLException {
-
-        if(requestTarget.equals("/api/addNewMember")) {
-            postNewMember(socket, response, request);
-        } else if(requestTarget.equals("/api/addNewTask")) {
-            postNewTask(socket, response, request);
-        } else if(requestTarget.equals("/api/addMemberToTask")) {
-            postMemberToTask(socket, response, request);
-        }
-    }
-
-    private void postMemberToTask(Socket socket, HttpMessage response, HttpMessage request) throws IOException, SQLException {
-        request.readAndSetHeaders(socket);
-
-        int contentLength = Integer.parseInt(request.getHeader("Content-Length"));
-        String body = request.readBody(socket, contentLength);
-
-        request.setBody(body);
-
-
-        Map<String, String> taskMemberMap = QueryString.queryStringToHashMap(body);
-
-        long memberId = Long.valueOf(taskMemberMap.get("member"));
-        long taskId = Long.valueOf(taskMemberMap.get("task"));
-
-        taskMemberDao.insert(taskId, memberId);
-
-        response.setCodeAndStartLine("204");
-        response.setHeader("Connection", "close");
-        response.setHeader("Content-length", "0");
-        response.write(socket);
-    }
-
-    private void postNewTask(Socket socket, HttpMessage response, HttpMessage request) throws IOException, SQLException {
-        request.readAndSetHeaders(socket);
-        int contentLength = Integer.parseInt(request.getHeader("Content-Length"));
-        String body = request.readBody(socket, contentLength);
-
-        request.setBody(body);
-
-        Map<String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
-
-        String taskName = memberQueryMap.get("name");
-        String taskDescription = memberQueryMap.get("description");
-        String taskStatus = memberQueryMap.get("status");
-
-        Task task = new Task(taskName, taskDescription, taskStatus);
-
-        taskDao.insert(task);
-
-        response.setCodeAndStartLine("204");
-        response.setHeader("Connection", "close");
-        response.setHeader("Content-length", "0");
-        response.write(socket);
-
-    }
-
-    private void postNewMember(Socket socket, HttpMessage response, HttpMessage request) throws IOException, SQLException {
-        request.readAndSetHeaders(socket);
-        int contentLength = Integer.parseInt(request.getHeader("Content-Length"));
-        String body = request.readBody(socket, contentLength);
-        request.setBody(body);
-
-        Map<String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
-        String memberFirstName = memberQueryMap.get("firstName");
-        String memberLastName = memberQueryMap.get("lastName");
-        String memberEmail = memberQueryMap.get("email");
-
-        Member member = new Member(memberFirstName, memberLastName, memberEmail);
-
-        memberDao.insert(member);
-
-        response.setCodeAndStartLine("204");
-        response.setHeader("Connection", "close");
-        response.setHeader("Content-length", "0");
-        response.write(socket);
-    }
-
-    private class ServerThread extends Thread {
-        @Override
-        public void run() {
-            while(true){
-                try{
-                    Socket socket = serverSocket.accept();
-                    handleRequest(socket);
-                }catch(IOException | SQLException e){
-                    // e.printStackTrace();
-                }
-            }
-        }
-    }
 }
