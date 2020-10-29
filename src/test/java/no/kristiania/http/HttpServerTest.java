@@ -23,7 +23,6 @@ public class HttpServerTest {
     void shouldReadResponseCode() throws IOException {
         HttpServer server = new HttpServer(10000);
         server.start();
-        int port = server.getActualPort();
         HttpClient client = new HttpClient("localhost", 10000, "/");
         HttpMessage response = client.executeRequest();
         assertEquals("200", response.getCode());
