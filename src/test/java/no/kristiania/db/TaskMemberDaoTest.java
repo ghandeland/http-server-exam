@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
-import java.util.List;
 
 import static no.kristiania.db.MemberDaoTest.sampleMember;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TaskMemberDaoTest {
@@ -55,7 +53,7 @@ public class TaskMemberDaoTest {
     }
 
     @Test
-    void shouldInsertWithObject() throws SQLException {
+    void shouldAllTasksOnMember() throws SQLException {
 
         TaskDao taskDao = new TaskDao(dataSource);
         MemberDao memberDao = new MemberDao(dataSource);

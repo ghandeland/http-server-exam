@@ -9,7 +9,7 @@
 <br>
 <a href="http://localhost:8080/addProjectTask.html">Add new tasks</a>
 <br>
-<a href="http://localhost:8080/tasks.html">See all tasks</a>
+<a href="http://localhost:8080/addMemberToTask.html">Add member to task</a>
 <br><br>
 
 <h1>Project members:</h1>
@@ -29,5 +29,6 @@
     fetch("/api/task").then(response => response.text()).then(html => {
         document.getElementById("tasks").innerHTML = html;
     });
+
 </script>
 </html>
