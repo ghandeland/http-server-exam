@@ -62,7 +62,6 @@ public class TaskMemberDaoTest {
         Task task1 = TaskDaoTest.sampleTask();
         Task task2 = TaskDaoTest.sampleTask();
 
-
         taskDao.insert(task1);
         taskDao.insert(task2);
 
@@ -77,7 +76,5 @@ public class TaskMemberDaoTest {
         assertThat(taskIds).contains(task1.getId());
         assertThat(taskIds).contains(task2.getId());
     }
-
-
 
 }

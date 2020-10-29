@@ -20,6 +20,7 @@ import java.util.Properties;
 
 public class HttpServer {
 
+    
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
     public static Logger getLogger() { return logger; }
@@ -86,7 +87,7 @@ public class HttpServer {
 
         String requestLine = HttpMessage.readLine(socket);
         if(requestLine == null)return;
-
+        
         String[] requestLineParts = requestLine.split(" ");
 
         String requestMethod = requestLineParts[0];
