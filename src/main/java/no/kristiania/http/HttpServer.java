@@ -399,7 +399,7 @@ public class HttpServer {
                     Socket socket = serverSocket.accept();
                     handleRequest(socket);
                 }catch(IOException | SQLException e){
-                    e.printStackTrace();
+                    // e.printStackTrace();
                 }
             }
         }
