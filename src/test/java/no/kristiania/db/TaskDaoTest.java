@@ -15,6 +15,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TaskDaoTest {
     private TaskDao taskDao;
 
+    public static Task sampleTask() {
+        return new Task(sampleTaskName(), sampleTaskDescription());
+    }
+
+    public static String sampleTaskName() {
+        String[] options = {"Build final feature", "Clean up coode", "Market software", "Have meeting"};
+        Random random = new Random();
+        return options[random.nextInt(options.length)];
+    }
+
+    public static String sampleTaskDescription() {
+        String[] options = {"Needs to be done by monday", "Very important", "Takes place in the meeting room", "Rapport to the CTO by monday"};
+        Random random = new Random();
+        return options[random.nextInt(options.length)];
+    }
+
     @BeforeEach
     void setup() {
         JdbcDataSource dataSource = new JdbcDataSource();
@@ -57,21 +73,5 @@ public class TaskDaoTest {
                     .usingRecursiveComparison()
                     .isEqualTo(taskDao.retrieve(taskList.get(i).getId()));
         }
-    }
-
-    public static Task sampleTask() {
-        return new Task(sampleTaskName(), sampleTaskDescription());
-    }
-
-    public static String sampleTaskName() {
-        String[] options = {"Build final feature", "Clean up coode", "Market software", "Have meeting"};
-        Random random = new Random();
-        return options[random.nextInt(options.length)];
-    }
-
-    public static String sampleTaskDescription() {
-        String[] options = {"Needs to be done by monday", "Very important", "Takes place in the meeting room", "Rapport to the CTO by monday"};
-        Random random = new Random();
-        return options[random.nextInt(options.length)];
     }
 }

@@ -43,19 +43,6 @@ public class HttpClient {
         return handleResponse();
     }
 
-    public HttpMessage executePostRequest() throws IOException {
-
-        HttpMessage request = new HttpMessage();
-
-        request.setHeader("Host", host);
-        request.setStartLine("POST " + requestTarget + " HTTP/1.1");
-        request.setHeader("Host", host);
-
-        request.write(socket);
-
-        return handleResponse();
-    }
-
     public HttpMessage handleResponse() throws IOException {
         HttpMessage response = new HttpMessage();
 

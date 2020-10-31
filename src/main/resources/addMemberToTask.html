@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Add member to task</title>
-    <!--<link rel="stylesheet" href="style.css">-->
+    <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <form action="/api/addMemberToTask" method="post">
@@ -11,17 +11,19 @@
 
     <p>
         <label>Member:
-            <select name="member" id="member-select"></select>
+            <select id="member-select" name="member"></select>
         </label>
     </p>
 
     <p>
         <label>Task:
-            <select name="task" id="task-select"></select>
+            <select id="task-select" name="task"></select>
         </label>
     </p>
 
-    <p><button>Submit</button></p>
+    <p>
+        <button>Submit</button>
+    </p>
 
     <br>
     <a href="http://localhost:8080/index.html">See overview</a>
@@ -35,7 +37,6 @@
         fetch("/api/taskSelect").then(response => response.text()).then(html => {
             document.getElementById("task-select").innerHTML = html;
         });
-
 
 
     </script>

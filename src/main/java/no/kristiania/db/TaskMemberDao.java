@@ -1,7 +1,5 @@
 package no.kristiania.db;
 
-import no.kristiania.http.HttpServer;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -82,7 +80,6 @@ public class TaskMemberDao extends AbstractDao <TaskMember> {
 
         return taskMember;
     }
-
 
 
 }

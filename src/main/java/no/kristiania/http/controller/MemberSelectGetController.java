@@ -20,7 +20,7 @@ public class MemberSelectGetController implements HttpController {
         StringBuilder body = new StringBuilder();
 
         for(Member member : memberDao.list()){
-            body.append("<option value=\"" + member.getId() + "\">")
+            body.append("<option value=\"").append(member.getId()).append("\">")
                     .append(member.getFirstName())
                     .append(" ")
                     .append(member.getLastName())

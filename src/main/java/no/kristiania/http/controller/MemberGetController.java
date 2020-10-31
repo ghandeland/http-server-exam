@@ -26,7 +26,7 @@ public class MemberGetController implements HttpController {
             body.append("<li><strong>Name:</strong> ").append(member.getFirstName()).append(" ").append(member.getLastName()).append(" - <strong>Email:</strong> ").append(member.getEmail()).append("</li>");
         }
 
-        body.append("</ul>");
+        body.append("/ul>");
 
         HttpMessage response = new HttpMessage();
         response.setBody(body.toString());

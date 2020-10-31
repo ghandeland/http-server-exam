@@ -25,7 +25,6 @@ public class MemberTaskPostController implements HttpController {
 
         request.setBody(body);
 
-
         Map <String, String> taskMemberMap = QueryString.queryStringToHashMap(body);
 
         long memberId = Long.parseLong(taskMemberMap.get("member"));

@@ -15,6 +15,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberDaoTest {
     MemberDao memberDao;
 
+    public static Member sampleMember() {
+        return new Member(sampleFirstName(), sampleLastName(), sampleEmail());
+    }
+
+    public static String sampleFirstName() {
+        String[] options = {"John", "Peter", "Will", "Johnny", "Karoline"};
+        Random random = new Random();
+        return options[random.nextInt(options.length)];
+    }
+
+    public static String sampleLastName() {
+        String[] options = {"Peterson", "Johnson", "Hansen", "Mohammed"};
+        Random random = new Random();
+        return options[random.nextInt(options.length)];
+    }
+
+    public static String sampleEmail() {
+        String[] options = {"g123@example.com", "9999@covid.com", "1337@pamail.com", "testmail@post.no"};
+        Random random = new Random();
+        return options[random.nextInt(options.length)];
+    }
+
     @BeforeEach
     void setUp() {
         JdbcDataSource dataSource = new JdbcDataSource();
@@ -45,29 +67,6 @@ public class MemberDaoTest {
                 .hasNoNullFieldsOrProperties()
                 .usingRecursiveComparison()
                 .isEqualTo(projectMember);
-    }
-
-
-    public static Member sampleMember() {
-        return new Member(sampleFirstName(), sampleLastName(), sampleEmail());
-    }
-
-    public static String sampleFirstName() {
-        String[] options = {"John", "Peter", "Will", "Johnny", "Karoline"};
-        Random random = new Random();
-        return options[random.nextInt(options.length)];
-    }
-
-    public static String sampleLastName() {
-        String[] options = {"Peterson", "Johnson", "Hansen", "Mohammed"};
-        Random random = new Random();
-        return options[random.nextInt(options.length)];
-    }
-
-    public static String sampleEmail() {
-        String[] options = {"g123@example.com", "9999@covid.com", "1337@pamail.com", "testmail@post.no"};
-        Random random = new Random();
-        return options[random.nextInt(options.length)];
     }
 
 }

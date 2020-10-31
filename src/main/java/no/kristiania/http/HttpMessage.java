@@ -1,8 +1,6 @@
 package no.kristiania.http;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URLDecoder;
@@ -79,10 +77,6 @@ public class HttpMessage {
         return headers.get(key);
     }
 
-    public Map <String, String> getHeaderMap() {
-        return headers;
-    }
-
     public String getStartLine() {
         return startLine;
     }
@@ -113,24 +107,8 @@ public class HttpMessage {
         socket.getOutputStream().write(buffer.toByteArray());
     }
 
-    public void writeWithFile(Socket socket, File targetFile) throws IOException {
-        writeLine(socket, startLine);
-        for(Map.Entry <String, String> header : headers.entrySet()){
-            writeLine(socket, header.getKey() + ": " + header.getValue());
-        }
-        writeLine(socket, "");
-
-        try(FileInputStream inputStream = new FileInputStream(targetFile)){
-            inputStream.transferTo(socket.getOutputStream());
-        }
-    }
-
     public void writeLine(Socket socket, String line) throws IOException {
         socket.getOutputStream().write((line + "\r\n").getBytes());
-    }
-
-    public String getRequestTarget() {
-        return startLine.split(" ")[1];
     }
 
     public void readAndSetHeaders(Socket socket) throws IOException {

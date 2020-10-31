@@ -22,19 +22,12 @@ import java.util.Properties;
 
 public class HttpServer {
 
+    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
     private final ServerSocket serverSocket;
     private final TaskMemberDao taskMemberDao;
+    private final Map <String, HttpController> controllers;
     private MemberDao memberDao;
     private TaskDao taskDao;
-
-    private final Map <String, HttpController> controllers;
-
-    private HttpController getController(String requestPath) {
-        return controllers.get(requestPath);
-    }
-
-    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
-
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
@@ -45,11 +38,11 @@ public class HttpServer {
         controllers = Map.of(
                 "/api/addNewMember", new MemberPostController(memberDao),
                 "/api/addNewTask", new TaskPostController(taskDao),
+                "/api/addMemberToTask", new MemberTaskPostController(taskMemberDao),
                 "/api/member", new MemberGetController(memberDao),
                 "/api/task", new TaskGetController(taskDao, memberDao, taskMemberDao),
                 "/api/memberSelect", new MemberSelectGetController(memberDao),
-                "/api/taskSelect", new TaskSelectGetController(taskDao),
-                "/api/addMemberToTask", new MemberTaskPostController(taskMemberDao)
+                "/api/taskSelect", new TaskSelectGetController(taskDao)
         );
 
         new Thread(() -> {
@@ -62,6 +55,30 @@ public class HttpServer {
                 }
             }
         }).start();
+    }
+
+    public static void main(String[] args) throws IOException {
+        Properties properties = new Properties();
+        try(FileReader fileReader = new FileReader("pgr203.properties")){
+            properties.load(fileReader);
+        }
+
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setUrl(properties.getProperty("dataSource.url"));
+        dataSource.setUser(properties.getProperty("dataSource.username"));
+        dataSource.setPassword(properties.getProperty("dataSource.password"));
+
+        Flyway.configure().dataSource(dataSource).load().migrate();
+
+        HttpServer server = new HttpServer(8080, dataSource);
+        logger.info("Started on http://localhost:{}/", server.getPort());
+        logger.info("Add project members -> http://localhost:{}/addProjectMember.html", server.getPort());
+        logger.info("Add tasks -> http://localhost:{}/addProjectTask.html", server.getPort());
+        logger.info("Assign members to tasks -> http://localhost:{}/addMemberToTask.html", server.getPort());
+    }
+
+    private HttpController getController(String requestPath) {
+        return controllers.get(requestPath);
     }
 
     public int getPort() {
@@ -184,26 +201,6 @@ public class HttpServer {
             response.setHeader("Content-Type", contentType);
             response.write(socket, buffer);
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        Properties properties = new Properties();
-        try(FileReader fileReader = new FileReader("pgr203.properties")){
-            properties.load(fileReader);
-        }
-
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setUrl(properties.getProperty("dataSource.url"));
-        dataSource.setUser(properties.getProperty("dataSource.username"));
-        dataSource.setPassword(properties.getProperty("dataSource.password"));
-
-        Flyway.configure().dataSource(dataSource).load().migrate();
-
-        HttpServer server = new HttpServer(8080, dataSource);
-        logger.info("Started on http://localhost:{}/", server.getPort());
-        logger.info("Add project members -> http://localhost:{}/addProjectMember.html", server.getPort());
-        logger.info("Add tasks -> http://localhost:{}/addProjectTask.html", server.getPort());
-        logger.info("Assign members to tasks -> http://localhost:{}/addMemberToTask.html", server.getPort());
     }
 
 }

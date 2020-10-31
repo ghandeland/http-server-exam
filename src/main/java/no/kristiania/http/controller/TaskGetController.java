@@ -45,7 +45,7 @@ public class TaskGetController implements HttpController {
             }
         }
 
-        body.append("</ul>");
+        body.append("/ul>");
 
         HttpMessage response = new HttpMessage();
         response.setBody(body.toString());
