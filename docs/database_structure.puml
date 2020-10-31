@@ -1,0 +1,36 @@
+@startuml
+
+entity member {
+    id (pk)
+    ---
+    first_name
+    last_name
+    email
+    }
+
+entity task {
+    id (pk)
+    ---
+    name
+    description
+    status
+}
+
+entity task_member {
+    id (pk)
+    --
+    task_id (fk)
+    member_id (fk)
+}
+enum task_status {
+    OPEN
+    IN_PROGRESS
+    FINISHED
+    CANCELED
+    }
+
+member ||--o{ task_member
+task ||--o{ task_member
+task_status ||- task
+
+@enduml
