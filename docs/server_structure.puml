@@ -1,0 +1,28 @@
+@startuml
+
+actor User
+participant WebBrowser
+
+box Java Server
+   participant HttpServer
+   participant MemberGetController
+   participant MemberDao
+end box
+
+database PostgreSQL
+
+User -> WebBrowser: List members
+WebBrowser -> HttpServer: /index.html
+WebBrowser <-- HttpServer: <html>....<script>fetch()</html>
+WebBrowser -> HttpServer: /api/member
+HttpServer -> HttpServer: controllers.get("/api/products")
+HttpServer -> MemberGetController: handle(HttpMessage request)
+MemberGetController -> MemberDao: list()
+MemberDao -> PostgreSQL: "SELECT * FROM member"
+MemberDao <-- PostgreSQL: ResultSet
+MemberGetController <-- MemberDao: List<member>
+HttpServer <-- MemberGetController: [HttpMessage response]
+WebBrowser <-- HttpServer: <ul></li><li>...<li>..</ul>
+User <- WebBrowser: List of members
+
+@enduml
