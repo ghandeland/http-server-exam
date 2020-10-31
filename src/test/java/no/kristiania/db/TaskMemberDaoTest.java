@@ -21,6 +21,7 @@ public class TaskMemberDaoTest {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setUrl("jdbc:h2:mem:testdatabase;DB_CLOSE_DELAY=-1");
         Flyway.configure().dataSource(dataSource).load().migrate();
+
         taskDao = new TaskDao(dataSource);
         memberDao = new MemberDao(dataSource);
         taskMemberDao = new TaskMemberDao(dataSource);

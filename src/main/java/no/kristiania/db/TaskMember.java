@@ -1,6 +1,7 @@
 package no.kristiania.db;
 
 public class TaskMember implements SetId {
+    private long id;
     private long taskId;
     private long memberId;
 
@@ -12,12 +13,16 @@ public class TaskMember implements SetId {
         this.memberId = memberId;
     }
 
+    public long getId() { return id; }
+
+    @Override
+    public void setId(long id) { this.id = id; }
+
     public long getTaskId() {
         return taskId;
     }
 
-    @Override
-    public void setId(long taskId) {
+    public void setTaskId(long taskId) {
         this.taskId = taskId;
     }
 

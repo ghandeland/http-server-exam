@@ -1,8 +1,9 @@
 create table task_member
 (
+    id serial primary key,
     task_id integer not null,
     member_id integer not null,
-    primary key (task_id, member_id)
+    unique (task_id, member_id)
 );
 
 alter table task_member

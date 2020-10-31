@@ -99,13 +99,11 @@ public class HttpServer {
 
         if(requestMethod.equals("POST") || requestTarget.equals("/submit")){
             getController(requestPath).handle(request, socket);
-            // handlePostRequest(socket, response, request, requestTarget);
             return;
         }
 
         if(requestPath.startsWith("/api/")){
             getController(requestPath).handle(request, socket);
-            // handleGetData(socket, requestPath);
             return;
         }
 
@@ -203,8 +201,9 @@ public class HttpServer {
 
         HttpServer server = new HttpServer(8080, dataSource);
         logger.info("Started on http://localhost:{}/", server.getPort());
-        logger.info("Go to http://localhost:{}/addProjectMember.html to add project members", server.getPort());
-        logger.info("Go to http://localhost:{}/addProjectTask.html to add tasks", server.getPort());
+        logger.info("Add project members -> http://localhost:{}/addProjectMember.html", server.getPort());
+        logger.info("Add tasks -> http://localhost:{}/addProjectTask.html", server.getPort());
+        logger.info("Assign members to tasks -> http://localhost:{}/addMemberToTask.html", server.getPort());
     }
 
 }

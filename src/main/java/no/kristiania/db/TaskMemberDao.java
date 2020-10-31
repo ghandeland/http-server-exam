@@ -9,30 +9,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
 
-// Still don't know if it needs to implement AbstractDao
-public class TaskMemberDao {
 
-    DataSource dataSource;
+public class TaskMemberDao extends AbstractDao <TaskMember> {
 
     public TaskMemberDao(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public void insert(TaskMember taskMember) throws SQLException {
-        insert(taskMember.getTaskId(), taskMember.getMemberId());
+        super(dataSource);
     }
 
     public void insert(long taskId, long memberId) throws SQLException {
-        try(Connection connection = dataSource.getConnection()){
-            try(PreparedStatement statement = connection.prepareStatement("insert into task_member (task_id, member_id) values (?, ?);")){
-                statement.setLong(1, taskId);
-                statement.setLong(2, memberId);
+        insert(new TaskMember(taskId, memberId));
+    }
 
-                statement.execute();
-            }catch(SQLException e){
-                HttpServer.logger.info("ENTRY ERROR: DUPLICATE PRIMARY KEY");
-            }
-        }
+    public void insert(TaskMember taskMember) throws SQLException {
+        insert(taskMember, "insert into task_member (task_id, member_id) values (?, ?);");
     }
 
     public LinkedHashSet <Long> retrieveMembersByTaskId(long taskId) throws SQLException {
@@ -76,4 +65,24 @@ public class TaskMemberDao {
             }
         }
     }
+
+    @Override
+    protected void setDataOnStatement(PreparedStatement statement, TaskMember taskMember) throws SQLException {
+        statement.setLong(1, taskMember.getTaskId());
+        statement.setLong(2, taskMember.getMemberId());
+    }
+
+    @Override
+    protected TaskMember mapRow(ResultSet rs) throws SQLException {
+        TaskMember taskMember = new TaskMember();
+
+        taskMember.setId(rs.getLong("id"));
+        taskMember.setTaskId(rs.getLong("task_id"));
+        taskMember.setMemberId(rs.getLong("member_id"));
+
+        return taskMember;
+    }
+
+
+
 }
