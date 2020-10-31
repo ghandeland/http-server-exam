@@ -1,6 +1,8 @@
 package no.kristiania.http;
 
-import no.kristiania.db.*;
+import no.kristiania.db.MemberDao;
+import no.kristiania.db.TaskDao;
+import no.kristiania.db.TaskMemberDao;
 import no.kristiania.http.controller.*;
 import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
@@ -15,28 +17,24 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
 
 public class HttpServer {
 
     private final ServerSocket serverSocket;
-    private TaskMemberDao taskMemberDao;
-    private ServerThread serverThread;
+    private final TaskMemberDao taskMemberDao;
     private MemberDao memberDao;
     private TaskDao taskDao;
 
-    private Map<String, HttpController> controllers;
-    private HttpController getController(String requestPath) { return controllers.get(requestPath); }
+    private final Map <String, HttpController> controllers;
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
-    public static Logger getLogger() { return logger; }
-
-    public HttpServer(int port) throws IOException {
-        this.serverSocket = new ServerSocket(port);
-        serverThread = new ServerThread();
+    private HttpController getController(String requestPath) {
+        return controllers.get(requestPath);
     }
+
+    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
@@ -54,28 +52,20 @@ public class HttpServer {
                 "/api/addMemberToTask", new MemberTaskPostController(taskMemberDao)
         );
 
-        serverThread = new ServerThread();
-    }
-
-    private class ServerThread extends Thread {
-        @Override
-        public void run() {
+        new Thread(() -> {
             while(true){
                 try{
                     Socket socket = serverSocket.accept();
                     handleRequest(socket);
-                }catch(IOException | SQLException e){
-                    // e.printStackTrace();
+                }catch(SQLException | IOException e){
+                    e.printStackTrace();
                 }
             }
-        }
+        }).start();
     }
 
-    public void start() { serverThread.start(); }
-
-    public void stop() throws IOException {
-        serverSocket.close();
-        serverThread = null;
+    public int getPort() {
+        return serverSocket.getLocalPort();
     }
 
     private void handleRequest(Socket socket) throws IOException, SQLException {
@@ -83,8 +73,8 @@ public class HttpServer {
         HttpMessage request = new HttpMessage();
 
         String requestLine = HttpMessage.readLine(socket);
-        if(requestLine == null)return;
-        
+        if(requestLine == null) return;
+
         String[] requestLineParts = requestLine.split(" ");
 
         String requestMethod = requestLineParts[0];
@@ -98,11 +88,11 @@ public class HttpServer {
         int questionPosition = requestTarget.indexOf('?');
         String requestPath = questionPosition != -1 ? requestTarget.substring(0, questionPosition) : requestTarget;
 
-        if(requestTarget.equals("/")||requestTarget.equals("")){
+        if(requestTarget.equals("/") || requestTarget.equals("")){
             requestTarget = "/index.html";
         }
 
-        if (requestPath.equals("/favicon.ico")) {
+        if(requestPath.equals("/favicon.ico")){
             handleFileRequest(socket, response, requestPath);
             return;
         }
@@ -113,7 +103,7 @@ public class HttpServer {
             return;
         }
 
-        if (requestPath.startsWith("/api/")) {
+        if(requestPath.startsWith("/api/")){
             getController(requestPath).handle(request, socket);
             // handleGetData(socket, requestPath);
             return;
@@ -205,7 +195,6 @@ public class HttpServer {
         }
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-
         dataSource.setUrl(properties.getProperty("dataSource.url"));
         dataSource.setUser(properties.getProperty("dataSource.username"));
         dataSource.setPassword(properties.getProperty("dataSource.password"));
@@ -213,10 +202,9 @@ public class HttpServer {
         Flyway.configure().dataSource(dataSource).load().migrate();
 
         HttpServer server = new HttpServer(8080, dataSource);
-        server.start();
-        logger.info("Started on http://localhost:{}/", 8080);
-        logger.info("Go to http://localhost:{}/addProjectMember.html to add project members", 8080);
-        logger.info("Go to http://localhost:{}/addProjectTask.html to add tasks", 8080);
+        logger.info("Started on http://localhost:{}/", server.getPort());
+        logger.info("Go to http://localhost:{}/addProjectMember.html to add project members", server.getPort());
+        logger.info("Go to http://localhost:{}/addProjectTask.html to add tasks", server.getPort());
     }
 
 }

@@ -25,21 +25,21 @@ public class TaskGetController implements HttpController {
 
         body.append("<ul>");
 
-        for (Task task : taskDao.list()) {
+        for(Task task : taskDao.list()){
 
-            body.append("<li id =\"task-li-" + task.getId() + "\"><strong>Task: </strong> " + task.getName())
-                    .append(" <strong>Description: </strong>" + task.getDescription())
-                    .append("  <strong>Status: </strong>" + task.getStatus().toString())
+            body.append("<li id =\"task-li-").append(task.getId()).append("\"><strong>Task: </strong> ")
+                    .append(task.getName()).append(" <strong>Description: </strong>").append(task.getDescription())
+                    .append("  <strong>Status: </strong>").append(task.getStatus().toString())
                     .append("</li>");
 
-            LinkedHashSet<Long> memberIDsOnTask = taskMemberDao.retrieveMembersByTaskId(task.getId());
+            LinkedHashSet <Long> memberIDsOnTask = taskMemberDao.retrieveMembersByTaskId(task.getId());
 
-            if (memberIDsOnTask.size() > 0) {
+            if(memberIDsOnTask.size() > 0){
                 body.append("<ul>");
 
-                for (Long memberId : memberIDsOnTask) {
+                for(Long memberId : memberIDsOnTask){
                     Member member = memberDao.retrieve(memberId);
-                    body.append("<li>" + member.getFirstName() + " " + member.getLastName() + "</li>");
+                    body.append("<li>").append(member.getFirstName()).append(" ").append(member.getLastName()).append("</li>");
                 }
                 body.append("</ul>");
             }

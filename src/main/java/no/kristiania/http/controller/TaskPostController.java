@@ -25,7 +25,7 @@ public class TaskPostController implements HttpController {
 
         request.setBody(body);
 
-        Map<String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
+        Map <String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
 
         String taskName = memberQueryMap.get("name");
         String taskDescription = memberQueryMap.get("description");

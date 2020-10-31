@@ -26,7 +26,7 @@ public class MemberPostController implements HttpController {
         String body = request.readBody(socket, contentLength);
         request.setBody(body);
 
-        Map<String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
+        Map <String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
         String memberFirstName = memberQueryMap.get("firstName");
         String memberLastName = memberQueryMap.get("lastName");
         String memberEmail = memberQueryMap.get("email");

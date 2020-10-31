@@ -2,6 +2,7 @@ package no.kristiania.db;
 
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -12,40 +13,36 @@ import java.util.Random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberDaoTest {
+    MemberDao memberDao;
 
-    @Test
-    void shouldListSavedMember() throws SQLException {
+    @BeforeEach
+    void setUp() {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setUrl("jdbc:h2:mem:testdatabase;DB_CLOSE_DELAY=-1");
         Flyway.configure().dataSource(dataSource).load().migrate();
+        memberDao = new MemberDao(dataSource);
+    }
 
-        MemberDao memberDao = new MemberDao(dataSource);
-
+    @Test
+    void shouldListSavedMember() throws SQLException {
         Member member = sampleMember();
         memberDao.insert(member);
 
-        List <String> nameList = new ArrayList();
+        List <String> nameList = new ArrayList <>();
         for(Member m : memberDao.list()){
             nameList.add(m.getFirstName());
         }
-
-        assertThat(nameList)
-                .contains(member.getFirstName());
+        assertThat(nameList).contains(member.getFirstName());
     }
 
     @Test
     void shouldRetrieveSingleMember() throws SQLException {
-        JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setUrl("jdbc:h2:mem:testdatabase;DB_CLOSE_DELAY=-1");
-        Flyway.configure().dataSource(dataSource).load().migrate();
-
-        MemberDao memberDao = new MemberDao(dataSource);
         Member projectMember = sampleMember();
 
         memberDao.insert(projectMember);
 
         assertThat(memberDao.retrieve(projectMember.getId()))
-                //.hasNoNullFieldsOrProperties()
+                .hasNoNullFieldsOrProperties()
                 .usingRecursiveComparison()
                 .isEqualTo(projectMember);
     }

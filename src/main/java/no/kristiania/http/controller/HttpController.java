@@ -1,6 +1,5 @@
 package no.kristiania.http.controller;
 
-import no.kristiania.db.AbstractDao;
 import no.kristiania.http.HttpMessage;
 
 import java.io.IOException;

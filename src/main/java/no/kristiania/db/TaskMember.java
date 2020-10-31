@@ -4,7 +4,8 @@ public class TaskMember implements SetId {
     private long taskId;
     private long memberId;
 
-    public TaskMember() { }
+    public TaskMember() {
+    }
 
     public TaskMember(long taskId, long memberId) {
         this.taskId = taskId;
@@ -16,7 +17,9 @@ public class TaskMember implements SetId {
     }
 
     @Override
-    public void setId(long taskId) { this.taskId = taskId; }
+    public void setId(long taskId) {
+        this.taskId = taskId;
+    }
 
     public long getMemberId() {
         return memberId;

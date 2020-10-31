@@ -8,7 +8,9 @@ import java.util.List;
 
 public class TaskDao extends AbstractDao <Task> {
 
-    public TaskDao(DataSource dataSource) { super(dataSource); }
+    public TaskDao(DataSource dataSource) {
+        super(dataSource);
+    }
 
     public void insert(Task task) throws SQLException {
         insert(task, "insert into task (name, description, status) values(?, ?, CAST(? AS task_status))");

@@ -1,6 +1,5 @@
 package no.kristiania.http.controller;
 
-import no.kristiania.db.Member;
 import no.kristiania.db.Task;
 import no.kristiania.db.TaskDao;
 import no.kristiania.http.HttpMessage;
@@ -20,8 +19,8 @@ public class TaskSelectGetController implements HttpController {
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         StringBuilder body = new StringBuilder();
 
-        for (Task task : taskDao.list()) {
-            body.append("<option value=\"" + task.getId() + "\">")
+        for(Task task : taskDao.list()){
+            body.append("<option value=\"").append(task.getId()).append("\">")
                     .append(task.getName())
                     .append("</option>");
         }

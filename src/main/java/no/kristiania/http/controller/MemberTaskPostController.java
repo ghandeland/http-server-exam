@@ -26,10 +26,10 @@ public class MemberTaskPostController implements HttpController {
         request.setBody(body);
 
 
-        Map<String, String> taskMemberMap = QueryString.queryStringToHashMap(body);
+        Map <String, String> taskMemberMap = QueryString.queryStringToHashMap(body);
 
-        long memberId = Long.valueOf(taskMemberMap.get("member"));
-        long taskId = Long.valueOf(taskMemberMap.get("task"));
+        long memberId = Long.parseLong(taskMemberMap.get("member"));
+        long taskId = Long.parseLong(taskMemberMap.get("task"));
 
         taskMemberDao.insert(taskId, memberId);
 

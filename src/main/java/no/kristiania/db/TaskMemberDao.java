@@ -1,17 +1,13 @@
 package no.kristiania.db;
 
-import no.kristiania.http.HttpMessage;
 import no.kristiania.http.HttpServer;
 
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 // Still don't know if it needs to implement AbstractDao
 public class TaskMemberDao {
@@ -27,30 +23,30 @@ public class TaskMemberDao {
     }
 
     public void insert(long taskId, long memberId) throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("insert into task_member (task_id, member_id) values (?, ?);")) {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement("insert into task_member (task_id, member_id) values (?, ?);")){
                 statement.setLong(1, taskId);
                 statement.setLong(2, memberId);
 
                 statement.execute();
-            } catch (SQLException e) {
-                HttpServer.getLogger().info("ENTRY ERROR: DUPLICATE PRIMARY KEY");
+            }catch(SQLException e){
+                HttpServer.logger.info("ENTRY ERROR: DUPLICATE PRIMARY KEY");
             }
         }
     }
 
-    public LinkedHashSet<Long> retrieveMembersByTaskId(long taskId) throws SQLException {
+    public LinkedHashSet <Long> retrieveMembersByTaskId(long taskId) throws SQLException {
 
-        LinkedHashSet<Long> memberIdSet = new LinkedHashSet<>();
+        LinkedHashSet <Long> memberIdSet = new LinkedHashSet <>();
 
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("select * from task_member where task_id = ?")) {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement("select * from task_member where task_id = ?")){
                 statement.setLong(1, taskId);
 
                 statement.executeQuery();
 
-                try (ResultSet rs = statement.getResultSet()) {
-                    while(rs.next()) {
+                try(ResultSet rs = statement.getResultSet()){
+                    while(rs.next()){
                         memberIdSet.add(rs.getLong("member_id"));
                     }
 
@@ -60,18 +56,18 @@ public class TaskMemberDao {
         }
     }
 
-    public LinkedHashSet<Long> retrieveTasksByMemberId(long memberId) throws SQLException {
+    public LinkedHashSet <Long> retrieveTasksByMemberId(long memberId) throws SQLException {
 
-        LinkedHashSet<Long> taskIdSet = new LinkedHashSet<>();
+        LinkedHashSet <Long> taskIdSet = new LinkedHashSet <>();
 
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("select * from task_member where member_id = ?")) {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement("select * from task_member where member_id = ?")){
                 statement.setLong(1, memberId);
 
                 statement.executeQuery();
 
-                try (ResultSet rs = statement.getResultSet()) {
-                    while(rs.next()) {
+                try(ResultSet rs = statement.getResultSet()){
+                    while(rs.next()){
                         taskIdSet.add(rs.getLong("task_id"));
                     }
 

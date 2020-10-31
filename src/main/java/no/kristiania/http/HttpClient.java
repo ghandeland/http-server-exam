@@ -24,10 +24,6 @@ public class HttpClient {
         this.requestBody = requestBody;
     }
 
-    public void closeSocket() throws IOException {
-        socket.close();
-    }
-
 
     public HttpMessage executeRequest() throws IOException {
         HttpMessage request = new HttpMessage();

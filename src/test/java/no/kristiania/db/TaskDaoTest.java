@@ -23,7 +23,6 @@ public class TaskDaoTest {
         taskDao = new TaskDao(dataSource);
     }
 
-
     @Test
     void shouldRetrieveSavedProject() throws SQLException {
 
@@ -39,8 +38,6 @@ public class TaskDaoTest {
 
     @Test
     void ShouldRetrieveSingleProject() throws SQLException {
-
-
         Task sampleTask1 = sampleTask();
         Task sampleTask2 = sampleTask();
         Task sampleTask3 = sampleTask();
@@ -62,11 +59,8 @@ public class TaskDaoTest {
         }
     }
 
-
-
     public static Task sampleTask() {
         return new Task(sampleTaskName(), sampleTaskDescription());
-
     }
 
     public static String sampleTaskName() {

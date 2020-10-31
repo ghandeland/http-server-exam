@@ -1,14 +1,15 @@
 package no.kristiania.db;
 
 public class Task implements SetId {
-    public enum TaskStatus {OPEN, IN_PROGRESS, FINISHED, CANCELED};
+    public enum TaskStatus {OPEN, IN_PROGRESS, FINISHED, CANCELED}
 
     long id;
     String name;
     String description;
     TaskStatus status;
 
-    public Task() {}
+    public Task() {
+    }
 
     public Task(int id, String name, String description) {
         this.id = id;
@@ -26,7 +27,7 @@ public class Task implements SetId {
 
         this.name = taskName;
         this.description = taskDescription;
-        this.status = status.valueOf(taskStatus);
+        this.status = TaskStatus.valueOf(taskStatus);
     }
 
     public TaskStatus getStatus() {
