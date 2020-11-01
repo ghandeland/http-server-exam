@@ -5,11 +5,13 @@ public class Member implements SetId {
     private String firstName;
     private String lastName;
     private String email;
+    private Long departmentId;
 
     public Member(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        departmentId = null;
     }
 
     public Member(int id, String firstName, String lastName, String email) {
@@ -20,6 +22,13 @@ public class Member implements SetId {
     }
 
     public Member() {
+    }
+
+    public Member(String memberFirstName, String memberLastName, String memberEmail, Long departmentId) {
+        this.firstName = memberFirstName;
+        this.lastName = memberLastName;
+        this.email = memberEmail;
+        this.departmentId = departmentId;
     }
 
     public long getId() {
@@ -54,4 +63,14 @@ public class Member implements SetId {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void setDepartmentId(Long departmentId) {
+        if(departmentId == 0L) {
+            this.departmentId = null;
+        } else {
+            this.departmentId = departmentId;
+        }
+    }
+
+    public Long getDepartmentId() { return departmentId; }
 }

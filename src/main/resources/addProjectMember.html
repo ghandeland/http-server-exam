@@ -11,11 +11,26 @@
     <p><label>First Name: <input name="firstName"/></label></p>
     <p><label>Last Name: <input name="lastName"/></label></p>
     <p><label>Email: <input name="email" type="email"/></label></p>
+
     <p>
-        <button>Submit</button>
+        <label>Department:
+            <select id="department-select" name="department">
+                <option value="-1">Not specified</option>
+            </select>
+        </label>
     </p>
+
+    <p><button>Submit</button></p>
     <br>
     <a href="http://localhost:8080/index.html">See overview</a>
 </form>
+
+<script>
+    fetch("/api/departmentSelect").then(response => response.text()).then(html => {
+        document.getElementById("department-select").innerHTML += html;
+    });
+
+</script>
+
 </body>
 </html>

@@ -40,7 +40,7 @@ public class TaskDaoTest {
     }
 
     @Test
-    void shouldRetrieveSavedProject() throws SQLException {
+    void shouldRetrieveSavedTask() throws SQLException {
 
         Task taskSample = sampleTask();
         taskDao.insert(taskSample);
@@ -53,7 +53,7 @@ public class TaskDaoTest {
     }
 
     @Test
-    void ShouldRetrieveSingleProject() throws SQLException {
+    void shouldRetrieveTaskList() throws SQLException {
         Task sampleTask1 = sampleTask();
         Task sampleTask2 = sampleTask();
         Task sampleTask3 = sampleTask();
