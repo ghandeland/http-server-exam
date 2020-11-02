@@ -1,7 +1,8 @@
 package no.kristiania.http.controller;
 
+import no.kristiania.db.Department;
+import no.kristiania.db.DepartmentDao;
 import no.kristiania.db.Member;
-import no.kristiania.db.MemberDao;
 import no.kristiania.http.HttpMessage;
 import no.kristiania.http.QueryString;
 
@@ -10,12 +11,12 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class MemberPostController implements HttpController {
+public class DepartmentPostController implements HttpController {
 
-    private MemberDao memberDao;
+    private DepartmentDao departmentDao;
 
-    public MemberPostController(MemberDao memberDao) {
-        this.memberDao = memberDao;
+    public DepartmentPostController(DepartmentDao departmentDao) {
+        this.departmentDao = departmentDao;
     }
 
     @Override
@@ -26,18 +27,12 @@ public class MemberPostController implements HttpController {
         String body = request.readBody(socket, contentLength);
         request.setBody(body);
 
-        Map <String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
-        String memberFirstName = memberQueryMap.get("firstName");
-        String memberLastName = memberQueryMap.get("lastName");
-        String memberEmail = memberQueryMap.get("email");
+        Map<String, String> memberQueryMap = QueryString.queryStringToHashMap(body);
+        String departmentName = memberQueryMap.get("name");
 
-        Long departmentId = null;
-        Long departmentValue = Long.valueOf(memberQueryMap.get("department"));
-        if(departmentValue != -1L) departmentId = departmentValue;
+        Department department = new Department(departmentName);
 
-        Member member = new Member(memberFirstName, memberLastName, memberEmail, departmentId);
-
-        memberDao.insert(member);
+        departmentDao.insert(department);
 
         HttpMessage response = new HttpMessage();
         response.setCodeAndStartLine("204");
@@ -45,4 +40,6 @@ public class MemberPostController implements HttpController {
         response.setHeader("Content-length", "0");
         response.write(socket);
     }
+
+
 }

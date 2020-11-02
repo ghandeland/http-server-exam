@@ -125,7 +125,7 @@ public class HttpServerTest {
 
     @Test
     void shouldPostHttpContent() throws IOException, SQLException {
-        HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewMember", "firstName=Someone&lastName=Somelastname&email=someone@example.com");
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewMember", "firstName=Someone&lastName=Somelastname&email=someone@example.com&department=-1");
 
         HttpMessage response = client.executeRequest();
         assertEquals("204", response.getCode());

@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static no.kristiania.db.DepartmentDaoTest.sampleDepartment;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberDaoTest {
     MemberDao memberDao;
+    JdbcDataSource dataSource;
 
     public static Member sampleMember() {
         return new Member(sampleFirstName(), sampleLastName(), sampleEmail());
@@ -42,6 +44,7 @@ public class MemberDaoTest {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setUrl("jdbc:h2:mem:testdatabase;DB_CLOSE_DELAY=-1");
         Flyway.configure().dataSource(dataSource).load().migrate();
+        this.dataSource = dataSource;
         memberDao = new MemberDao(dataSource);
     }
 
@@ -64,9 +67,48 @@ public class MemberDaoTest {
         memberDao.insert(projectMember);
 
         assertThat(memberDao.retrieve(projectMember.getId()))
-                .hasNoNullFieldsOrProperties()
                 .usingRecursiveComparison()
                 .isEqualTo(projectMember);
+    }
+
+    @Test
+    void shouldRetrieveCorrectMemberWhileCheckingDepartment() throws SQLException {
+
+        DepartmentDao departmentDao = new DepartmentDao(dataSource);
+
+        Department sampleDepartment1 = sampleDepartment();
+        Department sampleDepartment2 = sampleDepartment();
+
+        departmentDao.insert(sampleDepartment1);
+        departmentDao.insert(sampleDepartment2);
+
+        Member sampleMember1 = sampleMember();
+        Member sampleMember2 = sampleMember();
+
+        sampleMember1.setDepartmentId(sampleDepartment1.getId());
+        sampleMember2.setDepartmentId(sampleDepartment2.getId());
+
+        memberDao.insert(sampleMember1);
+        memberDao.insert(sampleMember2);
+
+        Member retrievedMember1 = memberDao.retrieve(sampleMember1.getId());
+        Member retrievedMember2 = memberDao.retrieve(sampleMember2.getId());
+
+        assertThat(retrievedMember1)
+                .hasNoNullFieldsOrProperties()
+                .usingRecursiveComparison()
+                .isEqualTo(sampleMember1);
+
+        assertThat(retrievedMember2)
+                .hasNoNullFieldsOrProperties()
+                .usingRecursiveComparison()
+                .isEqualTo(sampleMember2);
+
+        long retrievedDepartmentId1 = retrievedMember1.getDepartmentId();
+        long retrievedDepartmentId2 = retrievedMember2.getDepartmentId();
+
+        assertThat(retrievedDepartmentId1).isEqualTo(sampleDepartment1.getId());
+        assertThat(retrievedDepartmentId2).isEqualTo(sampleDepartment2.getId());
     }
 
 }

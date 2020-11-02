@@ -1,5 +1,6 @@
 package no.kristiania.http;
 
+import no.kristiania.db.DepartmentDao;
 import no.kristiania.db.MemberDao;
 import no.kristiania.db.TaskDao;
 import no.kristiania.db.TaskMemberDao;
@@ -24,25 +25,31 @@ public class HttpServer {
 
     public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
     private final ServerSocket serverSocket;
-    private final TaskMemberDao taskMemberDao;
     private final Map <String, HttpController> controllers;
+
+    private DepartmentDao departmentDao;
     private MemberDao memberDao;
     private TaskDao taskDao;
+    private TaskMemberDao taskMemberDao;
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
         this.memberDao = new MemberDao(dataSource);
         this.taskDao = new TaskDao(dataSource);
         this.taskMemberDao = new TaskMemberDao(dataSource);
+        this.departmentDao = new DepartmentDao(dataSource);
 
         controllers = Map.of(
                 "/api/addNewMember", new MemberPostController(memberDao),
                 "/api/addNewTask", new TaskPostController(taskDao),
                 "/api/addMemberToTask", new MemberTaskPostController(taskMemberDao),
-                "/api/member", new MemberGetController(memberDao),
+                "/api/member", new MemberGetController(memberDao, departmentDao),
                 "/api/task", new TaskGetController(taskDao, memberDao, taskMemberDao),
                 "/api/memberSelect", new MemberSelectGetController(memberDao),
-                "/api/taskSelect", new TaskSelectGetController(taskDao)
+                "/api/taskSelect", new TaskSelectGetController(taskDao),
+                "/api/department", new DepartmentGetController(departmentDao),
+                "/api/addNewDepartment", new DepartmentPostController(departmentDao),
+                "/api/departmentSelect", new DepartmentSelectGetController(departmentDao)
         );
 
         new Thread(() -> {

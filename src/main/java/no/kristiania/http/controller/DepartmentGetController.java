@@ -3,45 +3,34 @@ package no.kristiania.http.controller;
 import no.kristiania.db.Department;
 import no.kristiania.db.DepartmentDao;
 import no.kristiania.db.Member;
-import no.kristiania.db.MemberDao;
+import no.kristiania.db.Task;
 import no.kristiania.http.HttpMessage;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.LinkedHashSet;
 
-public class MemberGetController implements HttpController {
+public class DepartmentGetController implements HttpController {
+
     private final DepartmentDao departmentDao;
-    private MemberDao memberDao;
 
-    public MemberGetController(MemberDao memberDao, DepartmentDao departmentDao) {
-        this.memberDao = memberDao;
+    public DepartmentGetController(DepartmentDao departmentDao) {
         this.departmentDao = departmentDao;
     }
-
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         StringBuilder body = new StringBuilder();
 
-        body.append("<ul>");
+        body.append("<strong>Departments:</strong>")
+                .append("<ul>");
 
-        for(Member member : memberDao.list()){
-            Long departmentId = member.getDepartmentId();
+        for(Department department : departmentDao.list()){
 
-            body.append("<li><strong>Name:</strong> ")
-                    .append(member.getFirstName())
-                    .append(" ")
-                    .append(member.getLastName())
-                    .append(" - <strong>Email:</strong> ")
-                    .append(member.getEmail());
-
-            if(departmentId != null) {
-                body.append(" - <strong>Department:</strong> ")
-                        .append(departmentDao.retrieve(departmentId).getName());
-            }
-
-            body.append("</li>");
+            body.append("<li>")
+                    .append(department.getName())
+                    .append("</li>");
         }
 
         body.append("</ul>");

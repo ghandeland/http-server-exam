@@ -64,6 +64,8 @@ public class HttpMessage {
             case "401":
                 startLine = "HTTP/1.1 401 Unauthorized";
                 break;
+            case "205":
+                startLine = "HTTP/1.1 205 Reset Content";
         }
 
         setStartLine(startLine);
