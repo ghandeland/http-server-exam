@@ -6,6 +6,13 @@ entity member {
     first_name
     last_name
     email
+    department_id (fk)
+    }
+
+    entity department {
+    id (pk)
+    ---
+    name
     }
 
 entity task {
@@ -22,6 +29,7 @@ entity task_member {
     task_id (fk)
     member_id (fk)
 }
+
 enum task_status {
     OPEN
     IN_PROGRESS
@@ -31,6 +39,7 @@ enum task_status {
 
 member ||--o{ task_member
 task ||--o{ task_member
-task_status ||- task
+task_status ||-- task
+department |o--o{ member
 
 @enduml
