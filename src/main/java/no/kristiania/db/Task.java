@@ -60,5 +60,5 @@ public class Task implements SetId {
         this.description = description;
     }
 
-    public enum TaskStatus {OPEN, IN_PROGRESS, FINISHED, CANCELED}
+    public static enum TaskStatus {OPEN, IN_PROGRESS, FINISHED, CANCELED}
 }

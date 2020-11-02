@@ -18,9 +18,20 @@
 <h1>Project members:</h1>
 <div id="members"></div>
 <br><br>
+<form name="statusForm" method="POST" action="/api/filterTask">
+    <Label for="status">Filter on task</Label>
+    <select name="taskStatus" id="status" onchange="this.form.submit()">
+        <option value='*' onclick="showFilteredTasks()">Show all</option>
+        <option value="OPEN">OPEN</option>
+        <option value="IN_PROGRESS">IN_PROGRESS</option>
+        <option value="FINISHED">FINISHED</option>
+        <option value="CANCELED">CANCELED</option>
+    </select>
+</form>
+<button onclick="showFilteredTasks()"></button>
+
 <h1>Tasks:</h1>
 <div id="tasks"></div>
-
 
 </body>
 <script>
@@ -31,6 +42,11 @@
     fetch("/api/task").then(response => response.text()).then(html => {
         document.getElementById("tasks").innerHTML = html;
     });
+    function showFilteredTasks() {
+        fetch("/api/showFilterTask").then(response => response.text()).then(html => {
+            document.getElementById("tasks").innerHTML = html;
+        });
+    }
 
 </script>
 </html>

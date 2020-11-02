@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.Properties;
 
@@ -27,29 +28,26 @@ public class HttpServer {
     private final ServerSocket serverSocket;
     private final Map <String, HttpController> controllers;
 
-    private DepartmentDao departmentDao;
-    private MemberDao memberDao;
-    private TaskDao taskDao;
-    private TaskMemberDao taskMemberDao;
-
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
-        this.memberDao = new MemberDao(dataSource);
-        this.taskDao = new TaskDao(dataSource);
-        this.taskMemberDao = new TaskMemberDao(dataSource);
-        this.departmentDao = new DepartmentDao(dataSource);
+        MemberDao memberDao = new MemberDao(dataSource);
+        TaskDao taskDao = new TaskDao(dataSource);
+        TaskMemberDao taskMemberDao = new TaskMemberDao(dataSource);
+        DepartmentDao departmentDao = new DepartmentDao(dataSource);
 
-        controllers = Map.of(
-                "/api/addNewMember", new MemberPostController(memberDao),
-                "/api/addNewTask", new TaskPostController(taskDao),
-                "/api/addMemberToTask", new MemberTaskPostController(taskMemberDao),
-                "/api/member", new MemberGetController(memberDao, departmentDao),
-                "/api/task", new TaskGetController(taskDao, memberDao, taskMemberDao),
-                "/api/memberSelect", new MemberSelectGetController(memberDao),
-                "/api/taskSelect", new TaskSelectGetController(taskDao),
-                "/api/department", new DepartmentGetController(departmentDao),
-                "/api/addNewDepartment", new DepartmentPostController(departmentDao),
-                "/api/departmentSelect", new DepartmentSelectGetController(departmentDao)
+        controllers = Map.ofEntries(
+                new SimpleEntry <>("/api/addNewMember", new MemberPostController(memberDao)),
+                new SimpleEntry <>("/api/addNewTask", new TaskPostController(taskDao)),
+                new SimpleEntry <>("/api/addMemberToTask", new MemberTaskPostController(taskMemberDao)),
+                new SimpleEntry <>("/api/member", new MemberGetController(memberDao, departmentDao)),
+                new SimpleEntry <>("/api/task", new TaskGetController(taskDao, memberDao, taskMemberDao)),
+                new SimpleEntry <>("/api/memberSelect", new MemberSelectGetController(memberDao)),
+                new SimpleEntry <>("/api/taskSelect", new TaskSelectGetController(taskDao)),
+                new SimpleEntry <>("/api/department", new DepartmentGetController(departmentDao)),
+                new SimpleEntry <>("/api/addNewDepartment", new DepartmentPostController(departmentDao)),
+                new SimpleEntry <>("/api/departmentSelect", new DepartmentSelectGetController(departmentDao)),
+                new SimpleEntry <>("/api/filterTask", new TaskFilterController(taskDao)),
+                new SimpleEntry <>("/api/showFilterTask", new TaskGetFilterController(taskDao))
         );
 
         new Thread(() -> {

@@ -1,9 +1,11 @@
 package no.kristiania.db;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDao extends AbstractDao <Task> {
@@ -27,6 +29,27 @@ public class TaskDao extends AbstractDao <Task> {
             return null;
         }
         return task;
+    }
+
+    public List <Task> filter(String filterValue) throws SQLException {
+        if(filterValue.equals("*")){
+            return list();
+        }else{
+            Task.TaskStatus.valueOf(filterValue.trim());
+            String enumStatus = String.valueOf(Task.TaskStatus.valueOf(filterValue.trim()));
+
+            try(Connection connection = dataSource.getConnection()){
+                try(PreparedStatement statement = connection.prepareStatement("SELECT * FROM task WHERE status =" + "'" + enumStatus + "'")){
+                    try(ResultSet rs = statement.executeQuery()){
+                        List <Task> taskList = new ArrayList <>();
+                        while(rs.next()){
+                            taskList.add(mapRow(rs));
+                        }
+                        return taskList;
+                    }
+                }
+            }
+        }
     }
 
     @Override
