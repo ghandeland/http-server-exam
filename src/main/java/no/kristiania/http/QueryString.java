@@ -4,17 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QueryString {
-    private Map <String, String> queryPairs = new HashMap <>();
-
-    public QueryString(String queryString) {
-
-        String[] queryParameters = queryString.split("&");
-
-        for(String parameter : queryParameters){
-            String[] parameterPair = parameter.split("=");
-            queryPairs.put(parameterPair[0], parameterPair[1]);
-        }
-    }
 
     public static Map <String, String> queryStringToHashMap(String queryString) {
         Map <String, String> queryMap = new HashMap <>();

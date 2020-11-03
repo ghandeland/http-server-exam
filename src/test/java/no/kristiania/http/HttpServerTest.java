@@ -1,7 +1,6 @@
 package no.kristiania.http;
 
-import no.kristiania.db.Member;
-import no.kristiania.db.MemberDao;
+import no.kristiania.db.*;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HttpServerTest {
 
     private HttpServer server;
-    private JdbcDataSource dataSource = new JdbcDataSource();
+    private final JdbcDataSource dataSource = new JdbcDataSource();
 
     @BeforeEach
     void SetUp() throws IOException {
@@ -124,7 +123,7 @@ public class HttpServerTest {
     }
 
     @Test
-    void shouldPostHttpContent() throws IOException, SQLException {
+    void shouldPostMember() throws IOException, SQLException {
         HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewMember", "firstName=Someone&lastName=Somelastname&email=someone@example.com&department=-1");
 
         HttpMessage response = client.executeRequest();
@@ -138,4 +137,65 @@ public class HttpServerTest {
         }
         assertThat(listName).contains("SomeoneSomelastname");
     }
+    @Test
+    void shouldPostTask() throws IOException, SQLException {
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewTask", "name=Someone&description=Some&status=OPEN");
+
+        HttpMessage response = client.executeRequest();
+        assertEquals("204", response.getCode());
+
+        TaskDao taskDao = new TaskDao(dataSource);
+
+        List <String> tasklist = new ArrayList <>();
+        for(Task task : taskDao.list()){
+            tasklist.add(task.getName() +" "+ task.getDescription() + " "+task.getStatus());
+        }
+        assertThat(tasklist).contains("Someone Some OPEN");
+    }
+    @Test
+    void MemberTaskPostController() throws IOException, SQLException {
+        HttpClient clientMember = new HttpClient("localhost", server.getPort(), "/api/addNewMember", "firstName=Someone&lastName=Somelastname&email=someone@example.com&department=-1");
+        clientMember.executeRequest();
+        HttpClient clientTask = new HttpClient("localhost", server.getPort(), "/api/addNewTask", "name=Someone&description=Some&status=OPEN");
+        clientTask.executeRequest();
+
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addMemberToTask", "member=1&task=1");
+        HttpMessage response = client.executeRequest();
+        TaskMemberDao taskMemberDao = new TaskMemberDao(dataSource);
+
+        assertEquals("204", response.getCode());
+        assertThat(taskMemberDao.retrieveMembersByTaskId(1L)).contains(1L);
+    }
+    @Test
+    void DepartmentPost() throws IOException, SQLException {
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewDepartment", "name=lorumipsum");
+        HttpMessage response = client.executeRequest();
+        DepartmentDao departmentDao = new DepartmentDao(dataSource);
+
+        assertEquals("204", response.getCode());
+
+        List <String> arrayList = new ArrayList <>();
+        for(Department department : departmentDao.list()){
+            arrayList.add(department.getName());
+        }
+        assertThat(arrayList).contains("lorumipsum");
+    }
+    @Test
+    void MemberTaskPost() throws IOException, SQLException {
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewDepartment", "name=lorumipsum");
+        HttpMessage response = client.executeRequest();
+        DepartmentDao departmentDao = new DepartmentDao(dataSource);
+
+        assertEquals("204", response.getCode());
+
+        List <String> arrayList = new ArrayList <>();
+        for(Department department : departmentDao.list()){
+            arrayList.add(department.getName());
+        }
+        assertThat(arrayList).contains("lorumipsum");
+    }
+
+
+
+
 }
