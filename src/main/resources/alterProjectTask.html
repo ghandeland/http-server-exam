@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>alter task</title>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<form action="/api/alterTask" method="post">
+    <h1>alter task:</h1>
+    <p>
+        <label for="task-select">Task:</label>
+        <select id="task-select" name="task"></select>
+
+    </p>
+    <p>
+        <label for="status-select">Status: </label>
+        <select id="status-select" name="status">
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In progress</option>
+            <option value="FINISHED">Finished</option>
+            <option value="CANCELED">Canceled</option>
+        </select>
+    </p>
+    <p>
+        <button>Submit</button>
+    </p>
+</form>
+</body>
+<script>
+
+    fetch("/api/taskSelect").then(response => response.text()).then(html => {
+        document.getElementById("task-select").innerHTML = html;
+    });
+</script>
+</html>

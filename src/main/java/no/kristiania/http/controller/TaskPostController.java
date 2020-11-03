@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class TaskPostController implements HttpController {
-    private TaskDao taskDao;
+    private final TaskDao taskDao;
 
     public TaskPostController(TaskDao taskDao) {
         this.taskDao = taskDao;

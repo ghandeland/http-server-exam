@@ -100,16 +100,16 @@ public class TaskDaoTest {
 
         for(int i = 0 ; i < 3 ; i++){
             assertThat(taskList.get(i)).hasNoNullFieldsOrProperties();
-            assertThat(taskDao.filter(taskList.get(i).getStatus().toString()))
+            assertThat(taskDao.filterStatus(taskList.get(i).getStatus().toString()))
                     .extracting(Task::getId)
                     .contains(taskList.get(i).getId());
-            assertThat(taskDao.filter(taskList.get(i).getStatus().toString()))
+            assertThat(taskDao.filterStatus(taskList.get(i).getStatus().toString()))
                     .extracting(Task::getName)
                     .contains(taskList.get(i).getName());
-            assertThat(taskDao.filter(taskList.get(i).getStatus().toString()))
+            assertThat(taskDao.filterStatus(taskList.get(i).getStatus().toString()))
                     .extracting(Task::getDescription)
                     .contains(taskList.get(i).getDescription());
-            assertThat(taskDao.filter(taskList.get(i).getStatus().toString()))
+            assertThat(taskDao.filterStatus(taskList.get(i).getStatus().toString()))
                     .extracting(Task::getStatus)
                     .contains(taskList.get(i).getStatus());
         }

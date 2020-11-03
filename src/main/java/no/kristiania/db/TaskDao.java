@@ -1,11 +1,9 @@
 package no.kristiania.db;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDao extends AbstractDao <Task> {
@@ -24,32 +22,23 @@ public class TaskDao extends AbstractDao <Task> {
 
     public Task retrieve(long id) throws SQLException {
         Task task = retrieve(id, "select * from task where id = ?");
-        if(task == null){
+        if(task == null)
             System.out.println("Task not found");
-            return null;
-        }
         return task;
     }
 
-    public List <Task> filter(String filterValue) throws SQLException {
-        if(filterValue.equals("*")){
+    public List <Task> filterStatus(String value) throws SQLException {
+        if(value.equals("*")){
             return list();
         }else{
-            Task.TaskStatus.valueOf(filterValue.trim());
-            String enumStatus = String.valueOf(Task.TaskStatus.valueOf(filterValue.trim()));
-
-            try(Connection connection = dataSource.getConnection()){
-                try(PreparedStatement statement = connection.prepareStatement("SELECT * FROM task WHERE status =" + "'" + enumStatus + "'")){
-                    try(ResultSet rs = statement.executeQuery()){
-                        List <Task> taskList = new ArrayList <>();
-                        while(rs.next()){
-                            taskList.add(mapRow(rs));
-                        }
-                        return taskList;
-                    }
-                }
-            }
+            Task.TaskStatus.valueOf(value.trim());
+            String enumStatus = String.valueOf(Task.TaskStatus.valueOf(value.trim()));
+            return filter(enumStatus, "SELECT * FROM task WHERE status = CAST(? AS task_status)");
         }
+    }
+
+    public void alter(long taskId, String value) throws SQLException {
+        alter(taskId, value, "UPDATE task SET status = CAST(? AS task_status) WHERE id = ?");
     }
 
     @Override
@@ -62,12 +51,10 @@ public class TaskDao extends AbstractDao <Task> {
     @Override
     protected Task mapRow(ResultSet rs) throws SQLException {
         Task task = new Task();
-
         task.setId(rs.getLong("id"));
         task.setName(rs.getString("name"));
         task.setDescription(rs.getString("description"));
         task.setStatus(rs.getString("status"));
-
         return task;
     }
 }

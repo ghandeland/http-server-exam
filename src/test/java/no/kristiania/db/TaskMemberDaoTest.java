@@ -68,5 +68,4 @@ public class TaskMemberDaoTest {
         assertThat(taskIds).contains(task1.getId());
         assertThat(taskIds).contains(task2.getId());
     }
-
 }
