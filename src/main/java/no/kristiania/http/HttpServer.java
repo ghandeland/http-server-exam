@@ -47,7 +47,7 @@ public class HttpServer {
                 new SimpleEntry <>("/api/addNewDepartment", new DepartmentPostController(departmentDao)),
                 new SimpleEntry <>("/api/departmentSelect", new DepartmentSelectGetController(departmentDao)),
                 new SimpleEntry <>("/api/filterTask", new TaskFilterController(taskDao)),
-                new SimpleEntry <>("/api/showFilterTask", new TaskGetFilterController(taskDao))
+                new SimpleEntry <>("/api/showFilterTask", new TaskGetFilterController(memberDao, taskMemberDao))
         );
 
         new Thread(() -> {
@@ -112,16 +112,6 @@ public class HttpServer {
 
         if(requestTarget.equals("/") || requestTarget.equals("")){
             requestTarget = "/index.html";
-        }
-
-        if(requestPath.equals("/favicon.ico")){
-            handleFileRequest(socket, response, requestPath);
-            return;
-        }
-
-        if(requestMethod.equals("POST") || requestTarget.equals("/submit")){
-            getController(requestPath).handle(request, socket);
-            return;
         }
 
         if(requestPath.startsWith("/api/")){
