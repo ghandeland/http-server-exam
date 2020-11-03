@@ -5,9 +5,6 @@ public class TaskMember implements SetId {
     private long taskId;
     private long memberId;
 
-    public TaskMember() {
-    }
-
     public TaskMember(long taskId, long memberId) {
         this.taskId = taskId;
         this.memberId = memberId;
