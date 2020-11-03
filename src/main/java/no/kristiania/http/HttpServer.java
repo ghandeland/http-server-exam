@@ -159,9 +159,8 @@ public class HttpServer {
     }
 
     private void handleFileRequest(Socket socket, HttpMessage response, String requestPath) throws IOException {
-
         try(InputStream inputStream = getClass().getResourceAsStream(requestPath)){
-            if(inputStream == null){
+            if(inputStream == null||requestPath.endsWith(".java")||requestPath.endsWith(".class")){
                 String body = requestPath + " does not exist";
 
                 response.setCodeAndStartLine("404");
