@@ -1,5 +1,7 @@
 package no.kristiania.db;
 
+import no.kristiania.http.HttpServer;
+
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public abstract class AbstractDao<T extends SetId> {
         }
     }
 
-    public List <T> list(String sql) throws SQLException {
+    protected List <T> list(String sql) throws SQLException {
         try(Connection connection = dataSource.getConnection()){
             try(PreparedStatement statement = connection.prepareStatement(sql)){
                 try(ResultSet rs = statement.executeQuery()){
@@ -56,11 +58,10 @@ public abstract class AbstractDao<T extends SetId> {
         }
     }
 
-    public List <T> filter(String sql, String value) throws SQLException {
-
+    protected List <T> filter(Object value, String sql) throws SQLException {
         try(Connection connection = dataSource.getConnection()){
             try(PreparedStatement statement = connection.prepareStatement(sql)){
-                statement.setString(1, value);
+                statement.setObject(1, value);
                 try(ResultSet rs = statement.executeQuery()){
                     List <T> tList = new ArrayList <>();
                     while(rs.next()){
@@ -72,6 +73,16 @@ public abstract class AbstractDao<T extends SetId> {
         }
     }
 
+    protected void alter(long id, Object value, String sql) throws SQLException {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement(sql)){
+                statement.setObject(1, value);
+                statement.setLong(2, id);
+                statement.executeUpdate();
+                HttpServer.logger.info("Altered TABLE \"{}\", with value to \"{}\" on id {}", sql.split(" ")[1], value, id);
+            }
+        }
+    }
 
     protected abstract void setDataOnStatement(PreparedStatement statement, T t) throws SQLException;
 

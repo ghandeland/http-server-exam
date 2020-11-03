@@ -1,7 +1,6 @@
 package no.kristiania.db;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,10 +22,8 @@ public class TaskDao extends AbstractDao <Task> {
 
     public Task retrieve(long id) throws SQLException {
         Task task = retrieve(id, "select * from task where id = ?");
-        if(task == null){
+        if(task == null)
             System.out.println("Task not found");
-            return null;
-        }
         return task;
     }
 
@@ -36,18 +33,12 @@ public class TaskDao extends AbstractDao <Task> {
         }else{
             Task.TaskStatus.valueOf(value.trim());
             String enumStatus = String.valueOf(Task.TaskStatus.valueOf(value.trim()));
-            return filter("SELECT * FROM task WHERE status = CAST(? AS task_status)", enumStatus);
+            return filter(enumStatus, "SELECT * FROM task WHERE status = CAST(? AS task_status)");
         }
     }
 
-    public void alter(String value, long taskId) throws SQLException {
-        try(Connection connection = dataSource.getConnection()){
-            try(PreparedStatement statement = connection.prepareStatement("UPDATE task SET status = CAST(? AS task_status) WHERE id = ?")){
-                statement.setString(1, value);
-                statement.setLong(2, taskId);
-                statement.executeUpdate();
-            }
-        }
+    public void alter(long taskId, String value) throws SQLException {
+        alter(taskId, value, "UPDATE task SET status = CAST(? AS task_status) WHERE id = ?");
     }
 
     @Override
@@ -60,12 +51,10 @@ public class TaskDao extends AbstractDao <Task> {
     @Override
     protected Task mapRow(ResultSet rs) throws SQLException {
         Task task = new Task();
-
         task.setId(rs.getLong("id"));
         task.setName(rs.getString("name"));
         task.setDescription(rs.getString("description"));
         task.setStatus(rs.getString("status"));
-
         return task;
     }
 }
