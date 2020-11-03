@@ -46,8 +46,8 @@ public class HttpServer {
                 new SimpleEntry <>("/api/department", new DepartmentGetController(departmentDao)),
                 new SimpleEntry <>("/api/addNewDepartment", new DepartmentPostController(departmentDao)),
                 new SimpleEntry <>("/api/departmentSelect", new DepartmentSelectGetController(departmentDao)),
-                new SimpleEntry <>("/api/filterTask", new TaskFilterController(taskDao)),
-                new SimpleEntry <>("/api/showFilterTask", new TaskGetFilterController(memberDao, taskMemberDao))
+                new SimpleEntry <>("/api/filterTask", new TaskFilterPostController(taskDao)),
+                new SimpleEntry <>("/api/showFilterTask", new TaskFilterGetController(memberDao, taskMemberDao))
         );
 
         new Thread(() -> {

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HttpServerTest {
 
     private HttpServer server;
-    private JdbcDataSource dataSource = new JdbcDataSource();
+    private final JdbcDataSource dataSource = new JdbcDataSource();
 
     @BeforeEach
     void SetUp() throws IOException {
@@ -165,6 +165,20 @@ public class HttpServerTest {
 
         assertEquals("204", response.getCode());
         assertThat(taskMemberDao.retrieveMembersByTaskId(1L)).contains(1L);
+    }
+    @Test
+    void DepartmentPost() throws IOException, SQLException {
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewDepartment", "name=lorumipsum");
+        HttpMessage response = client.executeRequest();
+        DepartmentDao departmentDao = new DepartmentDao(dataSource);
+
+        assertEquals("204", response.getCode());
+
+        List <String> arrayList = new ArrayList <>();
+        for(Department department : departmentDao.list()){
+            arrayList.add(department.getName());
+        }
+        assertThat(arrayList).contains("lorumipsum");
     }
     @Test
     void MemberTaskPost() throws IOException, SQLException {

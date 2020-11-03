@@ -11,12 +11,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-public class TaskFilterController implements HttpController {
+public class TaskFilterPostController implements HttpController {
     private static List <Task> filterList;
     private final TaskDao taskDao;
 
 
-    public TaskFilterController(TaskDao taskDao) {
+    public TaskFilterPostController(TaskDao taskDao) {
         this.taskDao = taskDao;
     }
 

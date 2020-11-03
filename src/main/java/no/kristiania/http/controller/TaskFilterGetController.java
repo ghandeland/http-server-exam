@@ -11,12 +11,12 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
 
-public class TaskGetFilterController implements HttpController {
+public class TaskFilterGetController implements HttpController {
 
     private final MemberDao memberDao;
     private final TaskMemberDao taskMemberDao;
 
-    public TaskGetFilterController(MemberDao memberDao, TaskMemberDao taskMemberDao) {
+    public TaskFilterGetController(MemberDao memberDao, TaskMemberDao taskMemberDao) {
         this.memberDao = memberDao;
         this.taskMemberDao = taskMemberDao;
     }
@@ -26,8 +26,8 @@ public class TaskGetFilterController implements HttpController {
         StringBuilder body = new StringBuilder();
 
         body.append("<ul>");
-        if(TaskFilterController.getFilterList() != null){
-            for(Task task : TaskFilterController.getFilterList()){
+        if(TaskFilterPostController.getFilterList() != null){
+            for(Task task : TaskFilterPostController.getFilterList()){
 
                 body.append("<li id =\"task-li-").append(task.getId()).append("\"><strong>Task: </strong> ")
                         .append(task.getName()).append(" <strong>Description: </strong>").append(task.getDescription())
