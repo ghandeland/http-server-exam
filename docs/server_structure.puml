@@ -7,6 +7,7 @@ box Java Server
    participant HttpServer
    participant MemberGetController
    participant MemberDao
+   participant AbstractDao
 end box
 
 database PostgreSQL
@@ -18,8 +19,13 @@ WebBrowser -> HttpServer: /api/member
 HttpServer -> HttpServer: controllers.get("/api/products")
 HttpServer -> MemberGetController: handle(HttpMessage request)
 MemberGetController -> MemberDao: list()
-MemberDao -> PostgreSQL: "SELECT * FROM member"
-MemberDao <-- PostgreSQL: ResultSet
+MemberDao -> AbstractDao: list("SELECT * FROM member")
+AbstractDao -> PostgreSQL: "SELECT * FROM member"
+AbstractDao <-- PostgreSQL: ResultSet
+MemberDao <- AbstractDao: mapRow(ResultSet)
+MemberDao --> AbstractDao: Member
+|||
+AbstractDao --> MemberDao: List<T>
 MemberGetController <-- MemberDao: List<member>
 HttpServer <-- MemberGetController: [HttpMessage response]
 WebBrowser <-- HttpServer: <ul></li><li>...<li>..</ul>
