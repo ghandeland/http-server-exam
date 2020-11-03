@@ -29,8 +29,9 @@ public class TaskAlterController implements HttpController {
         taskDao.alter(taskId, taskStatus);
 
         HttpMessage response = new HttpMessage();
-        response.setCodeAndStartLine("301");
-        response.setHeader("Location", "/index.html");
+        response.setCodeAndStartLine("204");
+        response.setHeader("Connection", "close");
+        response.setHeader("Content-length", "0");
         response.write(socket);
     }
 }
