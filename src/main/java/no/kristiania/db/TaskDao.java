@@ -1,5 +1,9 @@
 package no.kristiania.db;
 
+import no.kristiania.http.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,13 +11,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TaskDao extends AbstractDao <Task> {
-
+    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
     public TaskDao(DataSource dataSource) {
         super(dataSource);
     }
 
     public void insert(Task task) throws SQLException {
         insert(task, "insert into task (name, description, status) values(?, ?, CAST(? AS task_status))");
+        logger.info("New task ({}) successfully added to database", task.getName());
     }
 
     public List <Task> list() throws SQLException {

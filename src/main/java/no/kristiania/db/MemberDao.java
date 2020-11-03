@@ -1,5 +1,9 @@
 package no.kristiania.db;
 
+import no.kristiania.http.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,13 +12,14 @@ import java.sql.Types;
 import java.util.List;
 
 public class MemberDao extends AbstractDao <Member> {
-
+    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
     public MemberDao(DataSource dataSource) {
         super(dataSource);
     }
 
     public void insert(Member member) throws SQLException {
         insert(member, "insert into member (first_name, last_name, email, department_id) values (?, ?, ?, ?)");
+        logger.info("New member({}) successfully inserted into database", member.getFirstName() + " " + member.getLastName() + ", " + member.getEmail());
     }
 
     public List <Member> list() throws SQLException {
