@@ -8,6 +8,7 @@ import java.util.List;
 public abstract class AbstractDao<T extends SetId> {
     protected final DataSource dataSource;
 
+
     public AbstractDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }

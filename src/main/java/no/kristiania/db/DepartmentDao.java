@@ -1,5 +1,9 @@
 package no.kristiania.db;
 
+import no.kristiania.http.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,12 +12,17 @@ import java.util.List;
 
 public class DepartmentDao extends AbstractDao <Department> {
 
+
     public DepartmentDao(DataSource dataSource) {
         super(dataSource);
     }
+    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+
 
     public void insert(Department department) throws SQLException {
         insert(department, "insert into department (name) values (?)");
+        logger.info("Department({}) successfully inserted into database", department.getName());
+
     }
 
     public List<Department> list() throws SQLException {

@@ -1,5 +1,9 @@
 package no.kristiania.db;
 
+import no.kristiania.http.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,9 +14,14 @@ import java.util.LinkedHashSet;
 
 public class TaskMemberDao extends AbstractDao <TaskMember> {
 
+    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
     public TaskMemberDao(DataSource dataSource) {
         super(dataSource);
     }
+    public MemberDao mr = new MemberDao(dataSource);
+    public TaskDao tr = new TaskDao(dataSource);
+
+
 
     public void insert(long taskId, long memberId) throws SQLException {
         insert(new TaskMember(taskId, memberId));
@@ -20,6 +29,8 @@ public class TaskMemberDao extends AbstractDao <TaskMember> {
 
     public void insert(TaskMember taskMember) throws SQLException {
         insert(taskMember, "insert into task_member (task_id, member_id) values (?, ?);");
+        logger.info("Task({}) assigned to member({}) and successfully inserted into database ",
+                tr.retrieve(taskMember.getTaskId()).getName(), mr.retrieve(taskMember.getMemberId()).getFirstName() + " " + mr.retrieve(taskMember.getMemberId()).getLastName());
     }
 
     public LinkedHashSet <Long> retrieveMembersByTaskId(long taskId) throws SQLException {
