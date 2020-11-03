@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDao extends AbstractDao <Task> {
@@ -31,23 +30,22 @@ public class TaskDao extends AbstractDao <Task> {
         return task;
     }
 
-    public List <Task> filter(String filterValue) throws SQLException {
-        if(filterValue.equals("*")){
+    public List <Task> filterStatus(String value) throws SQLException {
+        if(value.equals("*")){
             return list();
         }else{
-            Task.TaskStatus.valueOf(filterValue.trim());
-            String enumStatus = String.valueOf(Task.TaskStatus.valueOf(filterValue.trim()));
+            Task.TaskStatus.valueOf(value.trim());
+            String enumStatus = String.valueOf(Task.TaskStatus.valueOf(value.trim()));
+            return filter("SELECT * FROM task WHERE status = CAST(? AS task_status)", enumStatus);
+        }
+    }
 
-            try(Connection connection = dataSource.getConnection()){
-                try(PreparedStatement statement = connection.prepareStatement("SELECT * FROM task WHERE status =" + "'" + enumStatus + "'")){
-                    try(ResultSet rs = statement.executeQuery()){
-                        List <Task> taskList = new ArrayList <>();
-                        while(rs.next()){
-                            taskList.add(mapRow(rs));
-                        }
-                        return taskList;
-                    }
-                }
+    public void alter(String value, long taskId) throws SQLException {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement("UPDATE task SET status = CAST(? AS task_status) WHERE id = ?")){
+                statement.setString(1, value);
+                statement.setLong(2, taskId);
+                statement.executeUpdate();
             }
         }
     }

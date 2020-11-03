@@ -31,11 +31,11 @@ public abstract class AbstractDao<T extends SetId> {
         try(Connection connection = dataSource.getConnection()){
             try(PreparedStatement statement = connection.prepareStatement(sql)){
                 try(ResultSet rs = statement.executeQuery()){
-                    List <T> t = new ArrayList <>();
+                    List <T> tList = new ArrayList <>();
                     while(rs.next()){
-                        t.add(mapRow(rs));
+                        tList.add(mapRow(rs));
                     }
-                    return t;
+                    return tList;
                 }
             }
         }
@@ -55,6 +55,23 @@ public abstract class AbstractDao<T extends SetId> {
             }
         }
     }
+
+    public List <T> filter(String sql, String value) throws SQLException {
+
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement(sql)){
+                statement.setString(1, value);
+                try(ResultSet rs = statement.executeQuery()){
+                    List <T> tList = new ArrayList <>();
+                    while(rs.next()){
+                        tList.add(mapRow(rs));
+                    }
+                    return tList;
+                }
+            }
+        }
+    }
+
 
     protected abstract void setDataOnStatement(PreparedStatement statement, T t) throws SQLException;
 
