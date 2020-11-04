@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class MemberTaskPostController implements HttpController {
+public class MemberTaskPostController extends AbstractController {
     private final TaskMemberDao taskMemberDao;
 
     public MemberTaskPostController(DataSource dataSource) {

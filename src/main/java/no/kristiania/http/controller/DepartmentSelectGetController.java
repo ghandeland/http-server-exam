@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
-public class DepartmentSelectGetController implements HttpController {
+public class DepartmentSelectGetController extends AbstractController {
     private final DepartmentDao departmentDao;
 
     public DepartmentSelectGetController(DataSource dataSource) {

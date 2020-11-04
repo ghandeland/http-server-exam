@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
-public class TaskSelectGetController implements HttpController {
+public class TaskSelectGetController extends AbstractController {
     private final TaskDao taskDao;
 
     public TaskSelectGetController(DataSource dataSource) {
@@ -25,7 +25,6 @@ public class TaskSelectGetController implements HttpController {
                     .append(task.getName())
                     .append("</option>");
         }
-
         getResponse(socket, body);
     }
 }

@@ -11,7 +11,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class MemberPostController implements HttpController {
+public class MemberPostController extends AbstractController {
 
     private final MemberDao memberDao;
 

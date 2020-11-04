@@ -19,9 +19,7 @@ public class Member implements SetId {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-    }
-
-    public Member() {
+        departmentId = null;
     }
 
     public Member(String memberFirstName, String memberLastName, String memberEmail, Long departmentId) {
@@ -29,6 +27,13 @@ public class Member implements SetId {
         this.lastName = memberLastName;
         this.email = memberEmail;
         this.departmentId = departmentId;
+    }
+    public Member(int id,String memberFirstName, String memberLastName, String memberEmail, Long departmentId) {
+        this.id= id;
+        this.firstName = memberFirstName;
+        this.lastName = memberLastName;
+        this.email = memberEmail;
+        setDepartmentId(departmentId);
     }
 
     public long getId() {
@@ -44,24 +49,12 @@ public class Member implements SetId {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Long getDepartmentId() {

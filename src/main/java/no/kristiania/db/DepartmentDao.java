@@ -11,8 +11,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DepartmentDao extends AbstractDao <Department> {
-
-
     public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
     public DepartmentDao(DataSource dataSource) {
@@ -22,7 +20,6 @@ public class DepartmentDao extends AbstractDao <Department> {
     public void insert(Department department) throws SQLException {
         insert(department, "insert into department (name) values (?)");
         logger.info("Department({}) successfully inserted into database", department.getName());
-
     }
 
     public List <Department> list() throws SQLException {
@@ -30,7 +27,6 @@ public class DepartmentDao extends AbstractDao <Department> {
     }
 
     public Department retrieve(long id) throws SQLException {
-
         Department department = retrieve(id, "select * from department where id = ?");
         if(department == null){
             System.out.println("Department not found");
@@ -46,11 +42,8 @@ public class DepartmentDao extends AbstractDao <Department> {
 
     @Override
     protected Department mapRow(ResultSet rs) throws SQLException {
-        Department department = new Department();
-
-        department.setId(rs.getLong("id"));
-        department.setName(rs.getString("name"));
-
-        return department;
+        return new Department(
+                rs.getLong("id"),
+                rs.getString("name"));
     }
 }

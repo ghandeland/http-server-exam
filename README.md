@@ -9,6 +9,18 @@ run Main method in HttpServer, or run maven package and run the http-1.0-SNAPSHO
 Open a browser to the URL below.
 URL:` http://localhost:8080`
 
+Database Structure
+==
 ![database Structure](docs/database_structure.png)
-===
+
+Server Structure
+==
 ![Server Structure](docs/server_structure.png)
+
+Dao Structure
+==
+![Dao Structure](docs/dao_structure.png)
+
+ObjectClass Structure
+==
+![ObjectClass Structure](docs/member_structure.png)

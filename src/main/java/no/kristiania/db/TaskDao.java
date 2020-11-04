@@ -33,18 +33,18 @@ public class TaskDao extends AbstractDao <Task> {
         return task;
     }
 
-    public List <Task> filterStatus(String value) throws SQLException {
-        if(value.equals("*")){
+    public List <Task> filterStatus(String status) throws SQLException {
+        if(status.equals("*")){
             return list();
         }else{
-            Task.TaskStatus.valueOf(value.trim());
-            String enumStatus = String.valueOf(Task.TaskStatus.valueOf(value.trim()));
+            TaskStatus.valueOf(status.trim());
+            String enumStatus = String.valueOf(TaskStatus.valueOf(status.trim()));
             return filter(enumStatus, "SELECT * FROM task WHERE status = CAST(? AS task_status)");
         }
     }
 
-    public void alter(long taskId, String value) throws SQLException {
-        alter(taskId, value, "UPDATE task SET status = CAST(? AS task_status) WHERE id = ?");
+    public void alter(long taskId, String status) throws SQLException {
+        alter(taskId, status, "UPDATE task SET status = CAST(? AS task_status) WHERE id = ?");
     }
 
     @Override
@@ -56,11 +56,10 @@ public class TaskDao extends AbstractDao <Task> {
 
     @Override
     protected Task mapRow(ResultSet rs) throws SQLException {
-        Task task = new Task();
-        task.setId(rs.getLong("id"));
-        task.setName(rs.getString("name"));
-        task.setDescription(rs.getString("description"));
-        task.setStatus(rs.getString("status"));
-        return task;
+        return new Task(rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("description"),
+                rs.getString("status")
+        );
     }
 }

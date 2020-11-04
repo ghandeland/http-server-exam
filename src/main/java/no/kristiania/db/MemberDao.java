@@ -46,14 +46,12 @@ public class MemberDao extends AbstractDao <Member> {
 
     @Override
     protected Member mapRow(ResultSet rs) throws SQLException {
-        Member member = new Member();
-
-        member.setId(rs.getInt("id"));
-        member.setFirstName(rs.getString("first_name"));
-        member.setLastName(rs.getString("last_name"));
-        member.setEmail(rs.getString("email"));
-        member.setDepartmentId(rs.getLong("department_id"));
-
-        return member;
+        return new Member(
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("email"),
+                rs.getLong("department_id")
+        );
     }
 }

@@ -4,16 +4,16 @@ public class Department implements SetId {
     private long id;
     private String name;
 
-    public Department(long id, String name) {
-        this.id = id;
-        this.name = name;
+    public Department() {
     }
 
     public Department(String name) {
         this.name = name;
     }
 
-    public Department() {
+    public Department(long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public long getId() {

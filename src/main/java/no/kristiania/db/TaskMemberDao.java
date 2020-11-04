@@ -5,17 +5,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 
 public class TaskMemberDao extends AbstractDao <TaskMember> {
     public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
-    public MemberDao memberDao = new MemberDao(dataSource);
-    public TaskDao taskDao = new TaskDao(dataSource);
+    private final MemberDao memberDao = new MemberDao(dataSource);
+    private final TaskDao taskDao = new TaskDao(dataSource);
 
     public TaskMemberDao(DataSource dataSource) {
         super(dataSource);
@@ -28,44 +28,26 @@ public class TaskMemberDao extends AbstractDao <TaskMember> {
     public void insert(TaskMember taskMember) throws SQLException {
         insert(taskMember, "insert into task_member (task_id, member_id) values (?, ?);");
         logger.info("Task({}) assigned to member({}) and successfully inserted into database ",
-                taskDao.retrieve(
-                        taskMember.getTaskId()).getName(),
-                memberDao.retrieve(taskMember.getMemberId()).getFirstName() + " " +
-                        memberDao.retrieve(taskMember.getMemberId()).getLastName());
+                taskDao.retrieve(taskMember.getTaskId()).getName(),
+                memberDao.retrieve(taskMember.getMemberId()).getFirstName() + " " + memberDao.retrieve(taskMember.getMemberId()).getLastName());
     }
 
     public LinkedHashSet <Long> retrieveMembersByTaskId(long taskId) throws SQLException {
+        List <TaskMember> taskMemberList = retrieveMultiple(taskId, "select * from task_member where task_id = ?");
         LinkedHashSet <Long> memberIdSet = new LinkedHashSet <>();
-        try(Connection connection = dataSource.getConnection()){
-            try(PreparedStatement statement = connection.prepareStatement("select * from task_member where task_id = ?")){
-                statement.setLong(1, taskId);
-                statement.executeQuery();
-
-                try(ResultSet rs = statement.getResultSet()){
-                    while(rs.next()){
-                        memberIdSet.add(rs.getLong("member_id"));
-                    }
-                    return memberIdSet;
-                }
-            }
+        for(TaskMember taskMember : taskMemberList){
+            memberIdSet.add(taskMember.getMemberId());
         }
+        return memberIdSet;
     }
 
     public LinkedHashSet <Long> retrieveTasksByMemberId(long memberId) throws SQLException {
+        List <TaskMember> taskMemberList = retrieveMultiple(memberId, "select * from task_member where member_id = ?");
         LinkedHashSet <Long> taskIdSet = new LinkedHashSet <>();
-        try(Connection connection = dataSource.getConnection()){
-            try(PreparedStatement statement = connection.prepareStatement("select * from task_member where member_id = ?")){
-                statement.setLong(1, memberId);
-                statement.executeQuery();
-
-                try(ResultSet rs = statement.getResultSet()){
-                    while(rs.next()){
-                        taskIdSet.add(rs.getLong("task_id"));
-                    }
-                    return taskIdSet;
-                }
-            }
+        for(TaskMember taskMember : taskMemberList){
+            taskIdSet.add(taskMember.getTaskId());
         }
+        return taskIdSet;
     }
 
     @Override
@@ -81,7 +63,6 @@ public class TaskMemberDao extends AbstractDao <TaskMember> {
                 rs.getLong("member_id")
         );
         taskMember.setId(rs.getLong("id"));
-
         return taskMember;
     }
 

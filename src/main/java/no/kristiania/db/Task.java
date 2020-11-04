@@ -1,38 +1,21 @@
 package no.kristiania.db;
 
 public class Task implements SetId {
-    long id;
-    String name;
-    String description;
-    TaskStatus status;
+    private long id;
+    private String name;
+    private String description;
+    private TaskStatus status;
 
-    public Task() {
+    public Task(String name, String description, String status) {
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.valueOf(status);
     }
 
-    public Task(int id, String name, String description) {
+    public Task(long id, String name, String description, String status) {
         this.id = id;
         this.name = name;
         this.description = description;
-    }
-
-    public Task(String name, String description) {
-        this.name = name;
-        this.description = description;
-        this.status = TaskStatus.OPEN;
-    }
-
-    public Task(String taskName, String taskDescription, String taskStatus) {
-
-        this.name = taskName;
-        this.description = taskDescription;
-        this.status = TaskStatus.valueOf(taskStatus);
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
         this.status = TaskStatus.valueOf(status);
     }
 
@@ -43,6 +26,14 @@ public class Task implements SetId {
     @Override
     public void setId(long id) {
         this.id = id;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = TaskStatus.valueOf(status);
     }
 
     public String getName() {
@@ -60,6 +51,4 @@ public class Task implements SetId {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public static enum TaskStatus {OPEN, IN_PROGRESS, FINISHED, CANCELED}
 }

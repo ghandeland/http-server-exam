@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
-public class MemberSelectGetController implements HttpController {
+public class MemberSelectGetController extends AbstractController {
     private final MemberDao memberDao;
 
     public MemberSelectGetController(DataSource dataSource) {

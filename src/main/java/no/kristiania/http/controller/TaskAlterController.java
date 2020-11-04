@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class TaskAlterController implements HttpController {
+public class TaskAlterController extends AbstractController {
     private final TaskDao taskDao;
 
     public TaskAlterController(DataSource dataSource) {

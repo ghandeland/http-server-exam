@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-public class TaskFilterPostController implements HttpController {
+public class TaskFilterPostController extends AbstractController {
     private static List <Task> filterList;
     private final TaskDao taskDao;
 

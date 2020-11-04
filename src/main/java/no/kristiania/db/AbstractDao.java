@@ -11,7 +11,7 @@ public abstract class AbstractDao<T extends SetId> {
 
     protected final DataSource dataSource;
 
-    public AbstractDao(DataSource dataSource) {
+    protected AbstractDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -54,6 +54,20 @@ public abstract class AbstractDao<T extends SetId> {
                     }else{
                         return null;
                     }
+                }
+            }
+        }
+    }
+    protected List <T> retrieveMultiple(Long id, String sql) throws SQLException {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement(sql)){
+                statement.setLong(1, id);
+                try(ResultSet rs = statement.executeQuery()){
+                    List <T> tList = new ArrayList <>();
+                    while(rs.next()){
+                        tList.add(mapRow(rs));
+                    }
+                    return tList;
                 }
             }
         }

@@ -1,0 +1,67 @@
+@startuml
+
+abstract AbstractDao<T extends setId> {
+    {field} # DataSource dataSource
+    ___
+    {method} # <<constructor>> AbstractDao(DataSource dataSource)
+    ==
+    {method} # insert(T t, String sql)
+    {method} # list(String sql)
+    {method} # retrieve(Long id, String sql)
+    {method} # filter(Object value, String sql)
+    {method} # alter(long id, Object value, String sql)
+    ..abstract..
+    {abstract} # setDataOnStatement(PreparedStatement statement, T t)
+    {abstract} # mapRow(ResultSet rs)
+}
+
+Class MemberDao extends AbstractDao {
+    {method} + <<constructor>> MemberDao(DataSource dataSource)
+    ==
+    {method} + insert(Member member)
+    {method} + list()
+    {method} + retrieve(Long id)
+    --@Override--
+    {method} # setDataOnStatement(PreparedStatement statement, Member member)
+    {method} # mapRow(ResultSet rs)
+}
+
+Class TaskDao extends AbstractDao {
+    {method} + <<constructor>> TaskDao(DataSource dataSource)
+    ==
+    {method} + insert(Task task)
+    {method} + list()
+    {method} + retrieve(Long id)
+    ..status..
+    {method} + filterStatus(String status)
+    {method} + alter(long id, String status)
+    --@Override--
+    {method} # setDataOnStatement(PreparedStatement statement, Task task)
+    {method} # mapRow(ResultSet rs)
+}
+
+Class TaskMemberDao extends AbstractDao {
+    {field} - MemberDao memberDao
+    {field} - TaskDao taskDao
+    --
+    {method} + <<constructor>> TaskMemberDao(DataSource dataSource)
+    ==
+    {method} + insert(long taskId, long memberId)
+    {method} + insert(TaskMember taskMember)
+    {method} + retrieveMembersByTaskId(long taskId)
+    {method} + retrieveTasksByMemberId(long memberId)
+    --@Override--
+    {method} # setDataOnStatement(PreparedStatement statement, TaskMember taskMember)
+    {method} # mapRow(ResultSet rs)
+}
+Class DepartmentDao extends AbstractDao {
+    {method} + <<constructor>> DepartmentDao(DataSource dataSource)
+    ==
+    {method} + insert(Department department)
+    {method} + list()
+    {method} + retrieve(Long id)
+    --@Override--
+    {method} # setDataOnStatement(PreparedStatement statement, Department department)
+    {method} # mapRow(ResultSet rs)
+}
+@enduml

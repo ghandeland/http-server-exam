@@ -22,7 +22,7 @@ public class HttpServer {
 
     public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
     private final ServerSocket serverSocket;
-    private final Map <String, HttpController> controllers;
+    private final Map <String, AbstractController> controllers;
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
@@ -75,7 +75,7 @@ public class HttpServer {
         logger.info("Assign members to tasks -> http://localhost:{}/addMemberToTask.html", server.getPort());
     }
 
-    private HttpController getController(String requestPath) {
+    private AbstractController getController(String requestPath) {
         return controllers.get(requestPath);
     }
 

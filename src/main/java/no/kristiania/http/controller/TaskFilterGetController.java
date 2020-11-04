@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
 
-public class TaskFilterGetController implements HttpController {
+public class TaskFilterGetController extends AbstractController {
     private final MemberDao memberDao;
     private final TaskMemberDao taskMemberDao;
 

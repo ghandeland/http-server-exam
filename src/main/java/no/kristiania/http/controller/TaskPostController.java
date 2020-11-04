@@ -11,7 +11,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class TaskPostController implements HttpController {
+public class TaskPostController extends AbstractController {
     private final TaskDao taskDao;
 
     public TaskPostController(DataSource dataSource) {

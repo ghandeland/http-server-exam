@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
 
-public class TaskGetController implements HttpController {
+public class TaskGetController extends AbstractController {
     private final TaskDao taskDao;
     private final MemberDao memberDao;
     private final TaskMemberDao taskMemberDao;
