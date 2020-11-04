@@ -31,6 +31,11 @@ public class MemberDao extends AbstractDao <Member> {
         return retrieve(id, "select * from member where id = ?");
     }
 
+    public void delete(long id) throws SQLException {
+        delete(id, "DELETE FROM task_member WHERE member_id = ?");
+        delete(id, "DELETE FROM member WHERE id = ?");
+    }
+
     @Override
     protected void setDataOnStatement(PreparedStatement statement, Member member) throws SQLException {
 

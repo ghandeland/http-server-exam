@@ -3,7 +3,6 @@ package no.kristiania.http.controller;
 import no.kristiania.db.Task;
 import no.kristiania.db.TaskDao;
 import no.kristiania.http.HttpMessage;
-import no.kristiania.http.QueryString;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -26,11 +25,7 @@ public class TaskFilterPostController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        request.readAndSetHeaders(socket);
-        int contentLength = Integer.parseInt(request.getHeader("Content-Length"));
-        String body = request.readBody(socket, contentLength);
-        request.setBody(body);
-        Map <String, String> taskQueryMap = QueryString.queryStringToHashMap(body);
+        Map <String, String> taskQueryMap = handlePost(request, socket);
         String taskStatus = taskQueryMap.get("taskStatus");
 
         filterList = taskDao.filterStatus(taskStatus);

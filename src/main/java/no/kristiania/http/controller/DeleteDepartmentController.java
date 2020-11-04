@@ -1,6 +1,5 @@
 package no.kristiania.http.controller;
 
-import no.kristiania.db.Department;
 import no.kristiania.db.DepartmentDao;
 import no.kristiania.http.HttpMessage;
 
@@ -10,24 +9,17 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class DepartmentPostController extends AbstractController {
+public class DeleteDepartmentController extends AbstractController {
     private final DepartmentDao departmentDao;
 
-    public DepartmentPostController(DataSource dataSource) {
+    public DeleteDepartmentController(DataSource dataSource) {
         this.departmentDao = new DepartmentDao(dataSource);
     }
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> bodyMap = handlePost(request, socket);
-        String departmentName = bodyMap.get("name");
-
-        Department department = new Department(departmentName);
-
-        departmentDao.insert(department);
-
+        Map <String, String> query = handlePost(request, socket);
+        departmentDao.delete(Long.parseLong(query.get("department")));
         postResponse(socket);
     }
-
-
 }

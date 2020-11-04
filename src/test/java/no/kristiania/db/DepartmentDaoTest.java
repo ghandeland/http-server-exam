@@ -64,4 +64,50 @@ public class DepartmentDaoTest {
         }
     }
 
+    @Test
+    void shouldDeleteDepartment() throws SQLException {
+        Department sampleDepartment1 = sampleDepartment();
+        Department sampleDepartment2 = sampleDepartment();
+        Department sampleDepartment3 = sampleDepartment();
+
+        departmentDao.insert(sampleDepartment1);
+        departmentDao.insert(sampleDepartment2);
+        departmentDao.insert(sampleDepartment3);
+
+        departmentDao.delete(sampleDepartment2.getId());
+
+        assertThat(departmentDao.list())
+                .extracting(Department::getId)
+                .doesNotContain(sampleDepartment2.getId())
+                .contains(sampleDepartment1.getId())
+                .contains(sampleDepartment3.getId());
+    }
+
+    @Test
+    void shouldDeleteDepartmentAndAlterMember() throws SQLException {
+        MemberDao memberDao = new MemberDao(departmentDao.dataSource);
+
+        Department sampleDepartment1 = sampleDepartment();
+        Department sampleDepartment2 = sampleDepartment();
+        Department sampleDepartment3 = sampleDepartment();
+        Member sampleMember = MemberDaoTest.sampleMember();
+
+        departmentDao.insert(sampleDepartment1);
+        departmentDao.insert(sampleDepartment2);
+        departmentDao.insert(sampleDepartment3);
+
+        sampleMember.setDepartmentId(sampleDepartment2.getId());
+        memberDao.insert(sampleMember);
+
+        departmentDao.delete(sampleDepartment2.getId());
+
+        assertThat(departmentDao.list())
+                .extracting(Department::getId)
+                .doesNotContain(sampleDepartment2.getId())
+                .contains(sampleDepartment1.getId())
+                .contains(sampleDepartment3.getId());
+        assertThat(memberDao.retrieve(sampleMember.getId()))
+                .extracting(Member::getDepartmentId)
+                .isNull();
+    }
 }

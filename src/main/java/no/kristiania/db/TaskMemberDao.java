@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,6 +49,14 @@ public class TaskMemberDao extends AbstractDao <TaskMember> {
             taskIdSet.add(taskMember.getTaskId());
         }
         return taskIdSet;
+    }
+
+    public void deleteFromTaskId(long id) throws SQLException {
+        delete(id, "DELETE FROM task_member WHERE task_id = ?");
+    }
+
+    public void deleteFromMemberId(long id) throws SQLException {
+        delete(id, "DELETE FROM task_member WHERE member_id = ?");
     }
 
     @Override

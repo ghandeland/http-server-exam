@@ -2,19 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add member to task</title>
+    <title>delete task</title>
     <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<form action="/api/addMemberToTask" method="post">
-    <h1>Add member to task:</h1>
+<form action="/api/deleteTask" method="post">
+    <h1>delete task:</h1>
     <p>
-        <label>Member:
-            <select id="member-select" name="member"></select>
-        </label>
-    </p>
-    <p>
-        <label>Task:
+        <label>task:
             <select id="task-select" name="task"></select>
         </label>
     </p>
@@ -25,10 +20,6 @@
 </form>
 <a href="http://localhost:8080/index.html">See overview</a>
 <script>
-    fetch("/api/memberSelect").then(response => response.text()).then(html => {
-        document.getElementById("member-select").innerHTML = html;
-    });
-
     fetch("/api/taskSelect").then(response => response.text()).then(html => {
         document.getElementById("task-select").innerHTML = html;
     });

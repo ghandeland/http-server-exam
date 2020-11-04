@@ -35,6 +35,11 @@ public class DepartmentDao extends AbstractDao <Department> {
         return department;
     }
 
+    public void delete(long id) throws SQLException {
+        alter(id, null, "UPDATE member SET department_id = ? WHERE department_id = ?");
+        delete(id, "DELETE FROM department WHERE id = ?");
+    }
+
     @Override
     protected void setDataOnStatement(PreparedStatement statement, Department department) throws SQLException {
         statement.setString(1, department.getName());

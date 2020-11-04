@@ -48,7 +48,6 @@ public class TaskDaoTest {
 
     @Test
     void shouldRetrieveSavedTask() throws SQLException {
-
         Task taskSample = sampleTask();
         taskDao.insert(taskSample);
 
@@ -115,4 +114,23 @@ public class TaskDaoTest {
         }
     }
 
+    @Test
+    @DisplayName("delete existing task")
+    void deleteExistingTask() throws SQLException {
+        Task sampleTask1 = sampleTask();
+        Task sampleTask2 = sampleTask();
+        Task sampleTask3 = sampleTask();
+
+        taskDao.insert(sampleTask1);
+        taskDao.insert(sampleTask2);
+        taskDao.insert(sampleTask3);
+
+        taskDao.delete(sampleTask1.getId());
+
+        assertThat(taskDao.list())
+                .extracting(Task::getId)
+                .doesNotContain(sampleTask1.getId())
+                .contains(sampleTask2.getId())
+                .contains(sampleTask3.getId());
+    }
 }

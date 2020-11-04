@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class HttpClient {
-    private Socket socket;
-    private String requestTarget;
-    private String host;
+    private final Socket socket;
+    private final String requestTarget;
+    private final String host;
     private String requestBody;
 
     public HttpClient(final String hostName, int port, final String requestTarget) throws IOException {

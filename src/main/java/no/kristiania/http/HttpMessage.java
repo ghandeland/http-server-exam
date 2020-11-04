@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class HttpMessage {
             }
             sb.append((char) c);
         }
-        return URLDecoder.decode((sb.toString()), "UTF8");
+        return URLDecoder.decode((sb.toString()), StandardCharsets.UTF_8);
     }
 
     public String getBody() {
@@ -129,6 +130,6 @@ public class HttpMessage {
             body.append((char) socket.getInputStream().read());
         }
 
-        return URLDecoder.decode((body.toString()), "UTF8");
+        return URLDecoder.decode((body.toString()), StandardCharsets.UTF_8);
     }
 }

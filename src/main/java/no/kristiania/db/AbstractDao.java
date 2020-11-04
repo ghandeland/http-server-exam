@@ -99,6 +99,16 @@ public abstract class AbstractDao<T extends SetId> {
         }
     }
 
+    protected void delete(long id, String sql) throws SQLException {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement(sql)){
+                statement.setLong(1, id);
+                statement.executeUpdate();
+                HttpServer.logger.info("DELETE FROM TABLE \"{}\", WHERE id = {}", sql.split(" ")[2], id);
+            }
+        }
+    }
+
     protected abstract void setDataOnStatement(PreparedStatement statement, T t) throws SQLException;
 
     protected abstract T mapRow(ResultSet rs) throws SQLException;

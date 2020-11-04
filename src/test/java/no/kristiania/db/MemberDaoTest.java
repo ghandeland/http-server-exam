@@ -3,6 +3,7 @@ package no.kristiania.db;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -109,6 +110,26 @@ public class MemberDaoTest {
 
         assertThat(retrievedDepartmentId1).isEqualTo(sampleDepartment1.getId());
         assertThat(retrievedDepartmentId2).isEqualTo(sampleDepartment2.getId());
+    }
+
+    @Test
+    @DisplayName("test delete member")
+    void testDeleteMember() throws SQLException {
+        Member sampleMember1 = sampleMember();
+        Member sampleMember2 = sampleMember();
+        Member sampleMember3 = sampleMember();
+
+        memberDao.insert(sampleMember1);
+        memberDao.insert(sampleMember2);
+        memberDao.insert(sampleMember3);
+
+        memberDao.delete(sampleMember2.getId());
+
+        assertThat(memberDao.list())
+                .extracting(Member::getId)
+                .doesNotContain(sampleMember2.getId())
+                .contains(sampleMember1.getId())
+                .contains(sampleMember3.getId());
     }
 
 }

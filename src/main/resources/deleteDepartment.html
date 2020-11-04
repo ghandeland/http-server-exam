@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>delete department</title>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<form action="/api/deleteDepartment" method="post">
+    <h1>delete department:</h1>
+    <p>
+        <label>department:
+            <select id="department-select" name="department"></select>
+        </label>
+    </p>
+    <p>
+        <button>Submit</button>
+    </p>
+    <br>
+</form>
+<a href="http://localhost:8080/index.html">See overview</a>
+<script>
+    fetch("/api/departmentSelect").then(response => response.text()).then(html => {
+        document.getElementById("department-select").innerHTML = html;
+    });
+</script>
+</body>
+</html>

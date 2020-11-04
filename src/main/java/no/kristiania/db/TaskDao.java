@@ -43,8 +43,13 @@ public class TaskDao extends AbstractDao <Task> {
         }
     }
 
-    public void alter(long taskId, String status) throws SQLException {
-        alter(taskId, status, "UPDATE task SET status = CAST(? AS task_status) WHERE id = ?");
+    public void alter(long id, String status) throws SQLException {
+        alter(id, status, "UPDATE task SET status = CAST(? AS task_status) WHERE id = ?");
+    }
+
+    public void delete(long id) throws SQLException {
+        delete(id, "DELETE FROM task_member WHERE task_id = ?");
+        delete(id, "DELETE FROM task WHERE id = ?");
     }
 
     @Override

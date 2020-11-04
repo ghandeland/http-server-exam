@@ -1,10 +1,12 @@
 package no.kristiania.http.controller;
 
 import no.kristiania.http.HttpMessage;
+import no.kristiania.http.QueryString;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Map;
 
 public abstract class AbstractController {
     protected void getResponse(Socket socket, StringBuilder body) throws IOException {
@@ -23,6 +25,14 @@ public abstract class AbstractController {
         response.setHeader("Connection", "close");
         response.setHeader("Content-length", "0");
         response.write(socket);
+    }
+
+    protected Map <String, String> handlePost(HttpMessage request, Socket socket) throws IOException {
+        request.readAndSetHeaders(socket);
+        int contentLength = Integer.parseInt(request.getHeader("Content-Length"));
+        String body = request.readBody(socket, contentLength);
+        request.setBody(body);
+        return QueryString.queryStringToHashMap(body);
     }
 
     public abstract void handle(HttpMessage request, Socket socket) throws IOException, SQLException;

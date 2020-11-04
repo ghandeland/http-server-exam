@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -27,21 +27,23 @@ public class HttpServer {
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
 
-        controllers = Map.ofEntries(
-                new SimpleEntry <>("/api/addNewMember", new MemberPostController(dataSource)),
-                new SimpleEntry <>("/api/addNewTask", new TaskPostController(dataSource)),
-                new SimpleEntry <>("/api/addMemberToTask", new MemberTaskPostController(dataSource)),
-                new SimpleEntry <>("/api/member", new MemberGetController(dataSource)),
-                new SimpleEntry <>("/api/task", new TaskGetController(dataSource)),
-                new SimpleEntry <>("/api/memberSelect", new MemberSelectGetController(dataSource)),
-                new SimpleEntry <>("/api/taskSelect", new TaskSelectGetController(dataSource)),
-                new SimpleEntry <>("/api/department", new DepartmentGetController(dataSource)),
-                new SimpleEntry <>("/api/addNewDepartment", new DepartmentPostController(dataSource)),
-                new SimpleEntry <>("/api/departmentSelect", new DepartmentSelectGetController(dataSource)),
-                new SimpleEntry <>("/api/filterTask", new TaskFilterPostController(dataSource)),
-                new SimpleEntry <>("/api/showFilterTask", new TaskFilterGetController(dataSource)),
-                new SimpleEntry <>("/api/alterTask", new TaskAlterController(dataSource))
-        );
+        controllers = new HashMap <>();
+        controllers.put("/api/addNewMember", new MemberPostController(dataSource));
+        controllers.put("/api/addNewTask", new TaskPostController(dataSource));
+        controllers.put("/api/addMemberToTask", new MemberTaskPostController(dataSource));
+        controllers.put("/api/member", new MemberGetController(dataSource));
+        controllers.put("/api/task", new TaskGetController(dataSource));
+        controllers.put("/api/memberSelect", new MemberSelectGetController(dataSource));
+        controllers.put("/api/taskSelect", new TaskSelectGetController(dataSource));
+        controllers.put("/api/department", new DepartmentGetController(dataSource));
+        controllers.put("/api/addNewDepartment", new DepartmentPostController(dataSource));
+        controllers.put("/api/departmentSelect", new DepartmentSelectGetController(dataSource));
+        controllers.put("/api/filterTask", new TaskFilterPostController(dataSource));
+        controllers.put("/api/showFilterTask", new TaskFilterGetController(dataSource));
+        controllers.put("/api/alterTask", new TaskAlterController(dataSource));
+        controllers.put("/api/deleteTask", new DeleteTaskController(dataSource));
+        controllers.put("/api/deleteMember", new DeleteMemberController(dataSource));
+        controllers.put("/api/deleteDepartment", new DeleteDepartmentController(dataSource));
 
         new Thread(() -> {
             while(true){

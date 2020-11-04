@@ -9,21 +9,18 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class TaskAlterController extends AbstractController {
+public class DeleteTaskController extends AbstractController {
     private final TaskDao taskDao;
 
-    public TaskAlterController(DataSource dataSource) {
+    public DeleteTaskController(DataSource dataSource) {
         this.taskDao = new TaskDao(dataSource);
     }
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> stringMap = handlePost(request, socket);
-        String taskStatus = stringMap.get("status");
-        long taskId = Long.parseLong(stringMap.get("task"));
-
-        taskDao.alter(taskId, taskStatus);
-
+        Map <String, String> bodyMap = handlePost(request, socket);
+        long task = Long.parseLong(bodyMap.get("task"));
+        taskDao.delete(task);
         postResponse(socket);
     }
 }

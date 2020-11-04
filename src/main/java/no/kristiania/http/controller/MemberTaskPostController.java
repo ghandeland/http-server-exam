@@ -2,7 +2,6 @@ package no.kristiania.http.controller;
 
 import no.kristiania.db.TaskMemberDao;
 import no.kristiania.http.HttpMessage;
-import no.kristiania.http.QueryString;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -19,14 +18,7 @@ public class MemberTaskPostController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        request.readAndSetHeaders(socket);
-
-        int contentLength = Integer.parseInt(request.getHeader("Content-Length"));
-        String body = request.readBody(socket, contentLength);
-
-        request.setBody(body);
-
-        Map <String, String> taskMemberMap = QueryString.queryStringToHashMap(body);
+        Map <String, String> taskMemberMap = handlePost(request, socket);
 
         long memberId = Long.parseLong(taskMemberMap.get("member"));
         long taskId = Long.parseLong(taskMemberMap.get("task"));
