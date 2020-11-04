@@ -15,7 +15,8 @@
     <p><label>Department name: <input name="name"/></label></p>
 
     <p>
-        <button>Submit</button>
+        <button id = "submit-btn">
+            Submit </button>
     </p>
 
     <br>
@@ -26,6 +27,15 @@
     fetch("/api/department").then(response => response.text()).then(html => {
         document.getElementById("departments").innerHTML = html;
     });
+
+
+    document.getElementById("submit-btn").addEventListener("click", reload);
+
+    function reload(){
+        fetch("/api/department").then(response => response.text()).then(html => {
+            document.getElementById("departments").innerHTML = html;
+        });
+    }
 </script>
 
 </body>
