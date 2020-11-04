@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HttpServerTest {
 
-    private HttpServer server;
     private final JdbcDataSource dataSource = new JdbcDataSource();
+    private HttpServer server;
 
     @BeforeEach
     void SetUp() throws IOException {
@@ -137,6 +137,7 @@ public class HttpServerTest {
         }
         assertThat(listName).contains("SomeoneSomelastname");
     }
+
     @Test
     void shouldPostTask() throws IOException, SQLException {
         HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewTask", "name=Someone&description=Some&status=OPEN");
@@ -148,10 +149,11 @@ public class HttpServerTest {
 
         List <String> tasklist = new ArrayList <>();
         for(Task task : taskDao.list()){
-            tasklist.add(task.getName() +" "+ task.getDescription() + " "+task.getStatus());
+            tasklist.add(task.getName() + " " + task.getDescription() + " " + task.getStatus());
         }
         assertThat(tasklist).contains("Someone Some OPEN");
     }
+
     @Test
     void MemberTaskPostController() throws IOException, SQLException {
         HttpClient clientMember = new HttpClient("localhost", server.getPort(), "/api/addNewMember", "firstName=Someone&lastName=Somelastname&email=someone@example.com&department=-1");
@@ -166,6 +168,7 @@ public class HttpServerTest {
         assertEquals("204", response.getCode());
         assertThat(taskMemberDao.retrieveMembersByTaskId(1L)).contains(1L);
     }
+
     @Test
     void DepartmentPost() throws IOException, SQLException {
         HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewDepartment", "name=lorumipsum");
@@ -180,6 +183,7 @@ public class HttpServerTest {
         }
         assertThat(arrayList).contains("lorumipsum");
     }
+
     @Test
     void MemberTaskPost() throws IOException, SQLException {
         HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewDepartment", "name=lorumipsum");
@@ -194,8 +198,6 @@ public class HttpServerTest {
         }
         assertThat(arrayList).contains("lorumipsum");
     }
-
-
 
 
 }

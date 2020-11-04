@@ -1,9 +1,5 @@
 package no.kristiania.http;
 
-import no.kristiania.db.DepartmentDao;
-import no.kristiania.db.MemberDao;
-import no.kristiania.db.TaskDao;
-import no.kristiania.db.TaskMemberDao;
 import no.kristiania.http.controller.*;
 import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
@@ -30,25 +26,21 @@ public class HttpServer {
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
-        MemberDao memberDao = new MemberDao(dataSource);
-        TaskDao taskDao = new TaskDao(dataSource);
-        TaskMemberDao taskMemberDao = new TaskMemberDao(dataSource);
-        DepartmentDao departmentDao = new DepartmentDao(dataSource);
 
         controllers = Map.ofEntries(
-                new SimpleEntry <>("/api/addNewMember", new MemberPostController(memberDao)),
-                new SimpleEntry <>("/api/addNewTask", new TaskPostController(taskDao)),
-                new SimpleEntry <>("/api/addMemberToTask", new MemberTaskPostController(taskMemberDao)),
-                new SimpleEntry <>("/api/member", new MemberGetController(memberDao, departmentDao)),
-                new SimpleEntry <>("/api/task", new TaskGetController(taskDao, memberDao, taskMemberDao)),
-                new SimpleEntry <>("/api/memberSelect", new MemberSelectGetController(memberDao)),
-                new SimpleEntry <>("/api/taskSelect", new TaskSelectGetController(taskDao)),
-                new SimpleEntry <>("/api/department", new DepartmentGetController(departmentDao)),
-                new SimpleEntry <>("/api/addNewDepartment", new DepartmentPostController(departmentDao)),
-                new SimpleEntry <>("/api/departmentSelect", new DepartmentSelectGetController(departmentDao)),
-                new SimpleEntry <>("/api/filterTask", new TaskFilterPostController(taskDao)),
-                new SimpleEntry <>("/api/showFilterTask", new TaskFilterGetController(memberDao, taskMemberDao)),
-                new SimpleEntry <>("/api/alterTask", new TaskAlterController(taskDao))
+                new SimpleEntry <>("/api/addNewMember", new MemberPostController(dataSource)),
+                new SimpleEntry <>("/api/addNewTask", new TaskPostController(dataSource)),
+                new SimpleEntry <>("/api/addMemberToTask", new MemberTaskPostController(dataSource)),
+                new SimpleEntry <>("/api/member", new MemberGetController(dataSource)),
+                new SimpleEntry <>("/api/task", new TaskGetController(dataSource)),
+                new SimpleEntry <>("/api/memberSelect", new MemberSelectGetController(dataSource)),
+                new SimpleEntry <>("/api/taskSelect", new TaskSelectGetController(dataSource)),
+                new SimpleEntry <>("/api/department", new DepartmentGetController(dataSource)),
+                new SimpleEntry <>("/api/addNewDepartment", new DepartmentPostController(dataSource)),
+                new SimpleEntry <>("/api/departmentSelect", new DepartmentSelectGetController(dataSource)),
+                new SimpleEntry <>("/api/filterTask", new TaskFilterPostController(dataSource)),
+                new SimpleEntry <>("/api/showFilterTask", new TaskFilterGetController(dataSource)),
+                new SimpleEntry <>("/api/alterTask", new TaskAlterController(dataSource))
         );
 
         new Thread(() -> {
@@ -100,20 +92,17 @@ public class HttpServer {
 
         String[] requestLineParts = requestLine.split(" ");
 
-        String requestMethod = requestLineParts[0];
-
         String requestTarget = requestLineParts.length > 1 ? requestLineParts[1] : "";
 
+        if(requestTarget.equals("/") || requestTarget.equals("")){
+            requestTarget = "/index.html";
+        }
         if(!requestTarget.equals("/favicon.ico")){
             logger.info("REQUEST LINE: {}", requestLine);
         }
 
         int questionPosition = requestTarget.indexOf('?');
         String requestPath = questionPosition != -1 ? requestTarget.substring(0, questionPosition) : requestTarget;
-
-        if(requestTarget.equals("/") || requestTarget.equals("")){
-            requestTarget = "/index.html";
-        }
 
         if(requestPath.startsWith("/api/")){
             getController(requestPath).handle(request, socket);
@@ -126,9 +115,7 @@ public class HttpServer {
 
             handleQueryRequest(socket, response, request);
             return;
-
         }
-
         handleFileRequest(socket, response, requestTarget);
     }
 
@@ -160,7 +147,7 @@ public class HttpServer {
 
     private void handleFileRequest(Socket socket, HttpMessage response, String requestPath) throws IOException {
         try(InputStream inputStream = getClass().getResourceAsStream(requestPath)){
-            if(inputStream == null||requestPath.endsWith(".java")||requestPath.endsWith(".class")){
+            if(inputStream == null || requestPath.endsWith(".java") || requestPath.endsWith(".class")){
                 String body = requestPath + " does not exist";
 
                 response.setCodeAndStartLine("404");

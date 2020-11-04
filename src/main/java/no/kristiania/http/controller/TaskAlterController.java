@@ -4,6 +4,7 @@ import no.kristiania.db.TaskDao;
 import no.kristiania.http.HttpMessage;
 import no.kristiania.http.QueryString;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -12,8 +13,8 @@ import java.util.Map;
 public class TaskAlterController implements HttpController {
     private final TaskDao taskDao;
 
-    public TaskAlterController(TaskDao taskDao) {
-        this.taskDao = taskDao;
+    public TaskAlterController(DataSource dataSource) {
+        this.taskDao = new TaskDao(dataSource);
     }
 
     @Override
@@ -28,10 +29,6 @@ public class TaskAlterController implements HttpController {
 
         taskDao.alter(taskId, taskStatus);
 
-        HttpMessage response = new HttpMessage();
-        response.setCodeAndStartLine("204");
-        response.setHeader("Connection", "close");
-        response.setHeader("Content-length", "0");
-        response.write(socket);
+        postResponse(socket);
     }
 }

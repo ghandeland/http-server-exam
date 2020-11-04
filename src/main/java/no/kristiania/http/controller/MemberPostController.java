@@ -5,6 +5,7 @@ import no.kristiania.db.MemberDao;
 import no.kristiania.http.HttpMessage;
 import no.kristiania.http.QueryString;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -12,10 +13,10 @@ import java.util.Map;
 
 public class MemberPostController implements HttpController {
 
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
-    public MemberPostController(MemberDao memberDao) {
-        this.memberDao = memberDao;
+    public MemberPostController(DataSource dataSource) {
+        this.memberDao = new MemberDao(dataSource);
     }
 
     @Override
@@ -32,17 +33,13 @@ public class MemberPostController implements HttpController {
         String memberEmail = memberQueryMap.get("email");
 
         Long departmentId = null;
-        Long departmentValue = Long.valueOf(memberQueryMap.get("department"));
+        long departmentValue = Long.parseLong(memberQueryMap.get("department"));
         if(departmentValue != -1L) departmentId = departmentValue;
 
         Member member = new Member(memberFirstName, memberLastName, memberEmail, departmentId);
 
         memberDao.insert(member);
 
-        HttpMessage response = new HttpMessage();
-        response.setCodeAndStartLine("204");
-        response.setHeader("Connection", "close");
-        response.setHeader("Content-length", "0");
-        response.write(socket);
+        postResponse(socket);
     }
 }

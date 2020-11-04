@@ -4,16 +4,17 @@ import no.kristiania.db.TaskMemberDao;
 import no.kristiania.http.HttpMessage;
 import no.kristiania.http.QueryString;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
 public class MemberTaskPostController implements HttpController {
-    private TaskMemberDao taskMemberDao;
+    private final TaskMemberDao taskMemberDao;
 
-    public MemberTaskPostController(TaskMemberDao taskMemberDao) {
-        this.taskMemberDao = taskMemberDao;
+    public MemberTaskPostController(DataSource dataSource) {
+        this.taskMemberDao = new TaskMemberDao(dataSource);
     }
 
     @Override
@@ -32,10 +33,6 @@ public class MemberTaskPostController implements HttpController {
 
         taskMemberDao.insert(taskId, memberId);
 
-        HttpMessage response = new HttpMessage();
-        response.setCodeAndStartLine("204");
-        response.setHeader("Connection", "close");
-        response.setHeader("Content-length", "0");
-        response.write(socket);
+        postResponse(socket);
     }
 }

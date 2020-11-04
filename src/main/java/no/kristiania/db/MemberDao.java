@@ -13,6 +13,7 @@ import java.util.List;
 
 public class MemberDao extends AbstractDao <Member> {
     public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+
     public MemberDao(DataSource dataSource) {
         super(dataSource);
     }
@@ -36,9 +37,9 @@ public class MemberDao extends AbstractDao <Member> {
         statement.setString(1, member.getFirstName());
         statement.setString(2, member.getLastName());
         statement.setString(3, member.getEmail());
-        if(member.getDepartmentId() == null) {
+        if(member.getDepartmentId() == null){
             statement.setNull(4, Types.INTEGER);
-        } else {
+        }else{
             statement.setLong(4, member.getDepartmentId());
         }
     }

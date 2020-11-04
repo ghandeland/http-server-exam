@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -48,7 +47,7 @@ public class DepartmentDaoTest {
         Department sampleDepartment2 = sampleDepartment();
         Department sampleDepartment3 = sampleDepartment();
 
-        List<Department> departmentList = new ArrayList<>();
+        List <Department> departmentList = new ArrayList <>();
         departmentList.add(sampleDepartment1);
         departmentList.add(sampleDepartment2);
         departmentList.add(sampleDepartment3);

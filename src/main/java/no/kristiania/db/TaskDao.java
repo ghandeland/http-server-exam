@@ -12,6 +12,7 @@ import java.util.List;
 
 public class TaskDao extends AbstractDao <Task> {
     public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+
     public TaskDao(DataSource dataSource) {
         super(dataSource);
     }

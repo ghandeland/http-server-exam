@@ -13,11 +13,11 @@ import java.util.List;
 public class DepartmentDao extends AbstractDao <Department> {
 
 
+    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+
     public DepartmentDao(DataSource dataSource) {
         super(dataSource);
     }
-    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
-
 
     public void insert(Department department) throws SQLException {
         insert(department, "insert into department (name) values (?)");
@@ -25,14 +25,14 @@ public class DepartmentDao extends AbstractDao <Department> {
 
     }
 
-    public List<Department> list() throws SQLException {
+    public List <Department> list() throws SQLException {
         return list("select * from department");
     }
 
     public Department retrieve(long id) throws SQLException {
 
         Department department = retrieve(id, "select * from department where id = ?");
-        if(department == null) {
+        if(department == null){
             System.out.println("Department not found");
             return null;
         }

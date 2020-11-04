@@ -3,6 +3,7 @@ package no.kristiania.http.controller;
 import no.kristiania.db.*;
 import no.kristiania.http.HttpMessage;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -13,10 +14,10 @@ public class TaskGetController implements HttpController {
     private final MemberDao memberDao;
     private final TaskMemberDao taskMemberDao;
 
-    public TaskGetController(TaskDao taskDao, MemberDao memberDao, TaskMemberDao taskMemberDao) {
-        this.taskDao = taskDao;
-        this.memberDao = memberDao;
-        this.taskMemberDao = taskMemberDao;
+    public TaskGetController(DataSource dataSource) {
+        this.taskDao = new TaskDao(dataSource);
+        this.memberDao = new MemberDao(dataSource);
+        this.taskMemberDao = new TaskMemberDao(dataSource);
     }
 
     @Override
@@ -44,15 +45,7 @@ public class TaskGetController implements HttpController {
                 body.append("</ul>");
             }
         }
-
         body.append("</ul>");
-
-        HttpMessage response = new HttpMessage();
-        response.setBody(body.toString());
-        response.setCodeAndStartLine("200");
-        response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
-        response.setHeader("Content-Type", "text/plain");
-        response.setHeader("Connection", "close");
-        response.write(socket);
+        getResponse(socket, body);
     }
 }

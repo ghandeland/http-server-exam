@@ -5,6 +5,7 @@ public class Task implements SetId {
     String name;
     String description;
     TaskStatus status;
+
     public Task() {
     }
 

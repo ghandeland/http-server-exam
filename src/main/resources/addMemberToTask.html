@@ -30,17 +30,17 @@
 </form>
 
 
-    <script>
+<script>
 
-        fetch("/api/memberSelect").then(response => response.text()).then(html => {
-            document.getElementById("member-select").innerHTML = html;
-        });
+    fetch("/api/memberSelect").then(response => response.text()).then(html => {
+        document.getElementById("member-select").innerHTML = html;
+    });
 
-        fetch("/api/taskSelect").then(response => response.text()).then(html => {
-            document.getElementById("task-select").innerHTML = html;
-        });
+    fetch("/api/taskSelect").then(response => response.text()).then(html => {
+        document.getElementById("task-select").innerHTML = html;
+    });
 
 
-    </script>
+</script>
 </body>
 </html>

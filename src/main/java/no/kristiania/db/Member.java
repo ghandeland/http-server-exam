@@ -64,13 +64,15 @@ public class Member implements SetId {
         this.email = email;
     }
 
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
     public void setDepartmentId(Long departmentId) {
-        if(departmentId == 0L) {
+        if(departmentId == 0L){
             this.departmentId = null;
-        } else {
+        }else{
             this.departmentId = departmentId;
         }
     }
-
-    public Long getDepartmentId() { return departmentId; }
 }

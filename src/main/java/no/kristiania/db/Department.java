@@ -13,7 +13,8 @@ public class Department implements SetId {
         this.name = name;
     }
 
-    public Department() { }
+    public Department() {
+    }
 
     public long getId() {
         return id;
