@@ -22,6 +22,7 @@ public class HttpMessage {
 
         while((c = socket.getInputStream().read()) != -1){
             if(c == '\r'){
+                //noinspection ResultOfMethodCallIgnored
                 socket.getInputStream().read();
                 break;
             }
@@ -52,6 +53,9 @@ public class HttpMessage {
         switch(code){
             case "200":
                 startLine = "HTTP/1.1 200 OK";
+                break;
+            case "201":
+                startLine = "HTTP/1.1 201 Created";
                 break;
             case "404":
                 startLine = "HTTP/1.1 404 Not Found";

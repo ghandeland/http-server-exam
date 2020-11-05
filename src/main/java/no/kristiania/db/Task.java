@@ -19,6 +19,13 @@ public class Task implements SetId {
         this.status = TaskStatus.valueOf(status);
     }
 
+    public static String taskStatusToString(TaskStatus taskStatus) {
+        String taskStatusString = taskStatus.toString();
+        taskStatusString = taskStatusString.substring(0, 1).toUpperCase() + taskStatusString.substring(1).toLowerCase();
+        taskStatusString = taskStatusString.replace('_', ' ');
+        return taskStatusString;
+    }
+
     public long getId() {
         return id;
     }
@@ -32,30 +39,12 @@ public class Task implements SetId {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = TaskStatus.valueOf(status);
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public static String taskStatusToString(TaskStatus taskStatus) {
-        String taskStatusString = taskStatus.toString();
-        taskStatusString = taskStatusString.substring(0, 1).toUpperCase() + taskStatusString.substring(1).toLowerCase();
-        taskStatusString = taskStatusString.replace('_', ' ');
-        return taskStatusString;
-    }
 }

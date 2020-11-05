@@ -30,6 +30,6 @@ public class TaskFilterPostController extends AbstractController {
 
         filterList = taskDao.filterStatus(taskStatus);
 
-        sendPostResponse(socket);
+        sendPostResponse(socket, "http://localhost:8080/index.html");
     }
 }

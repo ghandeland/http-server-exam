@@ -19,11 +19,12 @@ public abstract class AbstractController {
         response.write(socket);
     }
 
-    protected void sendPostResponse(Socket socket) throws IOException {
+    protected void sendPostResponse(Socket socket, String url) throws IOException {
         HttpMessage response = new HttpMessage();
-        response.setCodeAndStartLine("204");
+        response.setCodeAndStartLine("201");
         response.setHeader("Connection", "close");
         response.setHeader("Content-length", "0");
+        response.setHeader("Refresh", "0;url=" + url);
         response.write(socket);
     }
 

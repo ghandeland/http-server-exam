@@ -10,10 +10,6 @@ public class TaskMember implements SetId {
         this.memberId = memberId;
     }
 
-    public long getId() {
-        return id;
-    }
-
     @Override
     public void setId(long id) {
         this.id = id;
@@ -23,15 +19,7 @@ public class TaskMember implements SetId {
         return taskId;
     }
 
-    public void setTaskId(long taskId) {
-        this.taskId = taskId;
-    }
-
     public long getMemberId() {
         return memberId;
-    }
-
-    public void setMemberId(long memberId) {
-        this.memberId = memberId;
     }
 }

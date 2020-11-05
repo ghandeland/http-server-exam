@@ -58,6 +58,7 @@ public abstract class AbstractDao<T extends SetId> {
             }
         }
     }
+
     protected List <T> retrieveMultiple(Long id, String sql) throws SQLException {
         try(Connection connection = dataSource.getConnection()){
             try(PreparedStatement statement = connection.prepareStatement(sql)){

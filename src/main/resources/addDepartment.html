@@ -6,7 +6,7 @@
     <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<form action="/api/addNewDepartment" method="post" id="dep-form">
+<form action="/api/addNewDepartment" id="dep-form" method="post">
     <h1>Add department:</h1>
     <br>
     <div id="departments"></div>
@@ -14,7 +14,9 @@
 
     <p><label>Department name: <input name="name"/></label></p>
 
-    <button>Submit</button> </form>  <button onclick="refetch()">Refresh</button>
+    <button>Submit</button>
+</form>
+<button onclick="refetch()">Refresh</button>
 <br>
 <a href="http://localhost:8080/index.html">See overview</a>
 
@@ -23,7 +25,7 @@
         document.getElementById("departments").innerHTML = html;
     });
 
-    function refetch(){
+    function refetch() {
         fetch("/api/department").then(response => response.text()).then(html => {
             document.getElementById("departments").innerHTML = html;
         });
