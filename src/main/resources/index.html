@@ -8,13 +8,13 @@
 <body>
 <a href="http://localhost:8080/addProjectMember.html">Add new members</a>
 <br>
-<a href="http://localhost:8080/filterByMember.html">filter by members</a>
+<a href="http://localhost:8080/filterByMember.html">Filter by members</a>
 <br>
 <a href="http://localhost:8080/deleteMember.html">Delete member</a>
 <br>
 <a href="http://localhost:8080/addProjectTask.html">Add new tasks</a>
 <br>
-<a href="http://localhost:8080/alterProjectTask.html">Alter task status</a>
+<a href="http://localhost:8080/alterProjectTask.html">Change task status</a>
 <br>
 <a href="http://localhost:8080/deleteTask.html">Delete Task</a>
 <br>
@@ -28,17 +28,24 @@
 <h1>Project members:</h1>
 <div id="members"></div>
 <br><br>
+<!-- onchange="this.form.submit()   -->
 <form action="/api/filterTask" method="POST" name="statusForm">
-    <Label for="status">Filter on task status: </Label>
-    <select id="status" name="taskStatus" onchange="this.form.submit()">
+    <Label for="status-select">Filter on task status: </Label>
+    <select id="status-select" name="taskStatus" onchange="this.form.submit()">
         <option onclick="showFilteredTasks()" value='*'>Show all</option>
         <option value="OPEN">Open</option>
         <option value="IN_PROGRESS">In progress</option>
         <option value="FINISHED">Finished</option>
         <option value="CANCELED">Canceled</option>
     </select>
+    <br>
+    <Label for="member-select">Filter on member: </Label>
+    <select id="member-select" name="taskMember" onchange="this.form.submit()">
+        <option value="*">Show all</option>
+    </select>
 </form>
-<button onclick="showFilteredTasks()"> Filter</button>
+<br>
+<button onclick="showFilteredTasks()">Filter</button>
 
 
 <h1>Tasks:</h1>
@@ -53,6 +60,10 @@
     fetch("/api/task").then(response => response.text()).then(html => {
         document.getElementById("tasks").innerHTML = html;
     });
+
+    /*fetch("/api/memberSelect").then(response => response.text()).then(html => {
+        document.getElementById("member-select").innerHTML += html;
+    });*/
 
     function showFilteredTasks() {
         fetch("/api/showFilterTask").then(response => response.text()).then(html => {

@@ -25,6 +25,7 @@ public class MemberTaskPostController extends AbstractController {
 
         taskMemberDao.insert(taskId, memberId);
 
-        sendPostResponse(socket, "http://localhost:8080/addMemberToTask.html");
+        sendPostResponse(socket);
+        // sendPostResponse(socket, "http://localhost:8080/addMemberToTask.html");
     }
 }

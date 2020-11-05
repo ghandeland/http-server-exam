@@ -27,9 +27,13 @@ public class TaskFilterPostController extends AbstractController {
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         Map <String, String> taskQueryMap = handlePostRequest(request, socket);
         String taskStatus = taskQueryMap.get("taskStatus");
+        String taskMember = taskQueryMap.get("taskMember");
+
+        System.out.println(taskMember);
 
         filterList = taskDao.filterStatus(taskStatus);
 
-        sendPostResponse(socket, "http://localhost:8080/index.html");
+        sendPostResponse(socket);
+        // sendPostResponse(socket, "http://localhost:8080/index.html");
     }
 }

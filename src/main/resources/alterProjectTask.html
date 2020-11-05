@@ -7,14 +7,13 @@
 </head>
 <body>
 <form action="/api/alterTask" method="post">
-    <h1>alter task:</h1>
+    <h1>Change task status:</h1>
     <p>
         <label for="task-select">Task:</label>
         <select id="task-select" name="task"></select>
-
     </p>
     <p>
-        <label for="status-select">Status: </label>
+        <label for="status-select">Status:</label>
         <select id="status-select" name="status">
             <option value="OPEN">Open</option>
             <option value="IN_PROGRESS">In progress</option>
@@ -25,6 +24,8 @@
     <p>
         <button>Submit</button>
     </p>
+    <br>
+    <a href="http://localhost:8080/index.html">See overview</a>
 </form>
 </body>
 <script>

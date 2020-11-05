@@ -43,12 +43,17 @@ public class TaskDao extends AbstractDao <Task> {
         }
     }
 
-    public List <Task> filterMember(String MemberId) throws SQLException {
-        if(MemberId.equals("")){
+    public List <Task> filterMember(String memberId) throws SQLException {
+        if(memberId.equals("")){
             return list();
         }else{
-            return filter(MemberId, "SELECT * FROM task WHERE id = (SELECT task_id FROM task_member WHERE member_id = CAST(? AS integer))");
+            return filter(memberId, "SELECT * FROM task WHERE id = (SELECT task_id FROM task_member WHERE member_id = CAST(? AS integer))");
         }
+    }
+
+    public List <Task> filterMemberExistingList(List<Task> taskList, String memberId) throws SQLException {
+        String sql = "select * from task where id in (select task_id from task_member where member_id = ?) and status = ?;";
+        return null;
     }
 
     public void alter(long id, String status) throws SQLException {

@@ -29,6 +29,7 @@ public class TaskPostController extends AbstractController {
 
         taskDao.insert(task);
 
-        sendPostResponse(socket, "http://localhost:8080/addProjectTask.html");
+        sendPostResponse(socket);
+        // sendPostResponse(socket, "http://localhost:8080/addProjectTask.html");
     }
 }

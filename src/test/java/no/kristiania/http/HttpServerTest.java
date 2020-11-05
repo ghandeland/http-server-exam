@@ -127,7 +127,8 @@ public class HttpServerTest {
         HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewMember", "firstName=Someone&lastName=Somelastname&email=someone@example.com&department=-1");
 
         HttpMessage response = client.executeRequest();
-        assertEquals("201", response.getCode());
+        assertEquals("204", response.getCode());
+        // assertEquals("201", response.getCode());
 
         MemberDao memberDao = new MemberDao(dataSource);
 
@@ -143,7 +144,8 @@ public class HttpServerTest {
         HttpClient client = new HttpClient("localhost", server.getPort(), "/api/addNewTask", "name=Someone&description=Some&status=OPEN");
 
         HttpMessage response = client.executeRequest();
-        assertEquals("201", response.getCode());
+        assertEquals("204", response.getCode());
+        // assertEquals("201", response.getCode());
 
         TaskDao taskDao = new TaskDao(dataSource);
 
@@ -165,7 +167,8 @@ public class HttpServerTest {
         HttpMessage response = client.executeRequest();
         TaskMemberDao taskMemberDao = new TaskMemberDao(dataSource);
 
-        assertEquals("201", response.getCode());
+        assertEquals("204", response.getCode());
+        //assertEquals("201", response.getCode());
         assertThat(taskMemberDao.retrieveMembersByTaskId(1L)).contains(1L);
     }
 
@@ -175,7 +178,8 @@ public class HttpServerTest {
         HttpMessage response = client.executeRequest();
         DepartmentDao departmentDao = new DepartmentDao(dataSource);
 
-        assertEquals("201", response.getCode());
+        assertEquals("204", response.getCode());
+        // assertEquals("201", response.getCode());
 
         List <String> arrayList = new ArrayList <>();
         for(Department department : departmentDao.list()){
@@ -190,7 +194,8 @@ public class HttpServerTest {
         HttpMessage response = client.executeRequest();
         DepartmentDao departmentDao = new DepartmentDao(dataSource);
 
-        assertEquals("201", response.getCode());
+        assertEquals("204", response.getCode());
+        // assertEquals("201", response.getCode());
 
         List <String> arrayList = new ArrayList <>();
         for(Department department : departmentDao.list()){
