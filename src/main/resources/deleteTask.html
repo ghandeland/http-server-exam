@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>delete task</title>
+    <title>Delete task</title>
     <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <form action="/api/deleteTask" method="post">
-    <h1>delete task:</h1>
+    <h1>Delete task:</h1>
     <p>
         <label>task:
             <select id="task-select" name="task"></select>
@@ -16,8 +16,8 @@
     <p>
         <button>Submit</button>
     </p>
-    <br>
 </form>
+
 <a href="http://localhost:8080/index.html">See overview</a>
 <script>
     fetch("/api/taskSelect").then(response => response.text()).then(html => {
