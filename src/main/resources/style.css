@@ -173,7 +173,7 @@ section {
 }
 
 [style*="--c:"], section > section, aside, article {
-    flex: var(--c, 1);
+    flex: var(--c1);
     margin: var(--m1)
 }
 

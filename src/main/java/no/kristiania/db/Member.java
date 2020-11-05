@@ -2,20 +2,12 @@ package no.kristiania.db;
 
 public class Member implements SetId {
     private long id;
-    private String firstName;
-    private String lastName;
-    private String email;
+    private final String firstName;
+    private final String lastName;
+    private final String email;
     private Long departmentId;
 
     public Member(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        departmentId = null;
-    }
-
-    public Member(int id, String firstName, String lastName, String email) {
-        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

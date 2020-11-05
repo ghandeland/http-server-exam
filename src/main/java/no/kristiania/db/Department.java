@@ -2,10 +2,7 @@ package no.kristiania.db;
 
 public class Department implements SetId {
     private long id;
-    private String name;
-
-    public Department() {
-    }
+    private final String name;
 
     public Department(String name) {
         this.name = name;
@@ -27,9 +24,5 @@ public class Department implements SetId {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

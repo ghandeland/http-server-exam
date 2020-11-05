@@ -39,23 +39,12 @@ public class Task implements SetId {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = TaskStatus.valueOf(status);
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

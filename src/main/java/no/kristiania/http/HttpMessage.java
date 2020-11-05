@@ -22,6 +22,7 @@ public class HttpMessage {
 
         while((c = socket.getInputStream().read()) != -1){
             if(c == '\r'){
+                //noinspection ResultOfMethodCallIgnored
                 socket.getInputStream().read();
                 break;
             }
