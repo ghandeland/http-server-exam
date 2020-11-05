@@ -29,13 +29,13 @@
 <div id="members"></div>
 <br><br>
 <form action="/api/filterTask" method="POST" name="statusForm">
-    <Label for="status">Filter on task</Label>
+    <Label for="status">Filter on task status: </Label>
     <select id="status" name="taskStatus" onchange="this.form.submit()">
         <option onclick="showFilteredTasks()" value='*'>Show all</option>
-        <option value="OPEN">OPEN</option>
-        <option value="IN_PROGRESS">IN_PROGRESS</option>
-        <option value="FINISHED">FINISHED</option>
-        <option value="CANCELED">CANCELED</option>
+        <option value="OPEN">Open</option>
+        <option value="IN_PROGRESS">In progress</option>
+        <option value="FINISHED">Finished</option>
+        <option value="CANCELED">Canceled</option>
     </select>
 </form>
 <button onclick="showFilteredTasks()"> Filter</button>
