@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>filter members</title>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<h1>Filter by Members</h1>
+<form action="/api/filterMembers" method="post">
+    <p>
+        <label for="member-select">Task:</label>
+        <select id="member-select" name="member" onchange="this.form.submit()"></select>
+    </p>
+</form>
+<p>
+    <button onclick=" refetch()">refresh</button>
+</p>
+<h1>members:</h1>
+<div id="members"></div>
+
+<a href="http://localhost:8080/index.html">See overview</a>
+<script>
+    fetch("/api/memberSelect").then(response => response.text()).then(html => {
+        document.getElementById("member-select").innerHTML = html;
+    });
+
+    function refetch() {
+        fetch("/api/showFilterMembers").then(response => response.text()).then(html => {
+            document.getElementById("members").innerHTML = html;
+        });
+    }
+</script>
+</body>
+</html>

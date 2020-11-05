@@ -43,6 +43,14 @@ public class TaskDao extends AbstractDao <Task> {
         }
     }
 
+    public List <Task> filterMember(String MemberId) throws SQLException {
+        if(MemberId.equals("")){
+            return list();
+        }else{
+            return filter(MemberId, "SELECT * FROM task WHERE id = (SELECT task_id FROM task_member WHERE member_id = CAST(? AS integer))");
+        }
+    }
+
     public void alter(long id, String status) throws SQLException {
         alter(id, status, "UPDATE task SET status = CAST(? AS task_status) WHERE id = ?");
     }

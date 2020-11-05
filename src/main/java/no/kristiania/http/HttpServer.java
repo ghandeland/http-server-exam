@@ -26,7 +26,6 @@ public class HttpServer {
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         this.serverSocket = new ServerSocket(port);
-
         controllers = new HashMap <>();
         controllers.put("/api/addNewMember", new MemberPostController(dataSource));
         controllers.put("/api/addNewTask", new TaskPostController(dataSource));
@@ -44,7 +43,8 @@ public class HttpServer {
         controllers.put("/api/deleteTask", new TaskDeleteController(dataSource));
         controllers.put("/api/deleteMember", new MemberDeleteController(dataSource));
         controllers.put("/api/deleteDepartment", new DepartmentDeleteController(dataSource));
-
+        controllers.put("/api/filterMembers", new MemberFilterPostController(dataSource));
+        controllers.put("/api/showFilterMembers", new MemberFilterGetController(dataSource));
         new Thread(() -> {
             while(true){
                 try{
