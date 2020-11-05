@@ -43,6 +43,6 @@ public class MemberGetController extends AbstractController {
         }
         body.append("</ul>");
 
-        getResponse(socket, body);
+        sendGetResponse(socket, body);
     }
 }

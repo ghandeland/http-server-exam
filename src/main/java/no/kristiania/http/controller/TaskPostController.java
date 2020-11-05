@@ -19,7 +19,7 @@ public class TaskPostController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> memberQueryMap = handlePost(request, socket);
+        Map <String, String> memberQueryMap = handlePostRequest(request, socket);
 
         String taskName = memberQueryMap.get("name");
         String taskDescription = memberQueryMap.get("description");
@@ -29,7 +29,7 @@ public class TaskPostController extends AbstractController {
 
         taskDao.insert(task);
 
-        postResponse(socket);
+        sendPostResponse(socket);
 
     }
 }

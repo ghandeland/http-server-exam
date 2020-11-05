@@ -19,14 +19,14 @@ public class DepartmentPostController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> bodyMap = handlePost(request, socket);
+        Map <String, String> bodyMap = handlePostRequest(request, socket);
         String departmentName = bodyMap.get("name");
 
         Department department = new Department(departmentName);
 
         departmentDao.insert(department);
 
-        postResponse(socket);
+        sendPostResponse(socket);
     }
 
 

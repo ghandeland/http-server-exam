@@ -9,18 +9,18 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class DeleteMemberController extends AbstractController {
+public class MemberDeleteController extends AbstractController {
     private final MemberDao memberDao;
 
-    public DeleteMemberController(DataSource dataSource) {
+    public MemberDeleteController(DataSource dataSource) {
         this.memberDao = new MemberDao(dataSource);
     }
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> bodyMap = handlePost(request, socket);
+        Map <String, String> bodyMap = handlePostRequest(request, socket);
         long member = Long.parseLong(bodyMap.get("member"));
         memberDao.delete(member);
-        postResponse(socket);
+        sendPostResponse(socket);
     }
 }

@@ -20,7 +20,7 @@ public class MemberPostController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> memberQueryMap = handlePost(request, socket);
+        Map <String, String> memberQueryMap = handlePostRequest(request, socket);
         String memberFirstName = memberQueryMap.get("firstName");
         String memberLastName = memberQueryMap.get("lastName");
         String memberEmail = memberQueryMap.get("email");
@@ -33,6 +33,6 @@ public class MemberPostController extends AbstractController {
 
         memberDao.insert(member);
 
-        postResponse(socket);
+        sendPostResponse(socket);
     }
 }

@@ -9,17 +9,17 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class DeleteDepartmentController extends AbstractController {
+public class DepartmentDeleteController extends AbstractController {
     private final DepartmentDao departmentDao;
 
-    public DeleteDepartmentController(DataSource dataSource) {
+    public DepartmentDeleteController(DataSource dataSource) {
         this.departmentDao = new DepartmentDao(dataSource);
     }
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> query = handlePost(request, socket);
+        Map <String, String> query = handlePostRequest(request, socket);
         departmentDao.delete(Long.parseLong(query.get("department")));
-        postResponse(socket);
+        sendPostResponse(socket);
     }
 }

@@ -25,6 +25,6 @@ public class DepartmentSelectGetController extends AbstractController {
                     .append(department.getName())
                     .append("</option>");
         }
-        getResponse(socket, body);
+        sendGetResponse(socket, body);
     }
 }

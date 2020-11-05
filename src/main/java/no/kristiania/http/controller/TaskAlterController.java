@@ -18,12 +18,12 @@ public class TaskAlterController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> stringMap = handlePost(request, socket);
+        Map <String, String> stringMap = handlePostRequest(request, socket);
         String taskStatus = stringMap.get("status");
         long taskId = Long.parseLong(stringMap.get("task"));
 
         taskDao.alter(taskId, taskStatus);
 
-        postResponse(socket);
+        sendPostResponse(socket);
     }
 }

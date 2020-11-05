@@ -94,7 +94,7 @@ public abstract class AbstractDao<T extends SetId> {
                 statement.setObject(1, value);
                 statement.setLong(2, id);
                 statement.executeUpdate();
-                HttpServer.logger.info("Altered TABLE \"{}\", with value to \"{}\" on id {}", sql.split(" ")[1], value, id);
+                HttpServer.logger.info("ALTERED TABLE \"{}\", with value to \"{}\" on id {}", sql.split(" ")[1], value, id);
             }
         }
     }
