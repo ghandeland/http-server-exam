@@ -25,6 +25,6 @@ public class TaskSelectGetController extends AbstractController {
                     .append(task.getName())
                     .append("</option>");
         }
-        getResponse(socket, body);
+        sendGetResponse(socket, body);
     }
 }

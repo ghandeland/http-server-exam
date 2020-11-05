@@ -18,8 +18,8 @@ public class DeleteDepartmentController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> query = handlePost(request, socket);
+        Map <String, String> query = handlePostRequest(request, socket);
         departmentDao.delete(Long.parseLong(query.get("department")));
-        postResponse(socket);
+        sendPostResponse(socket);
     }
 }

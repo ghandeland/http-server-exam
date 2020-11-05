@@ -18,9 +18,9 @@ public class DeleteTaskController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> bodyMap = handlePost(request, socket);
+        Map <String, String> bodyMap = handlePostRequest(request, socket);
         long task = Long.parseLong(bodyMap.get("task"));
         taskDao.delete(task);
-        postResponse(socket);
+        sendPostResponse(socket);
     }
 }

@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
 
+import static no.kristiania.db.Task.taskStatusToString;
+
 public class TaskGetController extends AbstractController {
     private final TaskDao taskDao;
     private final MemberDao memberDao;
@@ -30,7 +32,8 @@ public class TaskGetController extends AbstractController {
 
             body.append("<li id =\"task-li-").append(task.getId()).append("\"><strong>Task: </strong> ")
                     .append(task.getName()).append(" <strong>Description: </strong>").append(task.getDescription())
-                    .append("  <strong>Status: </strong>").append(task.getStatus().toString())
+                    .append("  <strong>Status: </strong>")
+                    .append(taskStatusToString(task.getStatus()))
                     .append("</li>");
 
             LinkedHashSet <Long> memberIDsOnTask = taskMemberDao.retrieveMembersByTaskId(task.getId());
@@ -46,6 +49,6 @@ public class TaskGetController extends AbstractController {
             }
         }
         body.append("</ul>");
-        getResponse(socket, body);
+        sendGetResponse(socket, body);
     }
 }

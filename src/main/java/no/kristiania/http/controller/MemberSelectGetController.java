@@ -27,6 +27,6 @@ public class MemberSelectGetController extends AbstractController {
                     .append(member.getLastName())
                     .append("</option>");
         }
-        getResponse(socket, body);
+        sendGetResponse(socket, body);
     }
 }

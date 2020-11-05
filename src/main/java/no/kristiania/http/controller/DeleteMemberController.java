@@ -18,9 +18,9 @@ public class DeleteMemberController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> bodyMap = handlePost(request, socket);
+        Map <String, String> bodyMap = handlePostRequest(request, socket);
         long member = Long.parseLong(bodyMap.get("member"));
         memberDao.delete(member);
-        postResponse(socket);
+        sendPostResponse(socket);
     }
 }

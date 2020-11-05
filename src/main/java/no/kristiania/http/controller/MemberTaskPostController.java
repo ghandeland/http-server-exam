@@ -18,13 +18,13 @@ public class MemberTaskPostController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        Map <String, String> taskMemberMap = handlePost(request, socket);
+        Map <String, String> taskMemberMap = handlePostRequest(request, socket);
 
         long memberId = Long.parseLong(taskMemberMap.get("member"));
         long taskId = Long.parseLong(taskMemberMap.get("task"));
 
         taskMemberDao.insert(taskId, memberId);
 
-        postResponse(socket);
+        sendPostResponse(socket);
     }
 }

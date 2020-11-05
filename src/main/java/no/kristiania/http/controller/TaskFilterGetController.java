@@ -49,7 +49,7 @@ public class TaskFilterGetController extends AbstractController {
 
             body.append("</ul>");
         }
-        getResponse(socket, body);
+        sendGetResponse(socket, body);
     }
 
 }
