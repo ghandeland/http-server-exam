@@ -24,6 +24,6 @@ public class TaskAlterController extends AbstractController {
 
         taskDao.alter(taskId, taskStatus);
 
-        sendPostResponse(socket);
+        sendPostResponse(socket,"http://localhost:8080/alterProjectTask.html");
     }
 }

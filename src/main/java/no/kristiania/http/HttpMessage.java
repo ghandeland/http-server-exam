@@ -53,6 +53,9 @@ public class HttpMessage {
             case "200":
                 startLine = "HTTP/1.1 200 OK";
                 break;
+            case "201":
+                startLine = "HTTP/1.1 201 Created";
+                break;
             case "404":
                 startLine = "HTTP/1.1 404 Not Found";
                 break;
