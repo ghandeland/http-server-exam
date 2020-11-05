@@ -59,4 +59,5 @@ public class MemberDao extends AbstractDao <Member> {
                 rs.getLong("department_id")
         );
     }
+
 }
