@@ -21,6 +21,6 @@ public class MemberDeleteController extends AbstractController {
         Map <String, String> bodyMap = handlePostRequest(request, socket);
         long member = Long.parseLong(bodyMap.get("member"));
         memberDao.delete(member);
-        sendPostResponse(socket,"http://localhost:8080/deleteMember.html");
+        sendPostResponse(socket, "http://localhost:8080/deleteMember.html");
     }
 }

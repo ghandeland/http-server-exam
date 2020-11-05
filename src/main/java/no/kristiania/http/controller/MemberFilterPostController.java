@@ -30,6 +30,6 @@ public class MemberFilterPostController extends AbstractController {
 
         filterList = taskDao.filterMember(taskStatus);
 
-        sendPostResponse(socket,"http://localhost:8080/filterByMember.html");
+        sendPostResponse(socket, "http://localhost:8080/filterByMember.html");
     }
 }

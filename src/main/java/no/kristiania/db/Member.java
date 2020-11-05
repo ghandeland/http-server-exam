@@ -28,8 +28,9 @@ public class Member implements SetId {
         this.email = memberEmail;
         this.departmentId = departmentId;
     }
-    public Member(int id,String memberFirstName, String memberLastName, String memberEmail, Long departmentId) {
-        this.id= id;
+
+    public Member(int id, String memberFirstName, String memberLastName, String memberEmail, Long departmentId) {
+        this.id = id;
         this.firstName = memberFirstName;
         this.lastName = memberLastName;
         this.email = memberEmail;
