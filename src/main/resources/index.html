@@ -30,8 +30,8 @@
 <br><br>
 <form action="/api/filterTask" method="POST" name="statusForm">
     <Label for="status">Filter on task</Label>
-    <select id="status" name="taskStatus" onchange="">
-        <option onclick="showFilteredTasks()" value='*'>Show all</option>
+    <select id="status" name="taskStatus">
+        <option value='*'>Show all</option>
         <option value="OPEN">OPEN</option>
         <option value="IN_PROGRESS">IN_PROGRESS</option>
         <option value="FINISHED">FINISHED</option>

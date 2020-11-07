@@ -51,14 +51,14 @@ public class HttpServerTest {
 
     @Test
     void shouldReturnUnsuccessfulErrorCode() throws IOException {
-        HttpClient client = new HttpClient("localhost", server.getPort(), "echo/?status=404");
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/echo/?status=404");
         HttpMessage response = client.executeRequest();
         assertEquals("404", response.getCode());
     }
 
     @Test
     void shouldParseRequestParameters() throws IOException {
-        HttpClient client = new HttpClient("localhost", server.getPort(), "echo/?status=401");
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/echo?status=401");
         HttpMessage response = client.executeRequest();
         assertEquals("401", response.getCode());
     }
@@ -66,14 +66,14 @@ public class HttpServerTest {
 
     @Test
     void shouldParseRequestParametersWithLocation() throws IOException {
-        HttpClient client = new HttpClient("localhost", server.getPort(), "?status=302&Location=http://www.example.com");
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/echo?status=302&Location=http://www.example.com");
         HttpMessage response = client.executeRequest();
         assertEquals("http://www.example.com", response.getHeader("Location"));
     }
 
     @Test
     void shouldParseRequestParametersWithBody() throws IOException {
-        HttpClient client = new HttpClient("localhost", server.getPort(), "?body=HelloWorld");
+        HttpClient client = new HttpClient("localhost", server.getPort(), "/echo?body=HelloWorld");
         HttpMessage response = client.executeRequest();
         assertEquals("HelloWorld", response.getBody());
     }

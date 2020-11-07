@@ -2,9 +2,9 @@ package no.kristiania.db;
 
 public class Task implements SetId {
     private long id;
-    private String name;
-    private String description;
-    private TaskStatus status;
+    private final String name;
+    private final String description;
+    private final TaskStatus status;
 
     public Task(String name, String description, String status) {
         this.name = name;

@@ -45,6 +45,8 @@ public class HttpServer {
         controllers.put("/api/deleteDepartment", new DepartmentDeleteController(dataSource));
         controllers.put("/api/filterMembers", new MemberFilterPostController(dataSource));
         controllers.put("/api/showFilterMembers", new MemberFilterGetController(dataSource));
+        controllers.put("/echo", new EchoController());
+
         new Thread(() -> {
             while(true){
                 try{
@@ -86,69 +88,41 @@ public class HttpServer {
     }
 
     private void handleRequest(Socket socket) throws IOException, SQLException {
-        HttpMessage response = new HttpMessage();
         HttpMessage request = new HttpMessage();
+        String requestPath = getRequestPath(request, socket);
 
+        if(requestPath.equals("/") || requestPath.equals(""))
+            requestPath = "/index.html";
+
+        AbstractController controller = getController(requestPath);
+        if(controller != null)
+            controller.handle(request, socket);
+        else
+            handleFileRequest(socket, requestPath);
+    }
+
+    private String getRequestPath(HttpMessage request, Socket socket) throws IOException {
         String requestLine = HttpMessage.readLine(socket);
-        if(requestLine == null) return;
+
+        if(requestLine == null) return "";
 
         String[] requestLineParts = requestLine.split(" ");
-
         String requestTarget = requestLineParts.length > 1 ? requestLineParts[1] : "";
 
-        if(!requestTarget.equals("/favicon.ico")){
-            logger.info("REQUEST LINE: {}", requestLine);
-        }
+        if(!requestTarget.equals("/favicon.ico")) logger.info("REQUEST LINE: {}", requestLine);
 
         int questionPosition = requestTarget.indexOf('?');
         String requestPath = questionPosition != -1 ? requestTarget.substring(0, questionPosition) : requestTarget;
-
-        if(requestPath.equals("/") || requestPath.equals("")){
-            requestPath = "/index.html";
-        }
-
-        if(requestPath.startsWith("/api/")){
-            getController(requestPath).handle(request, socket);
-            return;
-        }
-
         if(questionPosition != -1){
             String queryStringLine = requestTarget.substring(questionPosition + 1);
             QueryString.putQueryParametersIntoHttpMessageHeaders(request, queryStringLine);
-
-            handleQueryRequest(socket, response, request);
-            return;
         }
-        handleFileRequest(socket, response, requestPath);
+        return requestPath;
     }
 
-    private void handleQueryRequest(Socket socket, HttpMessage response, HttpMessage request) throws IOException {
 
-        if(request.getHeader("body") != null){
-            response.setBody(request.getHeader("body"));
-        }else{
-            response.setBody("Hello World");
-        }
-
-        if(request.getHeader("Location") != null){
-            response.setHeader("Location", request.getHeader("Location"));
-        }
-
-        if(request.getHeader("status") != null){
-            response.setCodeAndStartLine(request.getHeader("status"));
-        }else{
-            response.setCodeAndStartLine("200");
-        }
-
-        response.setHeader("Connection", "close");
-        response.setHeader("Content-type", "text/plain");
-        if(response.getBody() != null){
-            response.setHeader("Content-Length", String.valueOf(response.getBody().length()));
-        }
-        response.write(socket);
-    }
-
-    private void handleFileRequest(Socket socket, HttpMessage response, String requestPath) throws IOException {
+    private void handleFileRequest(Socket socket, String requestPath) throws IOException {
+        HttpMessage response = new HttpMessage();
         try(InputStream inputStream = getClass().getResourceAsStream(requestPath)){
             if(inputStream == null || requestPath.endsWith(".java") || requestPath.endsWith(".class")){
                 String body = requestPath + " does not exist";
