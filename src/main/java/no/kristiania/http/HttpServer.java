@@ -96,15 +96,16 @@ public class HttpServer {
 
         String requestTarget = requestLineParts.length > 1 ? requestLineParts[1] : "";
 
-        if(requestTarget.equals("/") || requestTarget.equals("")){
-            requestTarget = "/index.html";
-        }
         if(!requestTarget.equals("/favicon.ico")){
             logger.info("REQUEST LINE: {}", requestLine);
         }
 
         int questionPosition = requestTarget.indexOf('?');
         String requestPath = questionPosition != -1 ? requestTarget.substring(0, questionPosition) : requestTarget;
+
+        if(requestPath.equals("/") || requestPath.equals("")){
+            requestPath = "/index.html";
+        }
 
         if(requestPath.startsWith("/api/")){
             getController(requestPath).handle(request, socket);
@@ -118,7 +119,7 @@ public class HttpServer {
             handleQueryRequest(socket, response, request);
             return;
         }
-        handleFileRequest(socket, response, requestTarget);
+        handleFileRequest(socket, response, requestPath);
     }
 
     private void handleQueryRequest(Socket socket, HttpMessage response, HttpMessage request) throws IOException {
@@ -164,7 +165,7 @@ public class HttpServer {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             inputStream.transferTo(buffer);
 
-            String fileExtension = requestPath.split("\\.(?=[^\\.]+$)")[1];
+            String fileExtension = requestPath.split("\\.(?=[^.]+$)")[1];
 
             String contentType;
             switch(fileExtension){

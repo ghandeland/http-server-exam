@@ -10,12 +10,13 @@
 <form action="/api/filterMembers" method="post">
     <p>
         <label for="member-select">Task:</label>
-        <select id="member-select" name="member" onchange="this.form.submit()"></select>
+        <select id="member-select" name="member"></select>
+    </p>
+    <p>
+        <button>refresh</button>
     </p>
 </form>
-<p>
-    <button onclick=" refetch()">refresh</button>
-</p>
+
 <h1>members:</h1>
 <div id="members"></div>
 
@@ -25,11 +26,9 @@
         document.getElementById("member-select").innerHTML = html;
     });
 
-    function refetch() {
-        fetch("/api/showFilterMembers").then(response => response.text()).then(html => {
-            document.getElementById("members").innerHTML = html;
-        });
-    }
+    fetch("/api/showFilterMembers").then(response => response.text()).then(html => {
+        document.getElementById("members").innerHTML = html;
+    });
 </script>
 </body>
 </html>

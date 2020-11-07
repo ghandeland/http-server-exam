@@ -30,15 +30,15 @@
 <br><br>
 <form action="/api/filterTask" method="POST" name="statusForm">
     <Label for="status">Filter on task</Label>
-    <select id="status" name="taskStatus" onchange="this.form.submit()">
+    <select id="status" name="taskStatus" onchange="">
         <option onclick="showFilteredTasks()" value='*'>Show all</option>
         <option value="OPEN">OPEN</option>
         <option value="IN_PROGRESS">IN_PROGRESS</option>
         <option value="FINISHED">FINISHED</option>
         <option value="CANCELED">CANCELED</option>
     </select>
+    <button> Filter</button>
 </form>
-<button onclick="showFilteredTasks()"> Filter</button>
 
 
 <h1>Tasks:</h1>
@@ -50,15 +50,8 @@
         document.getElementById("members").innerHTML = html;
     });
 
-    fetch("/api/task").then(response => response.text()).then(html => {
+    fetch("/api/showFilterTask").then(response => response.text()).then(html => {
         document.getElementById("tasks").innerHTML = html;
     });
-
-    function showFilteredTasks() {
-        fetch("/api/showFilterTask").then(response => response.text()).then(html => {
-            document.getElementById("tasks").innerHTML = html;
-        });
-    }
-
 </script>
 </html>

@@ -28,7 +28,7 @@ public class HttpMessage {
             }
             sb.append((char) c);
         }
-        return URLDecoder.decode((sb.toString()), StandardCharsets.UTF_8);
+        return URLDecoder.decode((sb.toString()), StandardCharsets.ISO_8859_1);
     }
 
     public String getBody() {
@@ -134,6 +134,6 @@ public class HttpMessage {
             body.append((char) socket.getInputStream().read());
         }
 
-        return URLDecoder.decode((body.toString()), StandardCharsets.UTF_8);
+        return URLDecoder.decode((body.toString()), StandardCharsets.ISO_8859_1);
     }
 }
