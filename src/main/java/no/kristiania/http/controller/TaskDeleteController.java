@@ -2,6 +2,9 @@ package no.kristiania.http.controller;
 
 import no.kristiania.db.TaskDao;
 import no.kristiania.http.HttpMessage;
+import no.kristiania.http.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.IOException;
