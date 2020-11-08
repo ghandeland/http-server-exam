@@ -16,7 +16,6 @@
 
     <button>Submit</button>
 </form>
-<button onclick="refetch()">Refresh</button>
 <br>
 <a href="http://localhost:8080/index.html">See overview</a>
 
@@ -24,12 +23,6 @@
     fetch("/api/department").then(response => response.text()).then(html => {
         document.getElementById("departments").innerHTML = html;
     });
-
-    function refetch() {
-        fetch("/api/department").then(response => response.text()).then(html => {
-            document.getElementById("departments").innerHTML = html;
-        });
-    }
 </script>
 
 </body>

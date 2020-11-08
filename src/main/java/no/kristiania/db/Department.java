@@ -1,8 +1,8 @@
 package no.kristiania.db;
 
 public class Department implements SetId {
-    private long id;
     private final String name;
+    private long id;
 
     public Department(String name) {
         this.name = name;

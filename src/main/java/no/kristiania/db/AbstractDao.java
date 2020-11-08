@@ -74,7 +74,7 @@ public abstract class AbstractDao<T extends SetId> {
         }
     }
 
-    protected List <T> filter(Object value, String sql) throws SQLException {
+    protected List <T> filter(String value, String sql) throws SQLException {
         try(Connection connection = dataSource.getConnection()){
             try(PreparedStatement statement = connection.prepareStatement(sql)){
                 statement.setObject(1, value);
@@ -89,7 +89,7 @@ public abstract class AbstractDao<T extends SetId> {
         }
     }
 
-    protected void alter(long id, Object value, String sql) throws SQLException {
+    protected void alter(long id, String value, String sql) throws SQLException {
         try(Connection connection = dataSource.getConnection()){
             try(PreparedStatement statement = connection.prepareStatement(sql)){
                 statement.setObject(1, value);

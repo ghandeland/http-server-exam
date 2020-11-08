@@ -17,19 +17,12 @@
     <button>Delete</button>
 
 </form>
-<button onclick="refetch()">Refresh</button>
 <br>
 <a href="http://localhost:8080/index.html">See overview</a>
 <script>
     fetch("/api/departmentSelect").then(response => response.text()).then(html => {
         document.getElementById("department-select").innerHTML = html;
     });
-
-    function refetch() {
-        fetch("/api/departmentSelect").then(response => response.text()).then(html => {
-            document.getElementById("department-select").innerHTML = html;
-        });
-    }
 </script>
 </body>
 </html>

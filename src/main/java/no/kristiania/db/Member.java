@@ -1,10 +1,10 @@
 package no.kristiania.db;
 
 public class Member implements SetId {
-    private long id;
     private final String firstName;
     private final String lastName;
     private final String email;
+    private long id;
     private Long departmentId;
 
     public Member(String firstName, String lastName, String email) {
