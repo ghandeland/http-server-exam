@@ -5,9 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDao extends AbstractDao <Task> {
@@ -18,8 +20,8 @@ public class TaskDao extends AbstractDao <Task> {
     }
 
     public void insert(Task task) throws SQLException {
-        insert(task, "insert into task (name, description, status) values(?, ?, CAST(? AS task_status))");
-        logger.info("New task ({}) successfully added to database", task.getName());
+        boolean insertOk = insert(task, "insert into task (name, description, status) values(?, ?, CAST(? AS task_status))");
+        if(insertOk) logger.info("New task ({}) successfully added to database", task.getName());
     }
 
     public List <Task> list() throws SQLException {
@@ -43,12 +45,24 @@ public class TaskDao extends AbstractDao <Task> {
         }
     }
 
-    public List <Task> filterMember(String MemberId) throws SQLException {
-        if(MemberId.equals("")){
+    public List <Task> filterMember(String memberId) throws SQLException {
+        if(memberId.equals("") || memberId.equals("*")){
             return list();
         }else{
-            return filter(MemberId, "SELECT * FROM task WHERE id = (SELECT task_id FROM task_member WHERE member_id = CAST(? AS integer))");
+            return filter(memberId, "SELECT * FROM task WHERE id = (SELECT task_id FROM task_member WHERE member_id = CAST(? AS integer))");
         }
+    }
+
+    public List <Task> filterTaskAndMember(String status, String memberId) throws SQLException {
+        if(memberId.equals("*")) {
+            return filterStatus(status);
+        } else if(status.equals("*")) {
+            return filterMember(memberId);
+        }
+
+        String sql = "select * from task where id in (select task_id from task_member where member_id = ?) and status = CAST(? AS task_status);";
+
+        return filterTaskAndMember(status, memberId, sql);
     }
 
     public void alter(long id, String status) throws SQLException {
@@ -59,6 +73,7 @@ public class TaskDao extends AbstractDao <Task> {
         delete(id, "DELETE FROM task_member WHERE task_id = ?");
         delete(id, "DELETE FROM task WHERE id = ?");
     }
+
 
     @Override
     protected void setDataOnStatement(PreparedStatement statement, Task task) throws SQLException {
@@ -74,5 +89,22 @@ public class TaskDao extends AbstractDao <Task> {
                 rs.getString("description"),
                 rs.getString("status")
         );
+    }
+
+    protected List <Task> filterTaskAndMember(String status, String memberId, String sql) throws SQLException {
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement(sql)){
+                statement.setInt(1, Integer.parseInt(memberId));
+                statement.setString(2, status);
+
+                try(ResultSet rs = statement.executeQuery()){
+                    List <Task> tList = new ArrayList<>();
+                    while(rs.next()){
+                        tList.add(mapRow(rs));
+                    }
+                    return tList;
+                }
+            }
+        }
     }
 }

@@ -33,6 +33,7 @@ public class MemberPostController extends AbstractController {
 
         memberDao.insert(member);
 
+
         sendPostResponse(socket, "http://localhost:8080/addProjectMember.html");
     }
 }

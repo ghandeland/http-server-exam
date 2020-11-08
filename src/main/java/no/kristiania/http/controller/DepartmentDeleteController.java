@@ -20,6 +20,7 @@ public class DepartmentDeleteController extends AbstractController {
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         Map <String, String> query = handlePostRequest(request, socket);
         departmentDao.delete(Long.parseLong(query.get("department")));
+
         sendPostResponse(socket, "http://localhost:8080/deleteMember.html");
     }
 }

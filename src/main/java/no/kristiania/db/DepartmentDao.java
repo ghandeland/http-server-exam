@@ -18,8 +18,8 @@ public class DepartmentDao extends AbstractDao <Department> {
     }
 
     public void insert(Department department) throws SQLException {
-        insert(department, "insert into department (name) values (?)");
-        logger.info("Department({}) successfully inserted into database", department.getName());
+        boolean insertOk = insert(department, "insert into department (name) values (?)");
+        if(insertOk) logger.info("Department({}) successfully inserted into database", department.getName());
     }
 
     public List <Department> list() throws SQLException {

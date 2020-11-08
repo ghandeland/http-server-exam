@@ -11,9 +11,10 @@ import java.sql.SQLException;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import static no.kristiania.http.HttpServer.logger;
+
 
 public class TaskMemberDao extends AbstractDao <TaskMember> {
-    public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
     private final MemberDao memberDao = new MemberDao(dataSource);
     private final TaskDao taskDao = new TaskDao(dataSource);
 
@@ -26,8 +27,9 @@ public class TaskMemberDao extends AbstractDao <TaskMember> {
     }
 
     public void insert(TaskMember taskMember) throws SQLException {
-        insert(taskMember, "insert into task_member (task_id, member_id) values (?, ?);");
-        logger.info("Task({}) assigned to member({}) and successfully inserted into database ",
+        boolean insertOk = insert(taskMember, "insert into task_member (task_id, member_id) values (?, ?);");
+
+        if(insertOk) logger.info("Task({}) assigned to member({}) and successfully inserted into database ",
                 taskDao.retrieve(taskMember.getTaskId()).getName(),
                 memberDao.retrieve(taskMember.getMemberId()).getFirstName() + " " + memberDao.retrieve(taskMember.getMemberId()).getLastName());
     }

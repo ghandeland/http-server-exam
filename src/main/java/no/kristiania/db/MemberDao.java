@@ -19,8 +19,8 @@ public class MemberDao extends AbstractDao <Member> {
     }
 
     public void insert(Member member) throws SQLException {
-        insert(member, "insert into member (first_name, last_name, email, department_id) values (?, ?, ?, ?)");
-        logger.info("New member({}) successfully inserted into database", member.getFirstName() + " " + member.getLastName() + ", " + member.getEmail());
+        boolean insertOk = insert(member, "insert into member (first_name, last_name, email, department_id) values (?, ?, ?, ?)");
+        if(insertOk) logger.info("New member({}) successfully inserted into database", member.getFirstName() + " " + member.getLastName() + ", " + member.getEmail());
     }
 
     public List <Member> list() throws SQLException {
