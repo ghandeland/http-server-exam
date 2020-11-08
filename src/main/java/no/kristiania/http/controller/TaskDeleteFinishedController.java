@@ -35,7 +35,6 @@ public class TaskDeleteFinishedController extends AbstractController {
             }
         }
 
-        sendPostResponse(socket);
-
+        sendPostResponse(socket, "http://localhost:8080/index.html");
     }
 }

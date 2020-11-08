@@ -20,8 +20,8 @@ public class TaskDao extends AbstractDao <Task> {
     }
 
     public void insert(Task task) throws SQLException {
-        insert(task, "insert into task (name, description, status) values(?, ?, CAST(? AS task_status))");
-        logger.info("New task ({}) successfully added to database", task.getName());
+        boolean insertOk = insert(task, "insert into task (name, description, status) values(?, ?, CAST(? AS task_status))");
+        if(insertOk) logger.info("New task ({}) successfully added to database", task.getName());
     }
 
     public List <Task> list() throws SQLException {

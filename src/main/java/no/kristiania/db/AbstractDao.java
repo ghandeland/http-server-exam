@@ -1,6 +1,7 @@
 package no.kristiania.db;
 
 import no.kristiania.http.HttpServer;
+import org.postgresql.util.PSQLException;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -15,7 +16,7 @@ public abstract class AbstractDao<T extends SetId> {
         this.dataSource = dataSource;
     }
 
-    protected void insert(T t, String sql) throws SQLException {
+    protected boolean insert(T t, String sql) throws SQLException {
         try(Connection connection = dataSource.getConnection()){
             try(PreparedStatement statement = connection.prepareStatement(sql,
                     Statement.RETURN_GENERATED_KEYS)){
@@ -26,6 +27,10 @@ public abstract class AbstractDao<T extends SetId> {
                     generatedKeys.next();
                     t.setId(generatedKeys.getLong("id"));
                 }
+                return true;
+            } catch(PSQLException e) {
+                HttpServer.logger.info(e.getServerErrorMessage().toString());
+                return false;
             }
         }
     }

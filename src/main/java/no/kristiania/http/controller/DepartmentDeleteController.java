@@ -21,7 +21,6 @@ public class DepartmentDeleteController extends AbstractController {
         Map <String, String> query = handlePostRequest(request, socket);
         departmentDao.delete(Long.parseLong(query.get("department")));
 
-        sendPostResponse(socket);
-        // sendPostResponse(socket, "http://localhost:8080/deleteMember.html");
+        sendPostResponse(socket, "http://localhost:8080/deleteMember.html");
     }
 }

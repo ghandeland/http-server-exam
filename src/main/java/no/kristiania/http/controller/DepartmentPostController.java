@@ -26,8 +26,8 @@ public class DepartmentPostController extends AbstractController {
 
         departmentDao.insert(department);
 
-        sendPostResponse(socket);
-        // sendPostResponse(socket, "http://localhost:8080/addDepartment.html");
+
+        sendPostResponse(socket, "http://localhost:8080/addDepartment.html");
     }
 
 
