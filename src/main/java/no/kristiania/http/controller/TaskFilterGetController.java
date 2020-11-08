@@ -24,7 +24,6 @@ public class TaskFilterGetController extends AbstractController {
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         StringBuilder body = new StringBuilder();
-
         body.append("<ul>");
         if(TaskFilterPostController.getFilterList() != null){
             for(Task task : TaskFilterPostController.getFilterList()){

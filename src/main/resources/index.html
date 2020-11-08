@@ -28,7 +28,7 @@
 <br><br>
 <form action="/api/filterTask" method="POST" name="statusForm">
     <Label for="status-select">Filter on task status: </Label>
-    <select id="status-select" name="taskStatus" onchange="this.form.submit()">
+    <select id="status-select" name="taskStatus">
         <option onclick="showFilteredTasks()" value='*'>Show all</option>
         <option value="OPEN">Open</option>
         <option value="IN_PROGRESS">In progress</option>
@@ -37,12 +37,14 @@
     </select>
     <br>
     <Label for="member-select">Filter on member: </Label>
-    <select id="member-select" name="taskMember" onchange="this.form.submit()">
+    <select id="member-select" name="taskMember">
         <option value="*">Show all</option>
     </select>
+    <br>
+    <button>Filtorama</button>
 </form>
 <br>
-<button onclick="showFilteredTasks()">Filter</button>
+<!--<button onclick="showFilteredTasks()">Filter</button>-->
 <button onclick="deleteFinishedTasks()"> Delete finished tasks </button>
 
 
@@ -63,11 +65,9 @@
         document.getElementById("member-select").innerHTML += html;
     });
 
-    function showFilteredTasks() {
-        fetch("/api/showFilterTask").then(response => response.text()).then(html => {
+    fetch("/api/showFilterTask").then(response => response.text()).then(html => {
             document.getElementById("tasks").innerHTML = html;
-        });
-    }
+    });
 
     function deleteFinishedTasks(){
         fetch("/api/deleteFinishedTasks").then(response => response.text()).then(html => {
