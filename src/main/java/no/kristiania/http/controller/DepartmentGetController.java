@@ -19,18 +19,11 @@ public class DepartmentGetController extends AbstractController {
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         StringBuilder body = new StringBuilder();
-
-        body.append("<strong>Departments:</strong>")
-                .append("<ul>");
-
+        body.append("<strong>Departments:</strong>").append("<ul>");
         for(Department department : departmentDao.list()){
-
-            body.append("<li>")
-                    .append(department.getName())
-                    .append("</li>");
+            body.append("<li>").append(department.getName()).append("</li>");
         }
         body.append("</ul>");
-
         sendGetResponse(socket, body);
     }
 

@@ -19,7 +19,6 @@ public class DepartmentSelectGetController extends AbstractController {
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         StringBuilder body = new StringBuilder();
-
         for(Department department : departmentDao.list()){
             body.append("<option value=\"").append(department.getId()).append("\">")
                     .append(department.getName())

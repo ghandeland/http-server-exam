@@ -22,12 +22,9 @@ public class MemberGetController extends AbstractController {
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         StringBuilder body = new StringBuilder();
-
         body.append("<ul>");
-
         for(Member member : memberDao.list()){
             Long departmentId = member.getDepartmentId();
-
             body.append("<li><strong>Name:</strong> ")
                     .append(member.getFirstName())
                     .append(" ")
@@ -42,7 +39,6 @@ public class MemberGetController extends AbstractController {
             body.append("</li>");
         }
         body.append("</ul>");
-
         sendGetResponse(socket, body);
     }
 }

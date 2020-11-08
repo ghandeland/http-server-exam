@@ -15,7 +15,6 @@ public class QueryString {
                 queryMap.put(parameterPair[0], parameterPair[1]);
             }
         }
-
         return queryMap;
     }
 

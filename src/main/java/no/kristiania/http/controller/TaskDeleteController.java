@@ -25,7 +25,6 @@ public class TaskDeleteController extends AbstractController {
         long task = Long.parseLong(bodyMap.get("task"));
         taskDao.delete(task);
 
-
-        sendPostResponse(socket, "http://localhost:8080/deleteTask.html");
+        sendPostResponse(socket, request.getHeader("Referer"));
     }
 }

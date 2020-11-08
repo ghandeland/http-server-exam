@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-
 public class TaskDeleteFinishedController extends AbstractController {
     private final TaskDao taskDao;
     public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
@@ -25,16 +24,15 @@ public class TaskDeleteFinishedController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
-        List<Task> taskList = taskDao.filterStatus("FINISHED");
-        for (Task task: taskList) {
+        List <Task> taskList = taskDao.filterStatus("FINISHED");
+        for(Task task : taskList){
             taskDao.delete(task.getId());
             if(taskList.toArray().length == 1){
                 logger.info("Deleted {} finished task from database", taskList.toArray().length);
-            } else if (taskList.toArray().length > 1){
+            }else if(taskList.toArray().length > 1){
                 logger.info("Deleted {} finished tasks from database", taskList.toArray().length);
             }
         }
-
-        sendPostResponse(socket, "http://localhost:8080/index.html");
+        sendPostResponse(socket, request.getHeader("Referer"));
     }
 }

@@ -28,10 +28,8 @@ public class TaskFilterPostController extends AbstractController {
         Map <String, String> taskQueryMap = handlePostRequest(request, socket);
         String taskStatus = taskQueryMap.get("taskStatus");
         String memberId = taskQueryMap.get("taskMember");
-
-
         filterList = taskDao.filterTaskAndMember(taskStatus, memberId);
 
-        sendPostResponse(socket, "http://localhost:8080/index.html");
+        sendPostResponse(socket, request.getHeader("Referer"));
     }
 }

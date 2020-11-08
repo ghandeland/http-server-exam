@@ -29,7 +29,7 @@
 <form action="/api/filterTask" method="POST" name="statusForm">
     <Label for="status-select">Filter on task status: </Label>
     <select id="status-select" name="taskStatus">
-        <option onclick="showFilteredTasks()" value='*'>Show all</option>
+        <option value='*'>Show all</option>
         <option value="OPEN">Open</option>
         <option value="IN_PROGRESS">In progress</option>
         <option value="FINISHED">Finished</option>
@@ -41,12 +41,10 @@
         <option value="*">Show all</option>
     </select>
     <br>
-    <button>Filtorama</button>
+    <button>Filter tasks</button>
 </form>
 <br>
-<!--<button onclick="showFilteredTasks()">Filter</button>-->
 <button onclick="deleteFinishedTasks()"> Delete finished tasks </button>
-
 
 <h1>Tasks:</h1>
 <div id="tasks"></div>
@@ -70,10 +68,12 @@
     });
 
     function deleteFinishedTasks(){
-        fetch("/api/deleteFinishedTasks").then(response => response.text()).then(html => {
-            document.getElementById("status-select").innerHTML = html;
-        });
+        const form = document.createElement('form');
+        form.method = "post";
+        form.action = "/api/deleteFinishedTasks";
+        document.body.appendChild(form);
+        form.submit();
+        fetch("/api/deleteFinishedTasks");
     }
-
 </script>
 </html>

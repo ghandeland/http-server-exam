@@ -24,16 +24,11 @@ public class MemberPostController extends AbstractController {
         String memberFirstName = memberQueryMap.get("firstName");
         String memberLastName = memberQueryMap.get("lastName");
         String memberEmail = memberQueryMap.get("email");
-
         Long departmentId = null;
         long departmentValue = Long.parseLong(memberQueryMap.get("department"));
         if(departmentValue != -1L) departmentId = departmentValue;
-
         Member member = new Member(memberFirstName, memberLastName, memberEmail, departmentId);
-
         memberDao.insert(member);
-
-
-        sendPostResponse(socket, "http://localhost:8080/addProjectMember.html");
+        sendPostResponse(socket, request.getHeader("Referer"));
     }
 }

@@ -28,14 +28,6 @@ public abstract class AbstractController {
         response.write(socket);
     }
 
-    protected void sendPostResponse(Socket socket) throws IOException {
-        HttpMessage response = new HttpMessage();
-        response.setCodeAndStartLine("204");
-        response.setHeader("Connection", "close");
-        response.setHeader("Content-length", "0");
-        response.write(socket);
-    }
-
     protected Map <String, String> handlePostRequest(HttpMessage request, Socket socket) throws IOException {
         request.readAndSetHeaders(socket);
         int contentLength = Integer.parseInt(request.getHeader("Content-Length"));

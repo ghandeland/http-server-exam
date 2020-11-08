@@ -19,7 +19,6 @@ public class MemberSelectGetController extends AbstractController {
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         StringBuilder body = new StringBuilder();
-
         for(Member member : memberDao.list()){
             body.append("<option value=\"").append(member.getId()).append("\">")
                     .append(member.getFirstName())

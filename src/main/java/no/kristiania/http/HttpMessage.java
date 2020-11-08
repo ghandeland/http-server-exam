@@ -19,7 +19,6 @@ public class HttpMessage {
     public static String readLine(Socket socket) throws IOException {
         StringBuilder sb = new StringBuilder();
         int c;
-
         while((c = socket.getInputStream().read()) != -1){
             if(c == '\r'){
                 //noinspection ResultOfMethodCallIgnored
@@ -72,7 +71,6 @@ public class HttpMessage {
             case "205":
                 startLine = "HTTP/1.1 205 Reset Content";
         }
-
         setStartLine(startLine);
     }
 

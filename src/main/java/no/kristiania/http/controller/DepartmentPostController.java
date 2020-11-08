@@ -21,13 +21,10 @@ public class DepartmentPostController extends AbstractController {
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         Map <String, String> bodyMap = handlePostRequest(request, socket);
         String departmentName = bodyMap.get("name");
-
         Department department = new Department(departmentName);
-
         departmentDao.insert(department);
 
-
-        sendPostResponse(socket, "http://localhost:8080/addDepartment.html");
+        sendPostResponse(socket, request.getHeader("Referer"));
     }
 
 

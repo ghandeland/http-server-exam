@@ -28,7 +28,7 @@ public abstract class AbstractDao<T extends SetId> {
                     t.setId(generatedKeys.getLong("id"));
                 }
                 return true;
-            } catch(PSQLException e) {
+            }catch(PSQLException e){
                 HttpServer.logger.info(e.getServerErrorMessage().toString());
                 return false;
             }
@@ -45,6 +45,9 @@ public abstract class AbstractDao<T extends SetId> {
                     }
                     return tList;
                 }
+            }catch(PSQLException e){
+                HttpServer.logger.info(e.getServerErrorMessage().toString());
+                return null;
             }
         }
     }
@@ -60,6 +63,9 @@ public abstract class AbstractDao<T extends SetId> {
                         return null;
                     }
                 }
+            }catch(PSQLException e){
+                HttpServer.logger.info(e.getServerErrorMessage().toString());
+                return null;
             }
         }
     }
@@ -75,6 +81,9 @@ public abstract class AbstractDao<T extends SetId> {
                     }
                     return tList;
                 }
+            }catch(PSQLException e){
+                HttpServer.logger.info(e.getServerErrorMessage().toString());
+                return null;
             }
         }
     }
@@ -90,6 +99,9 @@ public abstract class AbstractDao<T extends SetId> {
                     }
                     return tList;
                 }
+            }catch(PSQLException e){
+                HttpServer.logger.info(e.getServerErrorMessage().toString());
+                return null;
             }
         }
     }
@@ -102,6 +114,8 @@ public abstract class AbstractDao<T extends SetId> {
                 statement.executeUpdate();
                 HttpServer.logger.info("ALTERED TABLE \"{}\", with value to \"{}\" on id {}", sql.split(" ")[1], value, id);
             }
+        }catch(PSQLException e){
+            HttpServer.logger.info(e.getServerErrorMessage().toString());
         }
     }
 
@@ -112,6 +126,8 @@ public abstract class AbstractDao<T extends SetId> {
                 statement.executeUpdate();
                 HttpServer.logger.info("DELETE FROM TABLE \"{}\", WHERE id = {}", sql.split(" ")[2], id);
             }
+        }catch(PSQLException e){
+            HttpServer.logger.info(e.getServerErrorMessage().toString());
         }
     }
 
