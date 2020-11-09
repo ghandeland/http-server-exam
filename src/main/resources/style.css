@@ -201,3 +201,13 @@ article {
     width: auto;
     border: 2px solid deeppink;
 }
+
+#link-container {
+    display: flex;
+}
+
+.link-sect {
+    border: 1px dashed white;
+    margin: 10px;
+    padding: 10px;
+}
