@@ -14,20 +14,29 @@ import java.util.Map;
 
 public class TaskFilterPostController extends AbstractController {
     private static List <Task> filterList;
+
     private static TaskStatus filterStatus;
     private static String filterMemberId;
     private final TaskDao taskDao;
-
-    public static String getFilterMemberId() {
-        return filterMemberId;
-    }
 
     public TaskFilterPostController(DataSource dataSource) {
         this.taskDao = new TaskDao(dataSource);
     }
 
+    public static String getFilterMemberId() {
+        return filterMemberId;
+    }
+
+    public static void setFilterMemberId(String filterMemberId) {
+        TaskFilterPostController.filterMemberId = filterMemberId;
+    }
+
     public static List <Task> getFilterList() {
         return filterList;
+    }
+
+    public static void setFilterList(List <Task> filterList) {
+        TaskFilterPostController.filterList = filterList;
     }
 
     public static TaskStatus getFilterStatus() {
@@ -36,10 +45,6 @@ public class TaskFilterPostController extends AbstractController {
 
     public static void setFilterStatus(TaskStatus filterStatus) {
         TaskFilterPostController.filterStatus = filterStatus;
-    }
-
-    public static void setFilterMemberId(String filterMemberId) {
-        TaskFilterPostController.filterMemberId = filterMemberId;
     }
 
     @Override
@@ -52,9 +57,9 @@ public class TaskFilterPostController extends AbstractController {
         filterStatus = taskStatus.equals("*") || taskStatus == null ? null : TaskStatus.valueOf(taskStatus);
         filterMemberId = memberId.equals("*") ? null : memberId;
 
-        if(taskStatus.equals("*") && memberId.equals("*")) {
+        if(taskStatus.equals("*") && memberId.equals("*")){
             filterList = null;
-        } else {
+        }else{
             filterList = taskDao.filterTaskAndMember(taskStatus, memberId);
         }
 

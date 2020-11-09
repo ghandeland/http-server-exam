@@ -54,9 +54,9 @@ public class TaskDao extends AbstractDao <Task> {
     }
 
     public List <Task> filterTaskAndMember(String status, String memberId) throws SQLException {
-        if(memberId.equals("*")) {
+        if(memberId.equals("*")){
             return filterStatus(status);
-        } else if(status.equals("*")) {
+        }else if(status.equals("*")){
             return filterMember(memberId);
         }
 
@@ -98,7 +98,7 @@ public class TaskDao extends AbstractDao <Task> {
                 statement.setString(2, status);
 
                 try(ResultSet rs = statement.executeQuery()){
-                    List <Task> tList = new ArrayList<>();
+                    List <Task> tList = new ArrayList <>();
                     while(rs.next()){
                         tList.add(mapRow(rs));
                     }

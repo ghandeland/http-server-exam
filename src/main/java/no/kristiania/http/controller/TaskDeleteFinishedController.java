@@ -15,8 +15,8 @@ import java.util.List;
 
 
 public class TaskDeleteFinishedController extends AbstractController {
-    private final TaskDao taskDao;
     public static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+    private final TaskDao taskDao;
 
     public TaskDeleteFinishedController(DataSource dataSource) {
         this.taskDao = new TaskDao(dataSource);
@@ -24,6 +24,7 @@ public class TaskDeleteFinishedController extends AbstractController {
 
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
+        request.readAndSetHeaders(socket);
         List <Task> taskList = taskDao.filterStatus("FINISHED");
         for(Task task : taskList){
             taskDao.delete(task.getId());

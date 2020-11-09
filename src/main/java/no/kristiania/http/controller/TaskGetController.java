@@ -7,7 +7,6 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -29,17 +28,17 @@ public class TaskGetController extends AbstractController {
         StringBuilder body = new StringBuilder();
         body.append("<ul>");
 
-        List<Task> taskList;
-        if(TaskFilterPostController.getFilterList() != null) {
+        List <Task> taskList;
+        if(TaskFilterPostController.getFilterList() != null){
             taskList = TaskFilterPostController.getFilterList();
-        } else {
+        }else{
             taskList = taskDao.list();
         }
 
-        for (Task task : taskList) {
+        for(Task task : taskList){
             body.append("<li id =\"task-li-").append(task.getId()).append("\"><strong>Task: </strong> ")
                     .append(task.getName());
-            if (task.getDescription() != null) {
+            if(task.getDescription() != null){
                 body.append(" <strong>Description: </strong> ")
                         .append(task.getDescription());
             }
@@ -47,12 +46,12 @@ public class TaskGetController extends AbstractController {
             body.append(" <strong>Status: </strong>").append(taskStatusToString(task.getStatus()))
                     .append("</li>");
 
-            LinkedHashSet<Long> memberIDsOnTask = taskMemberDao.retrieveMembersByTaskId(task.getId());
+            LinkedHashSet <Long> memberIDsOnTask = taskMemberDao.retrieveMembersByTaskId(task.getId());
 
-            if (memberIDsOnTask.size() > 0) {
+            if(memberIDsOnTask.size() > 0){
                 body.append("<ul>");
 
-                for (Long memberId : memberIDsOnTask) {
+                for(Long memberId : memberIDsOnTask){
                     Member member = memberDao.retrieve(memberId);
                     body.append("<li>").append(member.getFirstName()).append(" ").append(member.getLastName()).append("</li>");
                 }

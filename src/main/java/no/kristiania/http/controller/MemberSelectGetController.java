@@ -21,11 +21,11 @@ public class MemberSelectGetController extends AbstractController {
         StringBuilder body = new StringBuilder();
         String filterId = TaskFilterPostController.getFilterMemberId();
 
-        for (Member member : memberDao.list()) {
+        for(Member member : memberDao.list()){
             body.append("<option ");
 
-            if(filterId != null) {
-                if (member.getId() == Integer.parseInt(filterId)) {
+            if(filterId != null){
+                if(member.getId() == Integer.parseInt(filterId)){
                     body.append("selected ");
                 }
             }

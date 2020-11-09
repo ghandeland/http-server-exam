@@ -60,26 +60,23 @@
     });
 
     fetch("/api/task").then(response => response.text()).then(html => {
-            document.getElementById("tasks").innerHTML = html;
+        document.getElementById("tasks").innerHTML = html;
     });
 
-    function deleteFinishedTasks(){
+    function deleteFinishedTasks() {
         const form = document.createElement('form');
         form.method = "post";
         form.action = "/api/deleteFinishedTasks";
         document.body.appendChild(form);
         form.submit();
-        fetch("/api/deleteFinishedTasks");
     }
 
-    function resetFilter(){
+    function resetFilter() {
         const form = document.createElement('form');
         form.method = "post";
         form.action = "/api/resetFilter";
         document.body.appendChild(form);
         form.submit();
-        fetch("/api/resetFilter");
     }
-
 </script>
 </html>

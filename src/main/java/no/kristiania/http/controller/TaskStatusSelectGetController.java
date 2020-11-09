@@ -1,6 +1,5 @@
 package no.kristiania.http.controller;
 
-import no.kristiania.db.Member;
 import no.kristiania.db.TaskStatus;
 import no.kristiania.http.HttpMessage;
 
@@ -18,7 +17,7 @@ public class TaskStatusSelectGetController extends AbstractController {
 
         body.append("<option value='*'>Show all</option>");
 
-        for(TaskStatus status : TaskStatus.values()) {
+        for(TaskStatus status : TaskStatus.values()){
             body.append("<option ");
 
             if(status == TaskFilterPostController.getFilterStatus()) body.append("selected ");

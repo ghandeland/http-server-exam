@@ -1,9 +1,9 @@
 package no.kristiania.db;
 
 public class TaskMember implements SetId {
-    private long id;
     private final long taskId;
     private final long memberId;
+    private long id;
 
     public TaskMember(long taskId, long memberId) {
         this.taskId = taskId;

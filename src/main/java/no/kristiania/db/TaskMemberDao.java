@@ -1,9 +1,5 @@
 package no.kristiania.db;
 
-import no.kristiania.http.HttpServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
