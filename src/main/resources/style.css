@@ -193,3 +193,11 @@ article {
 [style*="--c:"]:last-child, section > section:last-child, article:last-child {
     margin-right: 0
 }
+
+.li-el {
+    background-color: darkblue;
+    margin: 20px;
+    padding: 20px;
+    width: auto;
+    border: 2px solid deeppink;
+}

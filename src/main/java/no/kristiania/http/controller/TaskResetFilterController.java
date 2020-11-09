@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
-public class ResetTaskFilterController extends AbstractController {
+public class TaskResetFilterController extends AbstractController {
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         request.readAndSetHeaders(socket);

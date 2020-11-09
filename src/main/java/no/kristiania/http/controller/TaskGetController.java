@@ -36,8 +36,12 @@ public class TaskGetController extends AbstractController {
         }
 
         for(Task task : taskList){
-            body.append("<li id =\"task-li-").append(task.getId()).append("\"><strong>Task: </strong> ")
+            body.append("<div class=\"li-el\">")
+                    .append("<li id =\"task-li-")
+                    .append(task.getId())
+                    .append("\"><strong>Task: </strong> ")
                     .append(task.getName());
+
             if(task.getDescription() != null){
                 body.append(" <strong>Description: </strong> ")
                         .append(task.getDescription());
@@ -57,6 +61,7 @@ public class TaskGetController extends AbstractController {
                 }
                 body.append("</ul>");
             }
+            body.append("</div>");
         }
 
         body.append("</ul>");

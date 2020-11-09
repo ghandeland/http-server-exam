@@ -23,7 +23,9 @@ public class MemberGetController extends AbstractController {
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         StringBuilder body = new StringBuilder();
         body.append("<ul>");
+
         for(Member member : memberDao.list()){
+            body.append("<div class=\"li-el\">");
             Long departmentId = member.getDepartmentId();
             body.append("<li><strong>Name:</strong> ")
                     .append(member.getFirstName())
@@ -36,9 +38,11 @@ public class MemberGetController extends AbstractController {
                 body.append(" - <strong>Department:</strong> ")
                         .append(departmentDao.retrieve(departmentId).getName());
             }
-            body.append("</li>");
+            body.append("</li>")
+                .append("</div>");
         }
-        body.append("</ul>");
+        body.append("</div>")
+                .append("</ul>");
         sendGetResponse(socket, body);
     }
 }

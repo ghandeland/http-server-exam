@@ -21,7 +21,9 @@ public class DepartmentGetController extends AbstractController {
         StringBuilder body = new StringBuilder();
         body.append("<strong>Departments:</strong>").append("<ul>");
         for(Department department : departmentDao.list()){
-            body.append("<li>").append(department.getName()).append("</li>");
+            body.append("<div class=\"li-el\">")
+                .append("<li>").append(department.getName()).append("</li>")
+                .append("</div>");
         }
         body.append("</ul>");
         sendGetResponse(socket, body);
