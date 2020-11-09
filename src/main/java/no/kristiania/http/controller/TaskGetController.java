@@ -61,7 +61,6 @@ public class TaskGetController extends AbstractController {
         }
 
         body.append("</ul>");
-        System.out.println("handleRunning");
         sendGetResponse(socket, body);
     }
 }

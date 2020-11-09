@@ -46,6 +46,7 @@ public class HttpServer {
         controllers.put("/api/deleteDepartment", new DepartmentDeleteController(dataSource));
         controllers.put("/echo", new EchoController());
         controllers.put("/api/deleteFinishedTasks", new TaskDeleteFinishedController(dataSource));
+        controllers.put("/api/resetFilter", new ResetTaskFilterController());
 
         new Thread(() -> {
             while(true){

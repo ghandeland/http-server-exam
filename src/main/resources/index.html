@@ -37,8 +37,10 @@
     <br>
     <button>Filter tasks</button>
 </form>
+
+<button onclick="deleteFinishedTasks()">Delete finished tasks</button>
 <br>
-<button onclick="deleteFinishedTasks()"> Delete finished tasks </button>
+<button onclick="resetFilter()">Reset filter</button>
 
 <h1>Tasks:</h1>
 <div id="tasks"></div>
@@ -61,8 +63,6 @@
             document.getElementById("tasks").innerHTML = html;
     });
 
-
-
     function deleteFinishedTasks(){
         const form = document.createElement('form');
         form.method = "post";
@@ -71,5 +71,15 @@
         form.submit();
         fetch("/api/deleteFinishedTasks");
     }
+
+    function resetFilter(){
+        const form = document.createElement('form');
+        form.method = "post";
+        form.action = "/api/resetFilter";
+        document.body.appendChild(form);
+        form.submit();
+        fetch("/api/resetFilter");
+    }
+
 </script>
 </html>

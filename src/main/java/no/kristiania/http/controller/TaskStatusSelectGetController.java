@@ -28,7 +28,6 @@ public class TaskStatusSelectGetController extends AbstractController {
                     .append("\">")
                     .append(taskStatusToString(status))
                     .append("</option>");
-            System.out.println(status.toString());
         }
 
         sendGetResponse(socket, body);

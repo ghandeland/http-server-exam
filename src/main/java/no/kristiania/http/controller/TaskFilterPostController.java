@@ -16,12 +16,11 @@ public class TaskFilterPostController extends AbstractController {
     private static List <Task> filterList;
     private static TaskStatus filterStatus;
     private static String filterMemberId;
+    private final TaskDao taskDao;
 
     public static String getFilterMemberId() {
         return filterMemberId;
     }
-
-    private final TaskDao taskDao;
 
     public TaskFilterPostController(DataSource dataSource) {
         this.taskDao = new TaskDao(dataSource);
@@ -50,7 +49,7 @@ public class TaskFilterPostController extends AbstractController {
         String taskStatus = taskQueryMap.get("taskStatus");
         String memberId = taskQueryMap.get("taskMember");
 
-        filterStatus = taskStatus.equals("*") ? null : TaskStatus.valueOf(taskStatus);
+        filterStatus = taskStatus.equals("*") || taskStatus == null ? null : TaskStatus.valueOf(taskStatus);
         filterMemberId = memberId.equals("*") ? null : memberId;
 
         if(taskStatus.equals("*") && memberId.equals("*")) {
