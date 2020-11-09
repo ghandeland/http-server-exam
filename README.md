@@ -19,6 +19,22 @@ This is a Http-server. The code hosts various documents that build up a project 
 ####intellij
 Alternatively run HttpServer.main and go link listed above.
 
+## Additional features
+- Aditional entity relation `department` with possibility to assign to member and delete
+- Simultaneous filtering by both member and status
+- Thorough abstractions in `AbstractDao`
+- Good use of controllers to avoid cluttering in server class
+- Delete functionality in relations `member`, `department`, and `task`
+- Deleting from database also deletes relevant relations
+- Handling request tagets `/` and empty requests
+- Handling Norwegian-specific letters - `http://localhost:8080/æøå.html`
+- Correct handling and use of a range of HTTP status codes
+- Filtering is saved as a static variable and select-menu is dynamically changed based on filtering (after refreshing) 
+- Java classes not accessable in browser
+- Thorough logging throughout the server (Only logs if database insert is successful)
+- Exceptions are catched and logged
+- `index.html` contains buttons for quickly resetting the filters and deleting finished tasks
+
 Database Structure
 ==
 ![database Structure](docs/database_structure.png)
@@ -34,3 +50,6 @@ Dao Structure
 ObjectClass Structure
 ==
 ![ObjectClass Structure](docs/member_structure.png)
+
+## Arbeidserfaring:
+Erfaringen med prosjektet har først og fremst vært lærerik. Vi har tatt i bruk GitHub i svært stor grad, og vi har fått et nytt syn på mulighetene og bruksområdet Git tilbyr. Vi har benyttet oss GitHub issues, der vi havnet på omkring 70 issues. Issues gir oss god oversikt over gjeldende arbeidsoppgaver og har hjulpet oss med å drive utviklingen videre. Vi har vært konsistente i bruk av branches i GitHub. For å unngå å jobbe på samme issue har vi hatt kontinuerlig kommunikasjon innad i gruppen. Deretter lagde vi separate brancher med forståelige og relevante navn som vi jobbet på. Det var veldig greit å kunne forsikre seg om at alt er funksjonelt før man merger til main-branchen. Dette bidro til at det var lite problemer relatert til commits og pushes når vi jobbet samtidig. Utover dette har det vært god kommunikasjon og godt samarbeid blant gruppemedlemmene. Før vi startet satte vi noen rammer relatert til hvordan arbeidet skulle foregå på ryddigst mulig måte. Dette har alle medlemmene opprettholdt. Alle tre gruppemedlemmer var veldig fornøyde med formatet på eksamen, og synes det en bra erfaring å sette sammen alt vi lærte i løpet av semesteret i et større prosjekt.
