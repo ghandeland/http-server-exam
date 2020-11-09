@@ -46,5 +46,4 @@ public class Task implements SetId {
     public String getDescription() {
         return description;
     }
-
 }

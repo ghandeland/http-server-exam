@@ -59,10 +59,22 @@ public class TaskDao extends AbstractDao <Task> {
         }else if(status.equals("*")){
             return filterMember(memberId);
         }
+        try(Connection connection = dataSource.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "select * from task where id in (select task_id from task_member where member_id = ?) and status = CAST(? AS task_status);"
+            )){
+                statement.setInt(1, Integer.parseInt(memberId));
+                statement.setString(2, status);
 
-        String sql = "select * from task where id in (select task_id from task_member where member_id = ?) and status = CAST(? AS task_status);";
-
-        return filterTaskAndMember(status, memberId, sql);
+                try(ResultSet rs = statement.executeQuery()){
+                    List <Task> taskList = new ArrayList <>();
+                    while(rs.next()){
+                        taskList.add(mapRow(rs));
+                    }
+                    return taskList;
+                }
+            }
+        }
     }
 
     public void alter(long id, String status) throws SQLException {
@@ -89,22 +101,5 @@ public class TaskDao extends AbstractDao <Task> {
                 rs.getString("description"),
                 rs.getString("status")
         );
-    }
-
-    protected List <Task> filterTaskAndMember(String status, String memberId, String sql) throws SQLException {
-        try(Connection connection = dataSource.getConnection()){
-            try(PreparedStatement statement = connection.prepareStatement(sql)){
-                statement.setInt(1, Integer.parseInt(memberId));
-                statement.setString(2, status);
-
-                try(ResultSet rs = statement.executeQuery()){
-                    List <Task> tList = new ArrayList <>();
-                    while(rs.next()){
-                        tList.add(mapRow(rs));
-                    }
-                    return tList;
-                }
-            }
-        }
     }
 }

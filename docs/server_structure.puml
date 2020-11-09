@@ -16,6 +16,7 @@ User -> WebBrowser: List members
 WebBrowser -> HttpServer: /index.html
 WebBrowser <-- HttpServer: <html>....<script>fetch()</html>
 WebBrowser -> HttpServer: /api/member
+HttpServer -> HttpServer: getRequestPath(request, socket)
 HttpServer -> HttpServer: controllers.get("/api/products")
 HttpServer -> MemberGetController: handle(HttpMessage request)
 MemberGetController -> MemberDao: list()

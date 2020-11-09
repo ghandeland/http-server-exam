@@ -5,30 +5,26 @@ interface setId{
 }
 
 class Department implements setId {
-    {field} - long id
     {field} - String name
+    {field} - long id
     --
-    {method} + Department()
     {method} + Department(String name)
     {method} + Department(long id, String name)
     ==
     {method} + getId()
-    {method} + getId()
     {method} + getName()
-    {method} + setName(String name)
     --@Override--
     {method} + setId(long id)
 }
 
 class Member implements setId {
-    {field} - long id
     {field} - String firstName
     {field} - String lastName
     {field} - String email
+    {field} - long id
     {field} - Long departmentId
     --
     {method} + Member(String firstName, String lastName, String email)
-    {method} + Member(int id, String firstName, String lastName, String email)
     {method} + Member(String memberFirstName, String memberLastName, String memberEmail, Long departmentId)
     {method} + Member(int id, String memberFirstName, String memberLastName, String memberEmail, Long departmentId)
     ==
@@ -43,37 +39,32 @@ class Member implements setId {
 }
 
 class Task implements setId,TaskStatus{
-    {field} - long id
     {field} - String name
     {field} - String description
     {field} - TaskStatus status
+    {field} - long id
     --
     {method} + Task(String name, String description, String status)
     {method} + Task(long id, String name, String description, String status)
     ==
+    {static} + taskStatusToString(TaskStatus taskStatus)
     {method} + getId()
     {method} + getStatus()
-    {method} + setStatus(String status)
     {method} + getName()
-    {method} + setName(String name)
     {method} + getDescription()
-    {method} + setDescription(String description)
     --@Override--
     {method} + setId(long id)
 }
 
 class TaskMember implements setId{
-    {field} - long id;
     {field} - long taskId;
     {field} - long memberId;
+    {field} - long id;
     --
     {method} + TaskMember(long taskId, long memberId)
     ==
-    {method} + getId()
     {method} + getTaskId()
-    {method} + setTaskId(long taskId)
     {method} + getMemberId()
-    {method} + setMemberId(long memberId)
     --@Override--
     {method} + setId(long id)
     }
@@ -83,7 +74,6 @@ enum TaskStatus {
     IN_PROGRESS
     FINISHED
     CANCELED
-    }
-
+}
 
 @enduml

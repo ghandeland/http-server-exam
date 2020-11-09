@@ -8,8 +8,10 @@ abstract AbstractDao<T extends setId> {
     {method} # insert(T t, String sql)
     {method} # list(String sql)
     {method} # retrieve(Long id, String sql)
+    {method} # retrieveMultiple(Long id, String sql)
     {method} # filter(Object value, String sql)
     {method} # alter(long id, Object value, String sql)
+    {method} # delete(Long id, String sql)
     ..abstract..
     {abstract} # setDataOnStatement(PreparedStatement statement, T t)
     {abstract} # mapRow(ResultSet rs)
@@ -21,6 +23,7 @@ Class MemberDao extends AbstractDao {
     {method} + insert(Member member)
     {method} + list()
     {method} + retrieve(Long id)
+    {method} + delete(Long id)
     --@Override--
     {method} # setDataOnStatement(PreparedStatement statement, Member member)
     {method} # mapRow(ResultSet rs)
@@ -32,9 +35,11 @@ Class TaskDao extends AbstractDao {
     {method} + insert(Task task)
     {method} + list()
     {method} + retrieve(Long id)
-    ..status..
     {method} + filterStatus(String status)
+    {method} + filterMember(String memberId)
+    {method} + filterTaskAndMember(String status, String memberId)
     {method} + alter(long id, String status)
+    {method} + delete(Long id)
     --@Override--
     {method} # setDataOnStatement(PreparedStatement statement, Task task)
     {method} # mapRow(ResultSet rs)
@@ -50,16 +55,20 @@ Class TaskMemberDao extends AbstractDao {
     {method} + insert(TaskMember taskMember)
     {method} + retrieveMembersByTaskId(long taskId)
     {method} + retrieveTasksByMemberId(long memberId)
+    {method} + deleteFromTaskId(long id)
+    {method} + deleteFromMemberId(long id)
     --@Override--
     {method} # setDataOnStatement(PreparedStatement statement, TaskMember taskMember)
     {method} # mapRow(ResultSet rs)
 }
+
 Class DepartmentDao extends AbstractDao {
     {method} + <<constructor>> DepartmentDao(DataSource dataSource)
     ==
     {method} + insert(Department department)
     {method} + list()
     {method} + retrieve(Long id)
+    {method} + delete(Long id)
     --@Override--
     {method} # setDataOnStatement(PreparedStatement statement, Department department)
     {method} # mapRow(ResultSet rs)
