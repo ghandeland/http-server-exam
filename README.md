@@ -6,13 +6,14 @@ This is a Http-server. The code hosts various documents that build up a project 
 
 ## How to build and run
 
-1. Package with Maven
-2. Place .jar in folder containing properties file with database values:
+1. run Clean with Maven
+2. run Package with Maven
+3. Place .jar in folder containing properties file with database values:
     	- Filename: `pgr203.properties`
     	- Properties: `dataSource.url`, `dataSource.username` and `dataSource.password` 
-3. Run `java -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -jar target\http-server-1.0-SNAPSHOT.jar`
-4. Open a web browser and go to [http://localhost:8080](http://localhost:8080)
-5. *High five!*
+4. Run `java -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -jar target\http-server-1.0-SNAPSHOT.jar` in terminal
+5. Open a web browser and go to [http://localhost:8080](http://localhost:8080)
+6. *High five!*
 
 Alternatively run HttpServer.main and go link listed above.
 
