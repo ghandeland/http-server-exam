@@ -2,6 +2,7 @@ package no.kristiania.http.controller;
 
 import no.kristiania.db.Task;
 import no.kristiania.db.TaskDao;
+import no.kristiania.db.TaskStatus;
 import no.kristiania.http.HttpMessage;
 
 import javax.sql.DataSource;
@@ -13,6 +14,13 @@ import java.util.Map;
 
 public class TaskFilterPostController extends AbstractController {
     private static List <Task> filterList;
+    private static TaskStatus filterStatus;
+    private static String filterMemberId;
+
+    public static String getFilterMemberId() {
+        return filterMemberId;
+    }
+
     private final TaskDao taskDao;
 
     public TaskFilterPostController(DataSource dataSource) {
@@ -23,12 +31,33 @@ public class TaskFilterPostController extends AbstractController {
         return filterList;
     }
 
+    public static TaskStatus getFilterStatus() {
+        return filterStatus;
+    }
+
+    public static void setFilterStatus(TaskStatus filterStatus) {
+        TaskFilterPostController.filterStatus = filterStatus;
+    }
+
+    public static void setFilterMemberId(String filterMemberId) {
+        TaskFilterPostController.filterMemberId = filterMemberId;
+    }
+
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         Map <String, String> taskQueryMap = handlePostRequest(request, socket);
+
         String taskStatus = taskQueryMap.get("taskStatus");
         String memberId = taskQueryMap.get("taskMember");
-        filterList = taskDao.filterTaskAndMember(taskStatus, memberId);
+
+        filterStatus = taskStatus.equals("*") ? null : TaskStatus.valueOf(taskStatus);
+        filterMemberId = memberId.equals("*") ? null : memberId;
+
+        if(taskStatus.equals("*") && memberId.equals("*")) {
+            filterList = null;
+        } else {
+            filterList = taskDao.filterTaskAndMember(taskStatus, memberId);
+        }
 
         sendPostResponse(socket, request.getHeader("Referer"));
     }

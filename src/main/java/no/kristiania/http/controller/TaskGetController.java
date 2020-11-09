@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import static no.kristiania.db.Task.taskStatusToString;
+
 public class TaskGetController extends AbstractController {
     private final MemberDao memberDao;
     private final TaskMemberDao taskMemberDao;
@@ -38,11 +40,11 @@ public class TaskGetController extends AbstractController {
             body.append("<li id =\"task-li-").append(task.getId()).append("\"><strong>Task: </strong> ")
                     .append(task.getName());
             if (task.getDescription() != null) {
-                body.append("<strong>Description: </strong> ")
+                body.append(" <strong>Description: </strong> ")
                         .append(task.getDescription());
             }
 
-            body.append("<strong>Status: </strong>").append(task.getStatus().toString())
+            body.append(" <strong>Status: </strong>").append(taskStatusToString(task.getStatus()))
                     .append("</li>");
 
             LinkedHashSet<Long> memberIDsOnTask = taskMemberDao.retrieveMembersByTaskId(task.getId());

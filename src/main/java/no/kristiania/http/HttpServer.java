@@ -33,6 +33,7 @@ public class HttpServer {
         controllers.put("/api/member", new MemberGetController(dataSource));
         controllers.put("/api/task", new TaskGetController(dataSource));
         controllers.put("/api/memberSelect", new MemberSelectGetController(dataSource));
+        controllers.put("/api/statusSelect", new TaskStatusSelectGetController());
         controllers.put("/api/taskSelect", new TaskSelectGetController(dataSource));
         controllers.put("/api/department", new DepartmentGetController(dataSource));
         controllers.put("/api/addNewDepartment", new DepartmentPostController(dataSource));

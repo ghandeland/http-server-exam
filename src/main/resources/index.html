@@ -28,13 +28,7 @@
 <br><br>
 <form action="/api/filterTask" method="POST" name="statusForm">
     <Label for="status-select">Filter on task status: </Label>
-    <select id="status-select" name="taskStatus">
-        <option value='*'>Show all</option>
-        <option value="OPEN">Open</option>
-        <option value="IN_PROGRESS">In progress</option>
-        <option value="FINISHED">Finished</option>
-        <option value="CANCELED">Canceled</option>
-    </select>
+    <select id="status-select" name="taskStatus"></select>
     <br>
     <Label for="member-select">Filter on member: </Label>
     <select id="member-select" name="taskMember">
@@ -59,9 +53,15 @@
         document.getElementById("member-select").innerHTML += html;
     });
 
+    fetch("/api/statusSelect").then(response => response.text()).then(html => {
+        document.getElementById("status-select").innerHTML = html;
+    });
+
     fetch("/api/task").then(response => response.text()).then(html => {
             document.getElementById("tasks").innerHTML = html;
     });
+
+
 
     function deleteFinishedTasks(){
         const form = document.createElement('form');
