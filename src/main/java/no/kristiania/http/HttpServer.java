@@ -38,7 +38,7 @@ public class HttpServer {
         controllers.put("/api/addNewDepartment", new DepartmentPostController(dataSource));
         controllers.put("/api/departmentSelect", new DepartmentSelectGetController(dataSource));
         controllers.put("/api/filterTask", new TaskFilterPostController(dataSource));
-        controllers.put("/api/showFilterTask", new TaskFilterGetController(dataSource));
+        controllers.put("/api/showFilterTask", new TaskGetController(dataSource));
         controllers.put("/api/alterTask", new TaskAlterController(dataSource));
         controllers.put("/api/deleteTask", new TaskDeleteController(dataSource));
         controllers.put("/api/deleteMember", new MemberDeleteController(dataSource));

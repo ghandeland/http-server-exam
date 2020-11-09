@@ -55,15 +55,11 @@
         document.getElementById("members").innerHTML = html;
     });
 
-    fetch("/api/task").then(response => response.text()).then(html => {
-        document.getElementById("tasks").innerHTML = html;
-    });
-
     fetch("/api/memberSelect").then(response => response.text()).then(html => {
         document.getElementById("member-select").innerHTML += html;
     });
 
-    fetch("/api/showFilterTask").then(response => response.text()).then(html => {
+    fetch("/api/task").then(response => response.text()).then(html => {
             document.getElementById("tasks").innerHTML = html;
     });
 
