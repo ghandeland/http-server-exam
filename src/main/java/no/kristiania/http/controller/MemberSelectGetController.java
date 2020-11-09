@@ -19,8 +19,18 @@ public class MemberSelectGetController extends AbstractController {
     @Override
     public void handle(HttpMessage request, Socket socket) throws IOException, SQLException {
         StringBuilder body = new StringBuilder();
-        for(Member member : memberDao.list()){
-            body.append("<option value=\"").append(member.getId()).append("\">")
+        String filterId = TaskFilterPostController.getFilterMemberId();
+
+        for (Member member : memberDao.list()) {
+            body.append("<option ");
+
+            if(filterId != null) {
+                if (member.getId() == Integer.parseInt(filterId)) {
+                    body.append("selected ");
+                }
+            }
+
+            body.append("value=\"").append(member.getId()).append("\">")
                     .append(member.getFirstName())
                     .append(" ")
                     .append(member.getLastName())
@@ -28,4 +38,5 @@ public class MemberSelectGetController extends AbstractController {
         }
         sendGetResponse(socket, body);
     }
+
 }

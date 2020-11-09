@@ -33,18 +33,20 @@ public class HttpServer {
         controllers.put("/api/member", new MemberGetController(dataSource));
         controllers.put("/api/task", new TaskGetController(dataSource));
         controllers.put("/api/memberSelect", new MemberSelectGetController(dataSource));
+        controllers.put("/api/statusSelect", new TaskStatusSelectGetController());
         controllers.put("/api/taskSelect", new TaskSelectGetController(dataSource));
         controllers.put("/api/department", new DepartmentGetController(dataSource));
         controllers.put("/api/addNewDepartment", new DepartmentPostController(dataSource));
         controllers.put("/api/departmentSelect", new DepartmentSelectGetController(dataSource));
         controllers.put("/api/filterTask", new TaskFilterPostController(dataSource));
-        controllers.put("/api/showFilterTask", new TaskFilterGetController(dataSource));
+        controllers.put("/api/showFilterTask", new TaskGetController(dataSource));
         controllers.put("/api/alterTask", new TaskAlterController(dataSource));
         controllers.put("/api/deleteTask", new TaskDeleteController(dataSource));
         controllers.put("/api/deleteMember", new MemberDeleteController(dataSource));
         controllers.put("/api/deleteDepartment", new DepartmentDeleteController(dataSource));
         controllers.put("/echo", new EchoController());
         controllers.put("/api/deleteFinishedTasks", new TaskDeleteFinishedController(dataSource));
+        controllers.put("/api/resetFilter", new ResetTaskFilterController());
 
         new Thread(() -> {
             while(true){
