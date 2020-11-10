@@ -6,7 +6,7 @@ This is a Http-server. The code hosts various documents that build up a project 
 
 ## How to build and run
 
-####maven
+#### maven
 1. run Clean with Maven
 2. run Package with Maven
 3. Place .jar in folder containing properties file with database values:
@@ -16,7 +16,7 @@ This is a Http-server. The code hosts various documents that build up a project 
 5. Open a web browser and go to [http://localhost:8080](http://localhost:8080)
 6. *High five!*
 
-####intellij
+#### intellij
 Alternatively run HttpServer.main and go link listed above.
 
 ## Additional features
